@@ -38,12 +38,35 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <decisions>
+        <description>Verifica si ya existe una caja abierta para evitar duplicados en caso de reintentos</description>
+        <name>VerificarSiCajaExiste</name>
+        <label>¿Caja Ya Existe?</label>
+        <locationX>176</locationX>
+        <locationY>396</locationY>
+        <defaultConnector>
+            <targetReference>CrearCajaUsuarioIntegracion</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No existe - Crear caja</defaultConnectorLabel>
+        <rules>
+            <name>CajaYaExiste</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>BuscarCajaExistente</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Ya existe - No crear</label>
+        </rules>
+    </decisions>
     <recordCreates>
         <description>Se le crea la caja al usuario</description>
         <name>CrearCajaUsuarioIntegracion</name>
         <label>CrearCajaUsuarioIntegracion</label>
         <locationX>176</locationX>
-        <locationY>396</locationY>
+        <locationY>516</locationY>
         <connector>
             <targetReference>ActualizarCorrelativoUsuario</targetReference>
         </connector>
@@ -75,13 +98,49 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordLookups>
+        <description>Busca si ya existe una caja abierta para el usuario en la fecha actual</description>
+        <name>BuscarCajaExistente</name>
+        <label>Buscar Caja Existente</label>
+        <locationX>176</locationX>
+        <locationY>336</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>VerificarSiCajaExiste</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>OwnerId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>ObtenerUsuarioIntegracion.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>FechaCaja__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Estado_de_la_Caja__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Abierta</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Caja__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>ObtenerUsuarioIntegracion</name>
         <label>Obtener Usuario Integracion</label>
         <locationX>176</locationX>
         <locationY>276</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>CrearCajaUsuarioIntegracion</targetReference>
+            <targetReference>BuscarCajaExistente</targetReference>
         </connector>
         <filterLogic>or</filterLogic>
         <filters>
@@ -107,7 +166,7 @@
         <name>ActualizarCorrelativoUsuario</name>
         <label>ActualizarCorrelativoUsuario</label>
         <locationX>176</locationX>
-        <locationY>516</locationY>
+        <locationY>636</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>

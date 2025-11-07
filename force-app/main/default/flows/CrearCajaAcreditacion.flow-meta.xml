@@ -101,7 +101,7 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordLookups>
-        <description>Buscar si existe una caja con ese nombre</description>
+        <description>Buscar si existe una caja con ese nombre. ORDER BY para consistencia en caso de duplicados</description>
         <name>Buscar_Caja</name>
         <label>Buscar Caja</label>
         <locationX>618</locationX>
@@ -134,6 +134,8 @@
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Caja__c</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Asc</sortOrder>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
