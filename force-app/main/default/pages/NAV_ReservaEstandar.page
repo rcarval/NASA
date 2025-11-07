@@ -1,0 +1,2 @@
+<apex:page standardController="Reserva__c" extensions="NAV_ReservaEstandar" action="{!urlRedirection}">
+</apex:page>

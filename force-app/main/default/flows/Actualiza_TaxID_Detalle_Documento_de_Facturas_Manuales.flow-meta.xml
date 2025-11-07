@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>57.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Es_Exento</name>
+        <label>Es Exento ?</label>
+        <locationX>182</locationX>
+        <locationY>455</locationY>
+        <defaultConnector>
+            <targetReference>myRule_3_A1</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Exento</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_Exento</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Exento__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_1_A1</targetReference>
+            </connector>
+            <label>TRUE_Exento</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Evalúa si el tipo de registro del documento es Factura Subsidio u Otras Facturas. En esos casos avanza el flujo.</description>
+        <name>Factura_Subsidio_u_otras</name>
+        <label>Factura Subsidio u otras ?</label>
+        <locationX>380</locationX>
+        <locationY>335</locationY>
+        <defaultConnectorLabel>No lo es</defaultConnectorLabel>
+        <rules>
+            <name>Es_Factura_Subsidio_u_Otras</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Documento__r.RecordType.Name</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Factura Subsidio</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Documento__r.RecordType.Name</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Otras Facturas</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Es_Exento</targetReference>
+            </connector>
+            <label>Es Factura Subsidio u Otras</label>
+        </rules>
+    </decisions>
+    <description>Actualiza TaxID Detalle Documento de Facturas manuales utilizando criterios múltiples.
+Cambia entre [9] y [1] si ítem es Exento o Afecto. Trabaja con TR Factura Subsidios y TR Otras Facturas</description>
+    <environments>Default</environments>
+    <interviewLabel>Actualiza TaxID Detalle Documento de Facturas Manuales {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Actualiza TaxID Detalle Documento de Facturas Manuales</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>myRule_1_A1</name>
+        <label>TaxID[9]</label>
+        <locationX>50</locationX>
+        <locationY>575</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Exento__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Tax_Id__c</field>
+            <value>
+                <stringValue>[9]</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>myRule_3_A1</name>
+        <label>TaxID[1]</label>
+        <locationX>314</locationX>
+        <locationY>575</locationY>
+        <inputAssignments>
+            <field>Tax_Id__c</field>
+            <value>
+                <stringValue>[1]</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>254</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Factura_Subsidio_u_otras</targetReference>
+        </connector>
+        <object>Detalle_Documentos__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

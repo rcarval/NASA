@@ -1,0 +1,664 @@
+<!--**********************************************************************************
+Desarrollado por: Nectia
+Autor: Esteban Flores (EFR)
+Proyecto: Naviera Austral Puntos Críticos
+Descripción: Visualforce para cotizacion de Naviera
+---------------------------------------------------------------------------------
+No. Fecha                Autor                     Descripción
+------ ---------- ---------------------------------------------------------------
+1.0 18-12-2022            EFR                   Creación de la Página.
+2.0 17-01-2023            EFR                   Actualización formato.
+***********************************************************************************-->
+<apex:page standardController="Reserva__c" extensions="NAV_ResumenVFController" standardstylesheets="false" showheader="false" renderAs="PDF" sidebar="false" applyBodyTag="false" applyHtmlTag="false">
+<head>
+    <title>Cotizacion</title>
+    <style>
+        @page :first {
+            border: 0px;
+            size: letter;
+            margin-top: 10mm;
+            margin-bottom: 1mm;
+            background-image: url('{!URLFOR($Resource.FondoDisclaimerCarta)}');
+            @top-left {
+                padding-top: 25px;
+                content: counter(page)  " de " counter(pages);
+            }
+        }
+        @page {
+            size: letter;
+            margin-top: 25mm;
+            margin-bottom: 10mm;
+            background-image: url('{!URLFOR($Resource.FondoDisclaimerCarta)}');
+            @top-left {
+                content: counter(page)  " de " counter(pages);
+            }
+        }
+        * {
+            font-family: 'Arial Unicode MS';
+            font-size: 16px;
+        }
+        .contacto{
+            padding-left: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .titulo{
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+        .celeste{
+            color: #0070C0;
+        }
+        .titDown{
+            text-align: left;
+            padding-right: 10px;
+            padding-top: 5px;
+            font-size: 14px;
+            display: block;
+        }
+        .minititle {
+            font-size: 15px;
+        }
+        .contenido {
+            font-size: 14px;
+        }
+        .tablaBordes{
+            border: 1px solid black;
+        }
+        .bodyData {
+            padding-left: 5px;
+            font-size: 14px;
+        }
+        .disclaimer {
+            padding-right: 10px;
+            padding-top: 5px;
+            font-size: 15px;
+            text-align: center;
+        }
+        .redAlert{
+            text-align: center;
+            padding-right: 10px;
+            padding-top: 5px;
+            font-size: 24px;
+            color: red;
+            text-transform: uppercase;
+        }
+        .tarifaError{
+            color: red;
+            font-style: italic;
+        }
+        .spacing{
+            margin-top: 2px;
+        }
+        .tablaDetalle{
+            display: table;
+            border-collapse: separate;
+            border-top: 1px solid rgb(229, 229, 229);
+            border-bottom: 1px solid rgb(229, 229, 229);
+        }
+        .tablaDetalle tr th div, .tablaDetalle tr td div, .tablaDetalle tr td div b, .tablaDetalle tr td b{
+            font-size: 12px;
+        }
+        .tablaDetalle thead{
+            display: table-header-group;
+        }
+        .tablaDetalle tr th{
+            border-top: 1px solid rgb(229, 229, 229);
+            background-color: rgb(243, 243, 243);
+            color: rgb(68, 68, 68);
+            padding: 0.25rem 0.5rem;
+            white-space: nowrap;
+        }
+        .datosEjecutivo{
+            font-size: 12px;
+        }
+        .derecha{
+            text-align: right;
+        }
+        .valorDerecha{
+            text-align: right;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <apex:variable var="contadorTotal" value="{!6}" />
+    <table width="100%" class="tablaCompleta" cellpading="0" cellspacing="0">
+        <tr>
+            <td width="100%" colspan="2" class="tablaBordes">
+                <table class="bodyData" width="100%">
+                    <tr>
+                        <td width="15%"><img src="{!URLFOR($Resource.Logo)}" width="180px"/></td>
+                        <td width="85%">
+                            <span class="titulo celeste">NAVIERA AUSTRAL S.A.</span> <br />
+                            <span class="titDown">RUT: 99.597.800-8</span>
+                            <span class="titDown">Giro: TRANSPORTES MARITIMO DE CABOTAJE, CARGA Y PASAJEROS, ARRIENDO DE NAVES</span>
+                            <span class="titDown">Dirección: AVENIDA ITALIA 2326 PUERTO MONTT</span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" class="tablaBordes">
+                <div class="bodyData">Señor(es): <span class="contacto">{!contacto}</span></div>
+            </td>
+            <td width="50%" class="tablaBordes">
+                <div class="bodyData">{!tipoIdentificacionContacto}: <span class="contacto">{!identificacionContacto}</span></div>
+            </td>
+        </tr>
+        <tr>
+            <td width="100%" class="tablaBordes" colspan="2">
+                <div class="bodyData">Fecha Cotización: <span class="contacto">{!DAY(TODAY())}-{!MONTH(TODAY())}-{!YEAR(TODAY())}</span></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="spacing">&nbsp;</div>
+                EJECUTIVO
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" class="tablaBordes">
+                <div class="datosEjecutivo">Nombre: <span class="datosEjecutivo">{!eNombre}</span></div>
+            </td>
+            <td width="50%" class="tablaBordes">
+                <div class="datosEjecutivo">Correo: <span class="datosEjecutivo">{!eCorreo}</span></div>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" class="tablaBordes">
+                <div class="datosEjecutivo">Agencia: <span class="datosEjecutivo">{!eAgencia}</span></div>
+            </td>
+            <td width="50%" class="tablaBordes">
+                <div class="datosEjecutivo">Teléfono: <span class="datosEjecutivo">{!eTelefono}</span></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="spacing">&nbsp;</div>
+                VIAJE
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" class="tablaBordes">
+                <div class="bodyData">Origen: <span class="contacto">{!origen}</span></div>
+            </td>
+            <td width="50%" class="tablaBordes">
+                <div class="bodyData">Destino: <span class="contacto">{!destino}</span></div>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" class="tablaBordes">
+                <div class="bodyData">Ruta: <span class="contacto">{!ruta}</span></div>
+            </td>
+            <td width="50%" class="tablaBordes">
+                <div class="bodyData">Nave: <span class="contacto">{!nave}</span></div>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" class="tablaBordes">
+                <div class="bodyData">Fecha Hora de Viaje: <span class="contacto">{!fechaHora}</span></div>
+            </td>
+            <td width="50%" class="tablaBordes">
+                <div class="bodyData">Total reserva: <span class="contacto">$ {!total}</span></div>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" class="tablaBordes">
+                <div class="bodyData">Reserva: <span class="contacto">{!codigoReserva}</span></div>
+            </td>
+            <td width="50%" class="tablaBordes">
+                <div class="bodyData">Fecha de Reserva: <span class="contacto">{!fechaReserva}</span></div>
+            </td>
+        </tr>
+        <tr>
+            <td width="100%" colspan="2">
+                <div class="spacing">&nbsp;</div>
+                TARIFICACIÓN
+            </td>
+        </tr>
+        <tr>
+            <td width="100%" colspan="2" class="tablaBordes">
+                <table class="tablaDetalle" width="100%">
+                <thead>
+                    <tr>
+                        <td colspan="12">PERSONAS:</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">
+                            <div title="#">#</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Rut">Rut</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Nombre">Nombre</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Butaca">Butaca</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Traslado">Traslado</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Tasa de Embarque">T/E</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Pasaje">Pasaje</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Subtotal">Subtotal</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:variable var="totPersona" value="{!0}" />
+                    <apex:variable var="contador" value="{!1}" />
+                    <apex:repeat value="{!rPersonas}" var="persona">
+                    <tr class="{!IF(persona.Parametro_Tarifa__c == 'false','tarifaError','')}">
+                        <td data-label="#" scope="row">
+                            <div title="#">
+                                {!contador}
+                            </div>
+                        </td>
+                        <td data-label="Rut">
+                            <div title="{!persona.Doc_Identificacion_Pasajero__c}">{!persona.Doc_Identificacion_Pasajero__c}</div>
+                        </td>
+                        <td data-label="Nombre">
+                            <div title="{!persona.Nombre_Pasajero__r.Name}">{!persona.Nombre_Pasajero__r.Name}</div>
+                        </td>
+                        <td data-label="Butaca">
+                            <div title="{!persona.Numero__c}">{!persona.Numero__c}</div>
+                        </td>
+                        <td data-label="Traslado" class="valorDerecha" >
+                            <div title="$ {!persona.Valor_Pasajero_DR__c}">$ {!persona.Valor_Pasajero_DR__c}</div>
+                        </td>
+                        <td data-label="Tasa de Embarque" class="valorDerecha" >
+                            <div title="$ {!persona.Tasa_Desembarque__c + persona.Tasa_Embarque__c}">$ {!persona.Tasa_Desembarque__c + persona.Tasa_Embarque__c}</div>
+                        </td>
+                        <td data-label="Pasaje" class="valorDerecha" >
+                            <div title="$ {!persona.Valor_Detalle_Reserva__c}">$ {!persona.Valor_Detalle_Reserva__c}</div>
+                        </td>
+                        <td data-label="Subtotal" class="valorDerecha">
+                            <div title="$ {!persona.Valor_Detalle_Reserva__c}">
+                                <b>$ {!persona.Valor_Detalle_Reserva__c}</b>
+                            </div>
+                        </td>
+                    </tr>
+                    <apex:variable var="totPersona" value="{!totPersona + persona.Valor_Detalle_Reserva__c}" />
+                    <apex:variable var="contador" value="{!contador + 1}" />
+                    <apex:variable var="contadorTotal" value="{!contadorTotal + 1}" />
+                    </apex:repeat>
+                    <tr>
+                        <td colspan="6">&nbsp;</td>
+                        <td class="derecha">Total:</td>
+                        <td class="valorDerecha">
+                            <b>$ {!totPersona}</b>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        <apex:outputText escape="false" value="{!corteTabla}" rendered="{!if(contadorTotal >= 20, true, false) }"/>
+        <apex:variable var="contadorTotal" value="{!if(contadorTotal >= 20, contadorTotal-contadorTotal, contadorTotal+6) }" />
+        <apex:outputText escape="false" value="{!corteTabla}" rendered="{!if(contadorTotal >= 20, true, false) }"/>
+        <apex:variable var="contadorTotal" value="{!if(contadorTotal >= 20, contadorTotal-contadorTotal, contadorTotal+6) }" />
+               <tr>
+            <td width="100%" colspan="2" class="tablaBordes">
+                <table class="tablaDetalle" width="100%">
+                <thead>
+                    <tr>
+                        <td colspan="12">SIN ACOMODACIÓN:</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">
+                            <div title="#">#</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Rut">Rut</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Nombre">Nombre</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Butaca">Butaca</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Traslado">Traslado</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Tasa de Embarque">T/E</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Pasaje">Pasaje</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Subtotal">Subtotal</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:variable var="totPersona" value="{!0}" />
+                    <apex:variable var="contador" value="{!1}" />
+                    <apex:repeat value="{!rSinAcomodacion}" var="spersona">
+                    <tr class="{!IF(spersona.Parametro_Tarifa__c == 'false','tarifaError','')}">
+                        <td data-label="#" scope="row">
+                            <div title="#">
+                                {!contador}
+                            </div>
+                        </td>
+                        <td data-label="Rut">
+                            <div title="{!spersona.Doc_Identificacion_Pasajero__c}">{!spersona.Doc_Identificacion_Pasajero__c}</div>
+                        </td>
+                        <td data-label="Nombre">
+                            <div title="{!spersona.Nombre_Pasajero__r.Name}">{!spersona.Nombre_Pasajero__r.Name}</div>
+                        </td>
+                        <td data-label="Butaca">
+                            <div title="{!spersona.Numero__c}">{!spersona.Numero__c}</div>
+                        </td>
+                        <td data-label="Traslado" class="valorDerecha" >
+                            <div title="$ {!spersona.Valor_Pasajero_DR__c}">$ {!spersona.Valor_Pasajero_DR__c}</div>
+                        </td>
+                        <td data-label="Tasa de Embarque" class="valorDerecha" >
+                            <div title="$ {!spersona.Tasa_Desembarque__c + spersona.Tasa_Embarque__c}">$ {!spersona.Tasa_Desembarque__c + spersona.Tasa_Embarque__c}</div>
+                        </td>
+                        <td data-label="Pasaje" class="valorDerecha" >
+                            <div title="$ {!spersona.Valor_Detalle_Reserva__c}">$ {!spersona.Valor_Detalle_Reserva__c}</div>
+                        </td>
+                        <td data-label="Subtotal" class="valorDerecha">
+                            <div title="$ {!spersona.Valor_Detalle_Reserva__c}">
+                                <b>$ {!spersona.Valor_Detalle_Reserva__c}</b>
+                            </div>
+                        </td>
+                    </tr>
+                    <apex:variable var="totPersona" value="{!totPersona + spersona.Valor_Detalle_Reserva__c}" />
+                    <apex:variable var="contador" value="{!contador + 1}" />
+                    <apex:variable var="contadorTotal" value="{!contadorTotal + 1}" />
+                    </apex:repeat>
+                    <tr>
+                        <td colspan="6">&nbsp;</td>
+                        <td class="derecha">Total:</td>
+                        <td class="valorDerecha">
+                            <b>$ {!totPersona}</b>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="100%" colspan="2" class="tablaBordes">
+                <table class="tablaDetalle" width="100%">
+                <thead>
+                    <tr>
+                        <td colspan="12">VEHICULOS:</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">
+                            <div title="#">#</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Patente">Patente</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Tipo">Tipo</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Carro de Arrastre">C / A</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Portabicicleta">P / B</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Portaequipaje">P / E</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Traslado">Traslado</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Tasa de Embarque">T / E</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Pasaje">Pasaje</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Subtotal">Subtotal</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:variable var="totVehiculo" value="{!0}" />
+                    <apex:variable var="contador" value="{!1}" />
+                    <apex:repeat value="{!rVehiculos}" var="vehiculo">
+                    <tr class="{!IF(vehiculo.Parametro_Tarifa__c == 'false','tarifaError','')}">
+                        <td data-label="#" scope="row">
+                            <div title="#">
+                                {!contador}
+                            </div>
+                        </td>
+                        <td data-label="Patente">
+                            <div title="{!IF(vehiculo.Placa_Patente_Vehiculo__c!=null,vehiculo.Placa_Patente_Vehiculo__c,'No Tiene')}">{!IF(vehiculo.Placa_Patente_Vehiculo__c!=null,vehiculo.Placa_Patente_Vehiculo__c,'No Tiene')}</div>
+                        </td>
+                        <td data-label="Tipo">
+                            <div title="{!vehiculo.Tipo_de_Vehiculo__c}">{!vehiculo.Tipo_de_Vehiculo__c}</div>
+                        </td>
+                        <td data-label="Carro de Arrastre">
+                            <div title="{!IF(vehiculo.Carro_Arrastre__c!=false,'Si','No')}">{!IF(vehiculo.Carro_Arrastre__c!=false,'Si','No')}</div>
+                        </td>
+                        <td data-label="Portabicicleta">
+                            <div title="{!IF(vehiculo.Porta_Bicicleta__c!=false,'Si','No')}">{!IF(vehiculo.Porta_Bicicleta__c!=false,'Si','No')}</div>
+                        </td>
+                        <td data-label="Portaequipaje">
+                            <div title="{!IF(vehiculo.Porta_Equipaje__c!=false,'Si','No')}">{!IF(vehiculo.Porta_Equipaje__c!=false,'Si','No')}</div>
+                        </td>
+                        <td data-label="Traslado" class="valorDerecha" >
+                            <div title="$ {!vehiculo.Valor_ML_DR__c + vehiculo.Valor_Veh_culo_DR__c}">$ {!vehiculo.Valor_ML_DR__c + vehiculo.Valor_Veh_culo_DR__c}</div>
+                        </td>
+                        <td data-label="Tasa de Embarque" class="valorDerecha" >
+                            <div title="$ {!vehiculo.Tasa_Desembarque__c + vehiculo.Tasa_Embarque__c}">$ {!vehiculo.Tasa_Desembarque__c + vehiculo.Tasa_Embarque__c}</div>
+                        </td>
+                        <td data-label="Pasaje" class="valorDerecha" >
+                            <div title="$ {!vehiculo.Valor_Detalle_Reserva__c}">$ {!vehiculo.Valor_Detalle_Reserva__c}</div>
+                        </td>
+                        <td data-label="Subtotal" class="valorDerecha">
+                            <div title="$ {!vehiculo.Valor_Detalle_Reserva__c}">
+                                <b>$ {!vehiculo.Valor_Detalle_Reserva__c}</b>
+                            </div>
+                        </td>
+                    </tr>
+                    <apex:variable var="totVehiculo" value="{!totVehiculo + vehiculo.Valor_Detalle_Reserva__c}" />
+                    <apex:variable var="contador" value="{!contador + 1}" />
+                    <apex:variable var="contadorTotal" value="{!contadorTotal + 1}" />
+                    </apex:repeat>
+                    <tr>
+                        <td colspan="8">&nbsp;</td>
+                        <td class="derecha">Total:</td>
+                        <td class="valorDerecha">
+                            <b>$ {!totVehiculo}</b>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        <apex:outputText escape="false" value="{!corteTabla}" rendered="{!if(contadorTotal >= 20, true, false) }"/>
+        <apex:variable var="contadorTotal" value="{!if(contadorTotal >= 20, contadorTotal-contadorTotal, contadorTotal+6) }" />
+        <tr>
+            <td width="100%" colspan="2" class="tablaBordes">
+                <table class="tablaDetalle" width="100%">
+                <thead>
+                    <tr>
+                        <td colspan="12">CARGAS:</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" scope="col">
+                            <div title="Pallets">Pallets</div>
+                        </th>
+                        <th colspan="3" scope="col">
+                            <div title="Entrega">Entrega</div>
+                        </th>
+                        <th colspan="3" scope="col">
+                            <div title="Retira">Retira</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Traslado">Traslado</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Tasa de Embarque">T / E</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Pasaje">Pasaje</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Subtotal">Subtotal</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:variable var="totCarga" value="{!0}" />
+                    <apex:variable var="contador" value="{!1}" />
+                    <apex:repeat value="{!rCargas}" var="carga">
+                    <tr class="{!IF(carga.Parametro_Tarifa__c == 'false','tarifaError','')}">
+                        <td colspan="2" data-label="Pallets">
+                            <div title="{!carga.Capacidad_Comprometida__c}">{!carga.Capacidad_Comprometida__c}</div>
+                        </td>
+                        <td colspan="3" data-label="Entrega">
+                            <div title="{!carga.Persona_que_entrega__r.Identificacion__c} {!carga.Persona_que_entrega__r.Name}">{!carga.Persona_que_entrega__r.Identificacion__c} {!carga.Persona_que_entrega__r.Name}</div>
+                        </td>
+                        <td colspan="3" data-label="Retira">
+                            <div title="{!carga.Persona_que_retira__r.Identificacion__c} {!carga.Persona_que_retira__r.Name}">{!carga.Persona_que_retira__r.Identificacion__c} {!carga.Persona_que_retira__r.Name}</div>
+                        </td>
+                        <td data-label="Traslado" class="valorDerecha" >
+                            <div title="$ {!carga.Valor_Carga_DR__c}">$ {!carga.Valor_Carga_DR__c}</div>
+                        </td>
+                        <td data-label="Tasa de Embarque" class="valorDerecha" >
+                            <div title="$ {!carga.Tasa_Desembarque__c + carga.Tasa_Embarque__c}">$ {!carga.Tasa_Desembarque__c + carga.Tasa_Embarque__c}</div>
+                        </td>
+                        <td data-label="Pasaje" class="valorDerecha" >
+                            <div title="$ {!carga.Valor_Detalle_Reserva__c}">$ {!carga.Valor_Detalle_Reserva__c}</div>
+                        </td>
+                        <td data-label="Subtotal" class="valorDerecha" >
+                            <div title="$ {!carga.Valor_Detalle_Reserva__c}">$ {!carga.Valor_Detalle_Reserva__c}</div>
+                        </td>
+                    </tr>
+                    <apex:variable var="totCarga" value="{!totCarga + carga.Valor_Detalle_Reserva__c}" />
+                    <apex:variable var="contador" value="{!contador + 1}" />
+                    <apex:variable var="contadorTotal" value="{!contadorTotal + 1}" />
+                    </apex:repeat>
+                    <tr>
+                        <td colspan="10">&nbsp;</td>
+                        <td class="derecha">Total:</td>
+                        <td class="valorDerecha">
+                            <b>$ {!totCarga}</b>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        <apex:outputText escape="false" value="{!corteTabla}" rendered="{!if(contadorTotal >= 20, true, false) }"/>
+        <apex:variable var="contadorTotal" value="{!if(contadorTotal >= 20, contadorTotal-contadorTotal, contadorTotal+6) }" />
+        <tr>
+            <td width="100%" colspan="2" class="tablaBordes">
+                <table class="tablaDetalle" width="100%">
+                <thead>
+                    <tr>
+                        <td colspan="7">VENTA CRUZADA:</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">
+                            <div title="#">#</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Cantidad">Cantidad</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Materia">Materia</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Proveedor">Proveedor</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Lugar">Lugar</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Tipo">Tipo</div>
+                        </th>
+                        <th scope="col">
+                            <div title="Subtotal">Subtotal</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:variable var="totTransbordo" value="{!0}" />
+                    <apex:variable var="contador" value="{!1}" />
+                    <apex:repeat value="{!rTransbordos}" var="transbordo">
+                    <tr class="{!IF(transbordo.Parametro_Tarifa__c == 'false','tarifaError','')}">
+                        <td data-label="#" scope="row">
+                            <div title="#">
+                                {!contador}
+                            </div>
+                        </td>
+                        <td data-label="Cantidad">
+                            <div title="{!transbordo.Cantidad__c}">{!transbordo.Cantidad__c}</div>
+                        </td>
+                        <td data-label="Materia">
+                            <div title="{!transbordo.VCMateria__c}">{!transbordo.VCMateria__c}</div>
+                        </td>
+                        <td data-label="Proveedor">
+                            <div title="{!transbordo.VCProveedor__c}">{!transbordo.VCProveedor__c}</div>
+                        </td>
+                        <td data-label="Lugar">
+                            <div title="{!transbordo.VCLugar__c}">{!transbordo.VCLugar__c}</div>
+                        </td>
+                        <td data-label="Tipo">
+                            <div title="{!transbordo.VCTipo__c}">{!transbordo.VCTipo__c}</div>
+                        </td>
+                        <td data-label="Subtotal" class="valorDerecha">
+                            <div title="$ {!transbordo.VC_Valor_Bruto__c}">
+                                <b>$ {!transbordo.VC_Valor_Bruto__c}</b>
+                            </div>
+                        </td>
+                    </tr>
+                    <apex:variable var="totTransbordo" value="{!totTransbordo + transbordo.VC_Valor_Bruto__c}" />
+                    <apex:variable var="contador" value="{!contador + 1}" />
+                    <apex:variable var="contadorTotal" value="{!contadorTotal + 1}" />
+                    </apex:repeat>
+                    <tr>
+                        <td colspan="5">&nbsp;</td>
+                        <td class="derecha">Total:</td>
+                        <td class="valorDerecha">
+                            <b>$ {!totTransbordo}</b>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="70%" colspan="2" class="tablaBordes">
+                <div class="titulo" style="font-size: 20px;text-align: right;">
+                    TOTAL RESERVA: $ {!total}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="100%" colspan="2" class="tablaBordes">
+                <div class="titulo">INFORMACIÓN IMPORTANTE</div>
+            </td>
+        </tr>
+        <tr>
+            <td width="100%" colspan="2" class="tablaBordes">
+                <div class="disclaimer">
+                    El pago debe realizarse 24 horas antes de la fecha del viaje.<br/>
+                    Los valores pueden variar dependiendo de la disponibilidad de la embarcación y el momento de la compra.
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</apex:page>

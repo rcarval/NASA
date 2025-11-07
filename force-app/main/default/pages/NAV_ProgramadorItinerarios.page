@@ -1,0 +1,993 @@
+<!--**********************************************************************************
+Desarrollado por: Nectia
+Autor: Esteban Flores (EFR)
+Proyecto: Naviera Austral
+Descripción: Visualforce para controlar los itinerarios masivos
+---------------------------------------------------------------------------------
+No. Fecha                Autor                     Descripción
+------ ---------- ---------------------------------------------------------------
+1.0 31-08-2021            EFR                   Creación de la Página.
+***********************************************************************************-->
+<apex:page controller="NAV_ProgramadorItinerarios" standardStylesheets="false" showHeader="false" sidebar="false" docType="html">
+<html>
+    <head>
+        <title>Programador Masivo de Itinerarios</title>
+        <script src="{!URLFOR($Resource.jquery)}"></script>
+        <script src="{!URLFOR($Resource.jqueryui)}"></script>
+        <link href="{!URLFOR($Resource.jqueryui_css)}" rel="stylesheet" />
+        <style>
+            .fLeft{ 
+                float: left; 
+                width: 13%;
+                text-align:center;
+            }
+            .fLeft.slds-form-element__control {
+                margin: 0 auto !important;
+            }
+            .slds-scope .slds-form-element .slds-checkbox [type=checkbox] + .slds-checkbox_faux, .slds-scope .slds-form-element .slds-checkbox [type=checkbox] + .slds-checkbox--faux, .slds-scope .slds-form-element .slds-checkbox [type=checkbox] ~ .slds-checkbox_faux, .slds-scope .slds-form-element .slds-checkbox [type=checkbox] ~ .slds-checkbox--faux, .slds-scope .slds-form-element .slds-checkbox [type=checkbox] + .slds-checkbox__label .slds-checkbox_faux, .slds-scope .slds-form-element .slds-checkbox [type=checkbox] + .slds-checkbox__label .slds-checkbox--faux {
+                margin: 0 auto !important;
+            }
+        </style>
+        <script type="text/javascript">
+            jQuery(document).ready(function($) {
+                var dateFormat = "dd/mm/yy",
+                    from = $( "#desde" )
+                    .datepicker({
+                        defaultDate: "+1w",
+                        changeMonth: true,
+                        numberOfMonths: 3
+                    })
+                    .on( "change", function() {
+                        to.datepicker( "option", "minDate", getDate( this ) );
+                    }),
+                    to = $( "#hasta" ).datepicker({
+                        defaultDate: "+1w",
+                        changeMonth: true,
+                        numberOfMonths: 3
+                    })
+                    .on( "change", function() {
+                        from.datepicker( "option", "maxDate", getDate( this ) );
+                    });
+                    function getDate( element ) {
+                        var date;
+                        try {
+                            date = $.datepicker.parseDate( dateFormat, element.value );
+                        } catch( error ) {
+                            date = null;
+                        }
+                        return date;
+                    };
+                $("#aceptar").click(function(){
+                    $('#aceptar').prop('disabled', true);
+                    var error = 0;
+                    var dias = $('input[type="checkbox"][name="dias\\[\\]"]:checked').map(function() { return this.value; }).get();
+                    var desde = $("#desde").val();
+                    var hasta = $("#hasta").val();
+                    var horaLu = $("#horaLu").val();
+                    var minutosLu = $("#minutosLu").val();
+                    var tipoLu = $("#tipoLu").val();
+                    var horaMa = $("#horaMa").val();
+                    var minutosMa = $("#minutosMa").val();
+                    var tipoMa = $("#tipoMa").val();
+                    var horaMi = $("#horaMi").val();
+                    var minutosMi = $("#minutosMi").val();
+                    var tipoMi = $("#tipoMi").val();
+                    var horaJu = $("#horaJu").val();
+                    var minutosJu = $("#minutosJu").val();
+                    var tipoJu = $("#tipoJu").val();
+                    var horaVi = $("#horaVi").val();
+                    var minutosVi = $("#minutosVi").val();
+                    var tipoVi = $("#tipoVi").val();
+                    var horaSa = $("#horaSa").val();
+                    var minutosSa = $("#minutosSa").val();
+                    var tipoSa = $("#tipoSa").val();
+                    var horaDo = $("#horaDo").val();
+                    var minutosDo = $("#minutosDo").val();
+                    var tipoDo = $("#tipoDo").val();
+                    var ruta = $("#ruta").val();
+                    var nave = $("#nave").val();
+                    var web = $('input[type="checkbox"][name="web"]').is(':checked')?1:0;
+                    if(dias.length == 0){
+                        error = 1;
+                    }else if(desde == ''){
+                        error = 2;
+                    }else if(hasta == ''){
+                        error = 3;
+                    }else if(ruta == '0'){
+                        error = 4;
+                    }else if(nave == '0'){
+                        error = 5;
+                    }else if(dias.length > 0){
+                        for (var i = 0; i < dias.length; i++) {
+                            switch(dias[i]) {
+                                case '0':
+                                    if(tipoLu == '0'){
+                                        error = 6;
+                                    }
+                                    break;
+                                case '1':
+                                    if(tipoMa == '0'){
+                                        error = 7;
+                                    }
+                                    break;
+                                case '2':
+                                    if(tipoMi == '0'){
+                                        error = 8;
+                                    }
+                                    break;
+                                case '3':
+                                    if(tipoJu == '0'){
+                                        error = 9;
+                                    }
+                                    break;
+                                case '4':
+                                    if(tipoVi == '0'){
+                                        error = 10;
+                                    }
+                                    break;
+                                case '5':
+                                    if(tipoSa == '0'){
+                                        error = 11;
+                                    }
+                                    break;
+                                case '6':
+                                    if(tipoDo == '0'){
+                                        error = 12;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    console.log('Haz apretado Aceptar');
+                    if(error == 0){
+                        //Send and Save
+                        $.ajax({
+                            type: "POST",
+                            url: "/apex/NAV_ProgramadorItinerariosGuardar?core.apexpages.devmode.url=0&dias=["+dias+"]&desde="+desde+"&hasta="+hasta+"&horaLu="+horaLu+"&minutosLu="+minutosLu+"&horaMa="+horaMa+"&minutosMa="+minutosMa+"&horaMi="+horaMi+"&minutosMi="+minutosMi+"&horaJu="+horaJu+"&minutosJu="+minutosJu+"&horaVi="+horaVi+"&minutosVi="+minutosVi+"&horaSa="+horaSa+"&minutosSa="+minutosSa+"&horaDo="+horaDo+"&minutosDo="+minutosDo+"&ruta="+ruta+"&nave="+nave+"&tipoLu="+tipoLu+"&tipoMa="+tipoMa+"&tipoMi="+tipoMi+"&tipoJu="+tipoJu+"&tipoVi="+tipoVi+"&tipoSa="+tipoSa+"&tipoDo="+tipoDo+"&web="+web,
+                            dataType: "jsonp"
+                        }).complete(function () {
+                            console.log('Terminado');
+                            window.location="https://navieraaustral.lightning.force.com/lightning/o/Programacion_de_Itinerario__c/list?filterName=Recent";
+                        });
+                    }else{
+                        $('#aceptar').prop('disabled', false);
+                        if(error == 1){
+                            alert('Debe seleccionar al menos un dia');
+                        }else if(error == 2){
+                            alert('Debe ingresar la fecha de inicio');
+                        }else if(error == 3){
+                            alert('Debe ingresar la fecha de término');
+                        }else if(error == 4){
+                            alert('Debe seleccionar una ruta');
+                        }else if(error == 5){
+                            alert('Debe seleccionar una nave');
+                        }else if(error >= 6 && error <= 12){
+                            alert('Debe elegir el tipo de itinerario para el día seleccionado');
+                        }
+                    }
+                });
+                $("#cancelar").click(function(){
+                    console.log('Haz apretado Cancelar');
+                    window.location="https://navieraaustral.lightning.force.com/lightning/o/Programacion_de_Itinerario__c/list?filterName=Recent";
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="slds-page-header slds-align_absolute-center">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title slds-truncate" title="Programador Masivo">Programador Masivo</span>
+                                    </h1>
+                                </div>
+                            </div>
+                            <p class="slds-page-header__name-meta">Generador de Itinerarios</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-page-header__row slds-page-header__row_gutters slds-align_absolute-center" style="width:70%">
+            <div class="slds-scope" style="width:60%; margin: 0 auto;">
+                <table>
+                <tr>
+                    <td rowspan="26" width="1%">&nbsp;</td>
+                    <td width="23%">&nbsp;</td>
+                    <td rowspan="26" width="1%">&nbsp;</td>
+                    <td width="74%">&nbsp;</td>
+                    <td rowspan="26" width="1%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label" for="desde">Fechas</label></td>
+                    <td>
+                        <table width="70%">
+                            <tr>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label for="desde">Desde</label></td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="35%"><div class="slds-form-element"><input id="desde" name="desde" type="text" class="slds-input" autocomplete="off"/></div></td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label for="hasta">Hasta</label></td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="35%"><div class="slds-form-element"><input id="hasta" name="hasta" type="text" class="slds-input" autocomplete="off"/></div></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label" for="ruta">Ruta</label></td>
+                    <td>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container" style="width:50% !important;">
+                                    <select class="slds-select" id="ruta">
+                                        <option value="0">Seleccionar...</option>
+                                        <apex:repeat value="{!rutas}" var="ruta">
+                                            <option value="{!ruta.Id}">{!ruta.Name}</option>
+                                        </apex:repeat>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label" for="nave">Nave</label></td>
+                    <td>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container" style="width:50% !important;">
+                                    <select class="slds-select" id="nave">
+                                        <option value="0">Seleccionar…</option>
+                                        <apex:repeat value="{!naves}" var="nave">
+                                            <option value="{!nave.Id}">{!nave.Name}</option>
+                                        </apex:repeat>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label" for="web">Canal Web</label></td>
+                    <td>
+                        <div class="slds-form-element">
+                            <div style="float: left !important;">
+                                <div class="slds-form-element__control">
+                                    <span class="slds-checkbox slds-checkbox_standalone">
+                                        <input id="web" name="web" type="checkbox" value="1" />
+                                        <span class="slds-checkbox_faux"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label">Lunes</label></td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td width="10%">
+                                    <div class="slds-form-element">
+                                        <div class="fLeft">
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-checkbox slds-checkbox_standalone">
+                                                    <input id="dias" name="dias[]" type="checkbox" value="0" />
+                                                    <span class="slds-checkbox_faux"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="5%" style="text-align: right !important;"><label class="slds-form-element__label" for="horaLu">Hora</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="horaLu">
+                                                    <option value="00">00</option>
+                                                    <option value="01">01</option>
+                                                    <option value="02">02</option>
+                                                    <option value="03">03</option>
+                                                    <option value="04">04</option>
+                                                    <option value="05">05</option>
+                                                    <option value="06">06</option>
+                                                    <option value="07">07</option>
+                                                    <option value="08">08</option>
+                                                    <option value="09">09</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                    <option value="13">13</option>
+                                                    <option value="14">14</option>
+                                                    <option value="15">15</option>
+                                                    <option value="16">16</option>
+                                                    <option value="17">17</option>
+                                                    <option value="18">18</option>
+                                                    <option value="19">19</option>
+                                                    <option value="20">20</option>
+                                                    <option value="21">21</option>
+                                                    <option value="22">22</option>
+                                                    <option value="23">23</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="minutosLu">Minutos</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="minutosLu">
+                                                    <option value="00">00</option>
+                                                    <option value="05">05</option>
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="20">20</option>
+                                                    <option value="25">25</option>
+                                                    <option value="30">30</option>
+                                                    <option value="35">35</option>
+                                                    <option value="40">40</option>
+                                                    <option value="45">45</option>
+                                                    <option value="50">50</option>
+                                                    <option value="55">55</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="tipoLu">Tipo</label></td>
+                                <td width="32%">
+                                    <div class="slds-form-element" style="float: left; ">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="tipoLu">
+                                                    <option value="0">Seleccionar…</option>
+                                                    <apex:repeat value="{!tipos}" var="tipo">
+                                                        <option value="{!tipo}">{!tipo}</option>
+                                                    </apex:repeat>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label">Martes</label></td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td width="10%">
+                                    <div class="slds-form-element">
+                                        <div class="fLeft">
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-checkbox slds-checkbox_standalone">
+                                                    <input id="dias" name="dias[]" type="checkbox" value="1" />
+                                                    <span class="slds-checkbox_faux"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="5%" style="text-align: right !important;"><label class="slds-form-element__label" for="horaMa">Hora</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="horaMa">
+                                                    <option value="00">00</option>
+                                                    <option value="01">01</option>
+                                                    <option value="02">02</option>
+                                                    <option value="03">03</option>
+                                                    <option value="04">04</option>
+                                                    <option value="05">05</option>
+                                                    <option value="06">06</option>
+                                                    <option value="07">07</option>
+                                                    <option value="08">08</option>
+                                                    <option value="09">09</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                    <option value="13">13</option>
+                                                    <option value="14">14</option>
+                                                    <option value="15">15</option>
+                                                    <option value="16">16</option>
+                                                    <option value="17">17</option>
+                                                    <option value="18">18</option>
+                                                    <option value="19">19</option>
+                                                    <option value="20">20</option>
+                                                    <option value="21">21</option>
+                                                    <option value="22">22</option>
+                                                    <option value="23">23</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="minutosMa">Minutos</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="minutosMa">
+                                                    <option value="00">00</option>
+                                                    <option value="05">05</option>
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="20">20</option>
+                                                    <option value="25">25</option>
+                                                    <option value="30">30</option>
+                                                    <option value="35">35</option>
+                                                    <option value="40">40</option>
+                                                    <option value="45">45</option>
+                                                    <option value="50">50</option>
+                                                    <option value="55">55</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="tipoMa">Tipo</label></td>
+                                <td width="32%">
+                                    <div class="slds-form-element" style="float: left; ">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="tipoMa">
+                                                    <option value="0">Seleccionar…</option>
+                                                    <apex:repeat value="{!tipos}" var="tipo">
+                                                        <option value="{!tipo}">{!tipo}</option>
+                                                    </apex:repeat>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label">Miércoles</label></td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td width="10%">
+                                    <div class="slds-form-element">
+                                        <div class="fLeft">
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-checkbox slds-checkbox_standalone">
+                                                    <input id="dias" name="dias[]" type="checkbox" value="2" />
+                                                    <span class="slds-checkbox_faux"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="5%" style="text-align: right !important;"><label class="slds-form-element__label" for="horaMi">Hora</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="horaMi">
+                                                    <option value="00">00</option>
+                                                    <option value="01">01</option>
+                                                    <option value="02">02</option>
+                                                    <option value="03">03</option>
+                                                    <option value="04">04</option>
+                                                    <option value="05">05</option>
+                                                    <option value="06">06</option>
+                                                    <option value="07">07</option>
+                                                    <option value="08">08</option>
+                                                    <option value="09">09</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                    <option value="13">13</option>
+                                                    <option value="14">14</option>
+                                                    <option value="15">15</option>
+                                                    <option value="16">16</option>
+                                                    <option value="17">17</option>
+                                                    <option value="18">18</option>
+                                                    <option value="19">19</option>
+                                                    <option value="20">20</option>
+                                                    <option value="21">21</option>
+                                                    <option value="22">22</option>
+                                                    <option value="23">23</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="minutosMi">Minutos</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="minutosMi">
+                                                    <option value="00">00</option>
+                                                    <option value="05">05</option>
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="20">20</option>
+                                                    <option value="25">25</option>
+                                                    <option value="30">30</option>
+                                                    <option value="35">35</option>
+                                                    <option value="40">40</option>
+                                                    <option value="45">45</option>
+                                                    <option value="50">50</option>
+                                                    <option value="55">55</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="tipoMi">Tipo</label></td>
+                                <td width="32%">
+                                    <div class="slds-form-element" style="float: left; ">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="tipoMi">
+                                                    <option value="0">Seleccionar…</option>
+                                                    <apex:repeat value="{!tipos}" var="tipo">
+                                                        <option value="{!tipo}">{!tipo}</option>
+                                                    </apex:repeat>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label">Jueves</label></td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td width="10%">
+                                    <div class="slds-form-element">
+                                        <div class="fLeft">
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-checkbox slds-checkbox_standalone">
+                                                    <input id="dias" name="dias[]" type="checkbox" value="3" />
+                                                    <span class="slds-checkbox_faux"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="5%" style="text-align: right !important;"><label class="slds-form-element__label" for="horaJu">Hora</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="horaJu">
+                                                    <option value="00">00</option>
+                                                    <option value="01">01</option>
+                                                    <option value="02">02</option>
+                                                    <option value="03">03</option>
+                                                    <option value="04">04</option>
+                                                    <option value="05">05</option>
+                                                    <option value="06">06</option>
+                                                    <option value="07">07</option>
+                                                    <option value="08">08</option>
+                                                    <option value="09">09</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                    <option value="13">13</option>
+                                                    <option value="14">14</option>
+                                                    <option value="15">15</option>
+                                                    <option value="16">16</option>
+                                                    <option value="17">17</option>
+                                                    <option value="18">18</option>
+                                                    <option value="19">19</option>
+                                                    <option value="20">20</option>
+                                                    <option value="21">21</option>
+                                                    <option value="22">22</option>
+                                                    <option value="23">23</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="minutosJu">Minutos</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="minutosJu">
+                                                    <option value="00">00</option>
+                                                    <option value="05">05</option>
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="20">20</option>
+                                                    <option value="25">25</option>
+                                                    <option value="30">30</option>
+                                                    <option value="35">35</option>
+                                                    <option value="40">40</option>
+                                                    <option value="45">45</option>
+                                                    <option value="50">50</option>
+                                                    <option value="55">55</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="tipoJu">Tipo</label></td>
+                                <td width="32%">
+                                    <div class="slds-form-element" style="float: left; ">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="tipoJu">
+                                                    <option value="0">Seleccionar…</option>
+                                                    <apex:repeat value="{!tipos}" var="tipo">
+                                                        <option value="{!tipo}">{!tipo}</option>
+                                                    </apex:repeat>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label">Viernes</label></td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td width="10%">
+                                    <div class="slds-form-element">
+                                        <div class="fLeft">
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-checkbox slds-checkbox_standalone">
+                                                    <input id="dias" name="dias[]" type="checkbox" value="4" />
+                                                    <span class="slds-checkbox_faux"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="5%" style="text-align: right !important;"><label class="slds-form-element__label" for="horaVi">Hora</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="horaVi">
+                                                    <option value="00">00</option>
+                                                    <option value="01">01</option>
+                                                    <option value="02">02</option>
+                                                    <option value="03">03</option>
+                                                    <option value="04">04</option>
+                                                    <option value="05">05</option>
+                                                    <option value="06">06</option>
+                                                    <option value="07">07</option>
+                                                    <option value="08">08</option>
+                                                    <option value="09">09</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                    <option value="13">13</option>
+                                                    <option value="14">14</option>
+                                                    <option value="15">15</option>
+                                                    <option value="16">16</option>
+                                                    <option value="17">17</option>
+                                                    <option value="18">18</option>
+                                                    <option value="19">19</option>
+                                                    <option value="20">20</option>
+                                                    <option value="21">21</option>
+                                                    <option value="22">22</option>
+                                                    <option value="23">23</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="minutosVi">Minutos</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="minutosVi">
+                                                    <option value="00">00</option>
+                                                    <option value="05">05</option>
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="20">20</option>
+                                                    <option value="25">25</option>
+                                                    <option value="30">30</option>
+                                                    <option value="35">35</option>
+                                                    <option value="40">40</option>
+                                                    <option value="45">45</option>
+                                                    <option value="50">50</option>
+                                                    <option value="55">55</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="tipoVi">Tipo</label></td>
+                                <td width="32%">
+                                    <div class="slds-form-element" style="float: left; ">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="tipoVi">
+                                                    <option value="0">Seleccionar…</option>
+                                                    <apex:repeat value="{!tipos}" var="tipo">
+                                                        <option value="{!tipo}">{!tipo}</option>
+                                                    </apex:repeat>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label">Sábado</label></td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td width="10%">
+                                    <div class="slds-form-element">
+                                        <div class="fLeft">
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-checkbox slds-checkbox_standalone">
+                                                    <input id="dias" name="dias[]" type="checkbox" value="5" />
+                                                    <span class="slds-checkbox_faux"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="5%" style="text-align: right !important;"><label class="slds-form-element__label" for="horaSa">Hora</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="horaSa">
+                                                    <option value="00">00</option>
+                                                    <option value="01">01</option>
+                                                    <option value="02">02</option>
+                                                    <option value="03">03</option>
+                                                    <option value="04">04</option>
+                                                    <option value="05">05</option>
+                                                    <option value="06">06</option>
+                                                    <option value="07">07</option>
+                                                    <option value="08">08</option>
+                                                    <option value="09">09</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                    <option value="13">13</option>
+                                                    <option value="14">14</option>
+                                                    <option value="15">15</option>
+                                                    <option value="16">16</option>
+                                                    <option value="17">17</option>
+                                                    <option value="18">18</option>
+                                                    <option value="19">19</option>
+                                                    <option value="20">20</option>
+                                                    <option value="21">21</option>
+                                                    <option value="22">22</option>
+                                                    <option value="23">23</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="minutosSa">Minutos</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="minutosSa">
+                                                    <option value="00">00</option>
+                                                    <option value="05">05</option>
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="20">20</option>
+                                                    <option value="25">25</option>
+                                                    <option value="30">30</option>
+                                                    <option value="35">35</option>
+                                                    <option value="40">40</option>
+                                                    <option value="45">45</option>
+                                                    <option value="50">50</option>
+                                                    <option value="55">55</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="tipoSa">Tipo</label></td>
+                                <td width="32%">
+                                    <div class="slds-form-element" style="float: left; ">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="tipoSa">
+                                                    <option value="0">Seleccionar…</option>
+                                                    <apex:repeat value="{!tipos}" var="tipo">
+                                                        <option value="{!tipo}">{!tipo}</option>
+                                                    </apex:repeat>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><label class="slds-form-element__label">Domingo</label></td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td width="10%">
+                                    <div class="slds-form-element">
+                                        <div class="fLeft">
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-checkbox slds-checkbox_standalone">
+                                                    <input id="dias" name="dias[]" type="checkbox" value="6" />
+                                                    <span class="slds-checkbox_faux"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="5%" style="text-align: right !important;"><label class="slds-form-element__label" for="horaDo">Hora</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="horaDo">
+                                                    <option value="00">00</option>
+                                                    <option value="01">01</option>
+                                                    <option value="02">02</option>
+                                                    <option value="03">03</option>
+                                                    <option value="04">04</option>
+                                                    <option value="05">05</option>
+                                                    <option value="06">06</option>
+                                                    <option value="07">07</option>
+                                                    <option value="08">08</option>
+                                                    <option value="09">09</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                    <option value="13">13</option>
+                                                    <option value="14">14</option>
+                                                    <option value="15">15</option>
+                                                    <option value="16">16</option>
+                                                    <option value="17">17</option>
+                                                    <option value="18">18</option>
+                                                    <option value="19">19</option>
+                                                    <option value="20">20</option>
+                                                    <option value="21">21</option>
+                                                    <option value="22">22</option>
+                                                    <option value="23">23</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="minutosDo">Minutos</label></td>
+                                <td width="15%">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="minutosDo">
+                                                    <option value="00">00</option>
+                                                    <option value="05">05</option>
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="20">20</option>
+                                                    <option value="25">25</option>
+                                                    <option value="30">30</option>
+                                                    <option value="35">35</option>
+                                                    <option value="40">40</option>
+                                                    <option value="45">45</option>
+                                                    <option value="50">50</option>
+                                                    <option value="55">55</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="1%">&nbsp;</td>
+                                <td width="10%" style="text-align: right !important;"><label class="slds-form-element__label" for="tipoDo">Tipo</label></td>
+                                <td width="32%">
+                                    <div class="slds-form-element" style="float: left; ">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select class="slds-select" id="tipoDo">
+                                                    <option value="0">Seleccionar…</option>
+                                                    <apex:repeat value="{!tipos}" var="tipo">
+                                                        <option value="{!tipo}">{!tipo}</option>
+                                                    </apex:repeat>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                        <td colspan="2">&nbsp;</td>
+                </tr>
+                </table>
+            </div>
+            <div class="slds-docked-form-footer">
+                <button type="button" class="slds-button slds-button_neutral" id="cancelar">Cancelar</button>
+                <button type="button" class="slds-button slds-button_brand" id="aceptar">Aceptar</button>
+            </div>
+        </div>
+    </body>
+</html>
+<apex:slds />
+</apex:page>

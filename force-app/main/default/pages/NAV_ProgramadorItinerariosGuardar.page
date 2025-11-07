@@ -1,0 +1,11 @@
+<!--**********************************************************************************
+Desarrollado por: Nectia
+Autor: Esteban Flores (EFR)
+Proyecto: Naviera Austral
+Descripción: Visualforce para guardar los itinerarios masivos
+---------------------------------------------------------------------------------
+No. Fecha                Autor                     Descripción
+------ ---------- ---------------------------------------------------------------
+1.0 31-08-2021            EFR                   Creación de la Página.
+***********************************************************************************-->
+<apex:page controller="NAV_ProgramadorItinerarios" contentType="application/x-JavaScript; charset=utf-8" showHeader="false" standardStylesheets="false" sidebar="false" action="{!agregarItinerario}">{!json}</apex:page>

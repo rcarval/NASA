@@ -1,0 +1,394 @@
+<!--**********************************************************************************
+Desarrollado por: Nectia
+Autor: Esteban Flores (EFR)
+Proyecto: Naviera Austral
+Descripción: Visualforce para resumen de sección de reserva
+---------------------------------------------------------------------------------
+No. Fecha                Autor                     Descripción
+------ ---------- ---------------------------------------------------------------
+1.0 11-01-2022            EFR                   Creación de la Página.
+***********************************************************************************-->
+<apex:page standardController="Reserva__c" extensions="NAV_ResumenVFController" standardStylesheets="false" showHeader="false" sidebar="false" docType="html" >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head>
+        <title>Resumen</title>
+        <style>
+            .tarifaError{
+                color: red;
+                font-style: italic;
+            }
+        </style>
+    </head>
+    <body>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Tabla Resumen">
+            <thead>
+                <tr>
+                    <td colspan="12">PERSONAS:</td>
+                </tr>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="#">#</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Rut">Rut</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Nombre">Nombre</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Butaca">Butaca</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Conductor">Conductor</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Estudiante">Estudiante</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Residente">Residente</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Discapacitado">Discapacitado</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Traslado">Traslado</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Tasa de Embarque">T/E</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Pasaje">Pasaje</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Subtotal">Subtotal</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:variable var="totPersona" value="{!0}" />
+                <apex:variable var="contador" value="{!1}" />
+                <apex:repeat value="{!rPersonas}" var="persona">
+                <tr class="{!IF(persona.Parametro_Tarifa__c == 'false','slds-hint-parent tarifaError','slds-hint-parent')}">
+                    <th data-label="#" scope="row">
+                        <div class="slds-truncate" title="#">
+                            <a href="#" tabindex="-1">{!contador}</a>
+                        </div>
+                    </th>
+                    <td data-label="Rut">
+                        <div class="slds-truncate" title="{!persona.Doc_Identificacion_Pasajero__c}">{!persona.Doc_Identificacion_Pasajero__c}</div>
+                    </td>
+                    <td data-label="Nombre">
+                        <div class="slds-truncate" title="{!persona.Nombre_Pasajero__r.Name}">{!persona.Nombre_Pasajero__r.Name}</div>
+                    </td>
+                    <td data-label="Butaca">
+                        <div class="slds-truncate" title="{!persona.Numero__c}">{!persona.Numero__c}</div>
+                    </td>
+                    <td data-label="Conductor">
+                        <div class="slds-truncate" title="{!IF(persona.Conductor__c==true,'Si','No')}">{!IF(persona.Conductor__c==true,'Si','No')}</div>
+                    </td>
+                    <td data-label="Estudiante">
+                        <div class="slds-truncate" title="{!IF(persona.Estudiante__c==true,'Si','No')}">{!IF(persona.Estudiante__c==true,'Si','No')}</div>
+                    </td>
+                    <td data-label="Residente">
+                        <div class="slds-truncate" title="{!IF(persona.Residente__c==true,'Si','No')}">{!IF(persona.Residente__c==true,'Si','No')}</div>
+                    </td>
+                    <td data-label="Discapacitado">
+                        <div class="slds-truncate" title="{!IF(persona.Nombre_Pasajero__r.Discapacidad__pc==true,'Si','No')}">{!IF(persona.Nombre_Pasajero__r.Discapacidad__pc==true,'Si','No')}</div>
+                    </td>
+                    <td data-label="Traslado">
+                        <div class="slds-truncate" title="$ {!persona.Valor_Pasajero_DR__c}">$ {!persona.Valor_Pasajero_DR__c}</div>
+                    </td>
+                    <td data-label="Tasa de Embarque">
+                        <div class="slds-truncate" title="$ {!persona.Tasa_Desembarque__c + persona.Tasa_Embarque__c}">$ {!persona.Tasa_Desembarque__c + persona.Tasa_Embarque__c}</div>
+                    </td>
+                    <td data-label="Pasaje">
+                        <div class="slds-truncate" title="$ {!persona.Valor_Detalle_Reserva__c}">$ {!persona.Valor_Detalle_Reserva__c}</div>
+                    </td>
+                    <td data-label="Subtotal">
+                        <div class="slds-truncate" title="$ {!persona.Valor_Detalle_Reserva__c}">
+                            <b>$ {!persona.Valor_Detalle_Reserva__c}</b>
+                        </div>
+                    </td>
+                </tr>
+                <apex:variable var="totPersona" value="{!totPersona + persona.Valor_Detalle_Reserva__c}" />
+                <apex:variable var="contador" value="{!contador + 1}" />
+                </apex:repeat>
+                <tr>
+                    <td colspan="10">&nbsp;</td>
+                    <td>Total:</td>
+                    <td>
+                        <b>$ {!totPersona}</b>
+                    </td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <td colspan="12">SIN ACOMODACION:</td>
+                </tr>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="#">#</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Rut">Rut</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Nombre">Nombre</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Butaca">Butaca</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Conductor">Conductor</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Estudiante">Estudiante</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Residente">Residente</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Discapacitado">Discapacitado</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Traslado">Traslado</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Tasa de Embarque">T/E</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Pasaje">Pasaje</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Subtotal">Subtotal</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:variable var="totSinAcomodacion" value="{!0}" />
+                <apex:variable var="contador" value="{!1}" />
+                <apex:repeat value="{!rSinAcomodacion}" var="sinAcomodacion">
+                <tr class="{!IF(sinAcomodacion.Parametro_Tarifa__c == 'false','slds-hint-parent tarifaError','slds-hint-parent')}">
+                    <th data-label="#" scope="row">
+                        <div class="slds-truncate" title="#">
+                            <a href="#" tabindex="-1">{!contador}</a>
+                        </div>
+                    </th>
+                    <td data-label="Rut">
+                        <div class="slds-truncate" title="{!sinAcomodacion.Doc_Identificacion_Pasajero__c}">{!sinAcomodacion.Doc_Identificacion_Pasajero__c}</div>
+                    </td>
+                    <td data-label="Nombre">
+                        <div class="slds-truncate" title="{!sinAcomodacion.Nombre_Pasajero__r.Name}">{!sinAcomodacion.Nombre_Pasajero__r.Name}</div>
+                    </td>
+                    <td data-label="Butaca">
+                        <div class="slds-truncate" title="{!sinAcomodacion.Numero__c}">{!sinAcomodacion.Numero__c}</div>
+                    </td>
+                    <td data-label="Conductor">
+                        <div class="slds-truncate" title="{!IF(sinAcomodacion.Conductor__c==true,'Si','No')}">{!IF(sinAcomodacion.Conductor__c==true,'Si','No')}</div>
+                    </td>
+                    <td data-label="Estudiante">
+                        <div class="slds-truncate" title="{!IF(sinAcomodacion.Estudiante__c==true,'Si','No')}">{!IF(sinAcomodacion.Estudiante__c==true,'Si','No')}</div>
+                    </td>
+                    <td data-label="Residente">
+                        <div class="slds-truncate" title="{!IF(sinAcomodacion.Residente__c==true,'Si','No')}">{!IF(sinAcomodacion.Residente__c==true,'Si','No')}</div>
+                    </td>
+                    <td data-label="Discapacitado">
+                        <div class="slds-truncate" title="{!IF(sinAcomodacion.Nombre_Pasajero__r.Discapacidad__pc==true,'Si','No')}">{!IF(sinAcomodacion.Nombre_Pasajero__r.Discapacidad__pc==true,'Si','No')}</div>
+                    </td>
+                    <td data-label="Traslado">
+                        <div class="slds-truncate" title="$ {!sinAcomodacion.Valor_Pasajero_DR__c}">$ {!sinAcomodacion.Valor_Pasajero_DR__c}</div>
+                    </td>
+                    <td data-label="Tasa de Embarque">
+                        <div class="slds-truncate" title="$ {!sinAcomodacion.Tasa_Desembarque__c + sinAcomodacion.Tasa_Embarque__c}">$ {!sinAcomodacion.Tasa_Desembarque__c + sinAcomodacion.Tasa_Embarque__c}</div>
+                    </td>
+                    <td data-label="Pasaje">
+                        <div class="slds-truncate" title="$ {!sinAcomodacion.Valor_Detalle_Reserva__c}">$ {!sinAcomodacion.Valor_Detalle_Reserva__c}</div>
+                    </td>
+                    <td data-label="Subtotal">
+                        <div class="slds-truncate" title="$ {!sinAcomodacion.Valor_Detalle_Reserva__c}">
+                            <b>$ {!sinAcomodacion.Valor_Detalle_Reserva__c}</b>
+                        </div>
+                    </td>
+                </tr>
+                <apex:variable var="totSinAcomodacion" value="{!totSinAcomodacion + sinAcomodacion.Valor_Detalle_Reserva__c}" />
+                <apex:variable var="contador" value="{!contador + 1}" />
+                </apex:repeat>
+                <tr>
+                    <td colspan="10">&nbsp;</td>
+                    <td>Total:</td>
+                    <td>
+                        <b>$ {!totSinAcomodacion}</b>
+                    </td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <td colspan="12">VEHICULOS:</td>
+                </tr>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="#">#</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Patente">Patente</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Tipo">Tipo</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Categoría">Categoría</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Carro de Arrastre">C / A</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Portabicicleta">P / B</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Portaequipaje">P / E</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Metros">Metros</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Traslado">Traslado</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Tasa de Embarque">T / E</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Pasaje">Pasaje</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Subtotal">Subtotal</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:variable var="totVehiculo" value="{!0}" />
+                <apex:variable var="contador" value="{!1}" />
+                <apex:repeat value="{!rVehiculos}" var="vehiculo">
+                <tr class="{!IF(vehiculo.Parametro_Tarifa__c == 'false','slds-hint-parent tarifaError','slds-hint-parent')}">
+                    <th data-label="#" scope="row">
+                        <div class="slds-truncate" title="#">
+                            <a href="#" tabindex="-1">{!contador}</a>
+                        </div>
+                    </th>
+                    <td data-label="Patente">
+                        <div class="slds-truncate" title="{!IF(vehiculo.Placa_Patente_Vehiculo__c!=null,vehiculo.Placa_Patente_Vehiculo__c,'No Tiene')}">{!IF(vehiculo.Placa_Patente_Vehiculo__c!=null,vehiculo.Placa_Patente_Vehiculo__c,'No Tiene')}</div>
+                    </td>
+                    <td data-label="Tipo">
+                        <div class="slds-truncate" title="{!vehiculo.Tipo_de_Vehiculo__c}">{!vehiculo.Tipo_de_Vehiculo__c}</div>
+                    </td>
+                    <td data-label="Categoría">
+                        <div class="slds-truncate" title="{!vehiculo.Categoria_de_Vehiculo__c}">{!vehiculo.Categoria_de_Vehiculo__c}</div>
+                    </td>
+                    <td data-label="Carro de Arrastre">
+                        <div class="slds-truncate" title="{!IF(vehiculo.Carro_Arrastre__c!=false,'Si','No')}">{!IF(vehiculo.Carro_Arrastre__c!=false,'Si','No')}</div>
+                    </td>
+                    <td data-label="Portabicicleta">
+                        <div class="slds-truncate" title="{!IF(vehiculo.Porta_Bicicleta__c!=false,'Si','No')}">{!IF(vehiculo.Porta_Bicicleta__c!=false,'Si','No')}</div>
+                    </td>
+                    <td data-label="Portaequipaje">
+                        <div class="slds-truncate" title="{!IF(vehiculo.Porta_Equipaje__c!=false,'Si','No')}">{!IF(vehiculo.Porta_Equipaje__c!=false,'Si','No')}</div>
+                    </td>
+                    <td data-label="Metros">
+                        <div class="slds-truncate" title="{!IF(vehiculo.Capacidad_Comprometida__c!=null,vehiculo.Capacidad_Comprometida__c,'0')}">{!IF(vehiculo.Capacidad_Comprometida__c!=null,vehiculo.Capacidad_Comprometida__c,'0')}</div>
+                    </td>
+                    <td data-label="Traslado">
+                        <div class="slds-truncate" title="$ {!vehiculo.Valor_ML_DR__c + vehiculo.Valor_Veh_culo_DR__c}">$ {!vehiculo.Valor_ML_DR__c + vehiculo.Valor_Veh_culo_DR__c}</div>
+                    </td>
+                    <td data-label="Tasa de Embarque">
+                        <div class="slds-truncate" title="$ {!vehiculo.Tasa_Desembarque__c + vehiculo.Tasa_Embarque__c}">$ {!vehiculo.Tasa_Desembarque__c + vehiculo.Tasa_Embarque__c}</div>
+                    </td>
+                    <td data-label="Pasaje">
+                        <div class="slds-truncate" title="$ {!vehiculo.Valor_Detalle_Reserva__c}">$ {!vehiculo.Valor_Detalle_Reserva__c}</div>
+                    </td>
+                    <td data-label="Subtotal">
+                        <div class="slds-truncate" title="$ {!vehiculo.Valor_Detalle_Reserva__c}">
+                            <b>$ {!vehiculo.Valor_Detalle_Reserva__c}</b>
+                        </div>
+                    </td>
+                </tr>
+                <apex:variable var="totVehiculo" value="{!totVehiculo + vehiculo.Valor_Detalle_Reserva__c}" />
+                <apex:variable var="contador" value="{!contador + 1}" />
+                </apex:repeat>
+                <tr>
+                    <td colspan="10">&nbsp;</td>
+                    <td>Total:</td>
+                    <td>
+                        <b>$ {!totVehiculo}</b>
+                    </td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <td colspan="12">CARGAS:</td>
+                </tr>
+                <tr class="slds-line-height_reset">
+                    <th colspan="2" class="" scope="col">
+                        <div class="slds-truncate" title="Pallets">Pallets</div>
+                    </th>
+                    <th colspan="3" class="" scope="col">
+                        <div class="slds-truncate" title="Entrega">Entrega</div>
+                    </th>
+                    <th colspan="3" class="" scope="col">
+                        <div class="slds-truncate" title="Retira">Retira</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Traslado">Traslado</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Tasa de Embarque">T / E</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Pasaje">Pasaje</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Subtotal">Subtotal</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:variable var="totCarga" value="{!0}" />
+                <apex:variable var="contador" value="{!1}" />
+                <apex:repeat value="{!rCargas}" var="carga">
+                <tr class="{!IF(carga.Parametro_Tarifa__c == 'false','tarifaError','')}">
+                    <td colspan="2" data-label="Pallets">
+                        <div class="slds-truncate" title="{!carga.Capacidad_Comprometida__c}">{!carga.Capacidad_Comprometida__c}</div>
+                    </td>
+                    <td colspan="3" data-label="Entrega">
+                        <div class="slds-truncate" title="{!carga.Persona_que_entrega__r.Identificacion__c} {!carga.Persona_que_entrega__r.Name}">{!carga.Persona_que_entrega__r.Identificacion__c} {!carga.Persona_que_entrega__r.Name}</div>
+                    </td>
+                    <td colspan="3" data-label="Retira">
+                        <div class="slds-truncate" title="{!carga.Persona_que_retira__r.Identificacion__c} {!carga.Persona_que_retira__r.Name}">{!carga.Persona_que_retira__r.Identificacion__c} {!carga.Persona_que_retira__r.Name}</div>
+                    </td>
+                    <td data-label="Traslado">
+                        <div class="slds-truncate" title="$ {!carga.Valor_Carga_DR__c}">$ {!carga.Valor_Carga_DR__c}</div>
+                    </td>
+                    <td data-label="Tasa de Embarque">
+                        <div class="slds-truncate" title="$ {!carga.Tasa_Desembarque__c + carga.Tasa_Embarque__c}">$ {!carga.Tasa_Desembarque__c + carga.Tasa_Embarque__c}</div>
+                    </td>
+                    <td data-label="Pasaje">
+                        <div class="slds-truncate" title="$ {!carga.Valor_Detalle_Reserva__c}">$ {!carga.Valor_Detalle_Reserva__c}</div>
+                    </td>
+                    <td data-label="Subtotal">
+                        <div class="slds-truncate" title="$ {!carga.Valor_Detalle_Reserva__c}">$ {!carga.Valor_Detalle_Reserva__c}</div>
+                    </td>
+                </tr>
+                <apex:variable var="totCarga" value="{!totCarga + carga.Valor_Detalle_Reserva__c}" />
+                <apex:variable var="contador" value="{!contador + 1}" />
+                </apex:repeat>
+                <tr>
+                    <td colspan="10">&nbsp;</td>
+                    <td>Total:</td>
+                    <td>
+                        <b>$ {!totCarga}</b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
+<apex:slds />
+</apex:page>

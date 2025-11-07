@@ -1,0 +1,2021 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 06-15-2022
+  @last modified by  : Esteban Flores
+-->
+<apex:page standardController="Reserva__c" extensions="NAV_TicketPDFController" standardstylesheets="false" showheader="false" renderAs="PDF" sidebar="false" applyBodyTag="false" applyHtmlTag="false">
+<head>
+    <title>Ticket</title>
+    <style type="text/css">
+        @page {
+            border: 0px;
+            size: 77mm 127mm;
+            margin-top: 1mm;
+            margin-left: 0.1mm;
+            margin-right: 0.1mm;
+            margin-bottom: 0.3mm;
+        }
+        * {
+            font-family: "SansSerif";
+            font-size: 6pt;
+        }
+        .idPagina {
+            text-align: right;
+            padding-right: 10px;
+            padding-top: 5px;
+        }
+        .logo {
+            text-align: center;
+        }
+        .allBorders {
+            border: 1px solid black;
+        }
+        .titulo {
+            font-size: 9pt;
+        }
+        .big {
+            font-size: 8pt;
+        }
+        .fono {
+            font-size: 7pt;
+        }
+        .direccion {
+            font-size: 7pt;
+        }
+        .titulo-nb {
+            padding-left: 3px;
+            vertical-align: middle;
+        }
+        .extraLeft {
+            padding-left: 3px;
+        }
+        .left {
+            vertical-align: bottom;
+            text-align: left;
+        }
+        .codigoRuta {
+            font-family: "Arial Unicode MS";
+            font-size: 10pt;
+            font-weight: bold;
+        }
+        .space {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .blank-space, .blank-space td{
+            line-height: 5px;
+        }
+        .titulo-seccion {
+            line-height: 25px;
+            font-weight: bold;
+        }
+        .tituloBold {
+            padding-left: 3px;
+            font-weight: bold;
+        }
+        .val-nb {
+            line-height: 15px;
+            display: block;
+        }
+        .valBold {
+            font-weight: bold;
+            line-height: 15px;
+        }
+        .top {
+            vertical-align: top;
+        }
+        .middle {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .servicio {
+            padding-left: 3px;
+            text-justify: auto;
+            padding-right: 3px;
+        }
+        .thanks {
+            text-align: center;
+            line-height: 44px;
+        }
+    </style>
+</head>
+<body>
+    <apex:variable value="{!1}" var="numRows" />
+    <apex:repeat var="ticket" value="{!tickets}">
+        <!-- INICIO Butacas -->
+        <table width="100%" border="1" style="{!IF(ticket.esButaca,'display:inherit; page-break-after:always;','display:none')}" cellpadding="0" cellspacing="0">
+        <tr>
+            <td colspan="2" width="100%">
+                <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                <tr>
+                    <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina1}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="margin-bottom:5px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                            <td width="70%" class="middle">
+                                <span class="titulo">{!ticket.titulo}</span><br />
+                                <span class="fono">{!ticket.telefono}</span><br />
+                                <span class="direccion">{!ticket.direccion}</span>
+                            </td>
+                        </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60%" class="left">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                            <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                        </tr>
+                        <tr>
+                            <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                            <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                        </tr>
+                        </table>
+                    </td>
+                    <td width="40%" class="middle">
+                        <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                        <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                <tr>
+                    <td rowspan="5" width="3%">&nbsp;</td>
+                    <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                </tr>
+                <tr>
+                    <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dPTipoDocumentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dPTipoDocumentoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dpNumeroDocumentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dpNumeroDocumentoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dpNacionalidadTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dpNacionalidadValor}</span></td>
+                </tr>
+                </table>
+            </td>
+            <td rowspan="2" width="50%" class="top">
+                <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                <tr>
+                    <td rowspan="15" width="3%">&nbsp;</td>
+                    <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                </tr>
+                <tr>
+                    <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                    <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                    <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                </tr>
+                <tr class="blank-space">
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="titulo-nb">{!ticket.dvTipoButacaTitulo}</span>:&nbsp;</td>
+                    <td><span class="val-nb">{!ticket.dvTipoButacaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="titulo-nb">{!ticket.dvNumeroButacaTitulo}</span>:&nbsp;</td>
+                    <td><span class="valBold big">{!ticket.dvNumeroButacaValor}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                </tr>
+                <!--
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                </tr>
+                -->
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                    <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                <tr>
+                    <td rowspan="2" width="3%">&nbsp;</td>
+                    <td><span class="titulo-seccion">SERVICIO<br />A BORDO</span></td>
+                    <td class="servicio"><img src="{!URLFOR($Resource.QR_Tickets)}" width="70px"/></td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table align="center" cellpadding="0" cellspacing="0" class="space">
+                <tr>
+                    <td class="middle"><b>Proceso de embarque</b></td>
+                    <td>
+                        <ul>
+                            <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                            <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                        </ul>
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="thanks">
+                <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+            </td>
+        </tr>
+        </table>
+        
+        <table width="100%" border="1" style="{!IF(ticket.esButaca,'display:inherit','display:none')}" cellpadding="0" cellspacing="0">
+        <tr>
+            <td colspan="2" width="100%">
+                <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                <tr>
+                    <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina2}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="margin-bottom:5px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                            <td width="70%" class="middle">
+                                <span class="titulo">{!ticket.titulo}</span><br />
+                                <span class="fono">{!ticket.telefono}</span><br />
+                                <span class="direccion">{!ticket.direccion}</span>
+                            </td>
+                        </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60%" class="left">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                            <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                        </tr>
+                        <tr>
+                            <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                            <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                        </tr>
+                        </table>
+                    </td>
+                    <td width="40%" class="middle">
+                        <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                        <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                <tr>
+                    <td rowspan="5" width="3%">&nbsp;</td>
+                    <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                </tr>
+                <tr>
+                    <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dPTipoDocumentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dPTipoDocumentoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dpNumeroDocumentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dpNumeroDocumentoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dpNacionalidadTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dpNacionalidadValor}</span></td>
+                </tr>
+                </table>
+            </td>
+            <td rowspan="2" width="50%" class="top">
+                <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                <tr>
+                    <td rowspan="15" width="3%">&nbsp;</td>
+                    <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                </tr>
+                <tr>
+                    <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                    <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                    <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="titulo-nb">{!ticket.dvTipoButacaTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvTipoButacaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="titulo-nb">{!ticket.dvNumeroButacaTitulo}</span>:</td>
+                    <td><span class="valBold big">{!ticket.dvNumeroButacaValor}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                </tr>
+                <!--
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                </tr>
+                -->
+                <tr class="blank-space">
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                    <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                <tr>
+                    <td rowspan="2" width="3%">&nbsp;</td>
+                    <td><span class="titulo-seccion">SERVICIO<br />A BORDO</span></td>
+                    <td class="servicio"><img src="{!URLFOR($Resource.QR_Tickets)}" width="70px"/></td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table align="center" cellpadding="0" cellspacing="0" class="space">
+                <tr>
+                    <td class="middle"><b>Proceso de embarque</b></td>
+                    <td>
+                        <ul>
+                            <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                            <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                        </ul>
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="thanks">
+                <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+            </td>
+        </tr>
+        </table>
+        <!-- FIN Butacas -->
+        
+        <!-- INICIO Sin Acomodacion -->
+        <table width="100%" border="1" style="{!IF(ticket.esSinAcomodacion,'display:inherit; page-break-after:always;','display:none')}" cellpadding="0" cellspacing="0">
+        <tr>
+            <td colspan="2" width="100%">
+                <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                <tr>
+                    <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina1}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="margin-bottom:5px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                            <td width="70%" class="middle">
+                                <span class="titulo">{!ticket.titulo}</span><br />
+                                <span class="fono">{!ticket.telefono}</span><br />
+                                <span class="direccion">{!ticket.direccion}</span>
+                            </td>
+                        </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60%" class="left">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                            <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                        </tr>
+                        <tr>
+                            <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                            <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                        </tr>
+                        </table>
+                    </td>
+                    <td width="40%" class="middle">
+                        <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                        <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                <tr>
+                    <td rowspan="5" width="3%">&nbsp;</td>
+                    <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                </tr>
+                <tr>
+                    <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dPTipoDocumentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dPTipoDocumentoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dpNumeroDocumentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dpNumeroDocumentoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dpNacionalidadTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dpNacionalidadValor}</span></td>
+                </tr>
+                </table>
+            </td>
+            <td rowspan="2" width="50%" class="top">
+                <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                <tr>
+                    <td rowspan="15" width="3%">&nbsp;</td>
+                    <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                </tr>
+                <tr>
+                    <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                    <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                    <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                </tr>
+                <tr class="blank-space">
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="titulo-nb">{!ticket.dvTipoButacaTitulo}</span>:&nbsp;</td>
+                    <td><span class="val-nb">{!ticket.dvTipoButacaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="titulo-nb">{!ticket.dvNumeroButacaTitulo}</span>:&nbsp;</td>
+                    <td><span class="val-nb">S/A</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                </tr>
+                <!--
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                </tr>
+                -->
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                    <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                <tr>
+                    <td rowspan="2" width="3%">&nbsp;</td>
+                    <td><span class="titulo-seccion">SERVICIO<br />A BORDO</span></td>
+                    <td class="servicio"><img src="{!URLFOR($Resource.QR_Tickets)}" width="70px"/></td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table align="center" cellpadding="0" cellspacing="0" class="space">
+                <tr>
+                    <td class="middle"><b>Proceso de embarque</b></td>
+                    <td>
+                        <ul>
+                            <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                            <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                        </ul>
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="thanks">
+                <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+            </td>
+        </tr>
+        </table>
+        
+        <table width="100%" border="1" style="{!IF(ticket.esSinAcomodacion,'display:inherit','display:none')}" cellpadding="0" cellspacing="0">
+        <tr>
+            <td colspan="2" width="100%">
+                <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                <tr>
+                    <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina2}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="margin-bottom:5px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                            <td width="70%" class="middle">
+                                <span class="titulo">{!ticket.titulo}</span><br />
+                                <span class="fono">{!ticket.telefono}</span><br />
+                                <span class="direccion">{!ticket.direccion}</span>
+                            </td>
+                        </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60%" class="left">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                            <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                        </tr>
+                        <tr>
+                            <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                            <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                        </tr>
+                        </table>
+                    </td>
+                    <td width="40%" class="middle">
+                        <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                        <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                <tr>
+                    <td rowspan="5" width="3%">&nbsp;</td>
+                    <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                </tr>
+                <tr>
+                    <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dPTipoDocumentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dPTipoDocumentoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dpNumeroDocumentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dpNumeroDocumentoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dpNacionalidadTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dpNacionalidadValor}</span></td>
+                </tr>
+                </table>
+            </td>
+            <td rowspan="2" width="50%" class="top">
+                <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                <tr>
+                    <td rowspan="15" width="3%">&nbsp;</td>
+                    <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                </tr>
+                <tr>
+                    <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                    <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                    <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="titulo-nb">{!ticket.dvTipoButacaTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvTipoButacaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="titulo-nb">{!ticket.dvNumeroButacaTitulo}</span>:</td>
+                    <td><span class="val-nb">S/A</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                </tr>
+                <!--
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                    <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                </tr>
+                -->
+                <tr class="blank-space">
+                    <td colspan="2" class="blank-space">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                    <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                <tr>
+                    <td rowspan="2" width="3%">&nbsp;</td>
+                    <td><span class="titulo-seccion">SERVICIO<br />A BORDO</span></td>
+                    <td class="servicio"><img src="{!URLFOR($Resource.QR_Tickets)}" width="70px"/></td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table align="center" cellpadding="0" cellspacing="0" class="space">
+                <tr>
+                    <td class="middle"><b>Proceso de embarque</b></td>
+                    <td>
+                        <ul>
+                            <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                            <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                        </ul>
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="thanks">
+                <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+            </td>
+        </tr>
+        </table>
+        <!-- FIN Sin Acomodacion -->
+
+        <!-- INICIO Vehiculos -->
+        <table width="100%" border="1" style="{!IF(ticket.esVehiculo,'display:inherit; page-break-after:always;','display:none')}" cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="2" width="100%">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                    <tr>
+                        <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina1}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-bottom:5px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                                <td width="70%" class="middle">
+                                    <span class="titulo">{!ticket.titulo}</span><br />
+                                    <span class="fono">{!ticket.telefono}</span><br />
+                                    <span class="direccion">{!ticket.direccion}</span>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60%" class="left">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                            </tr>
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td width="40%" class="middle">
+                            <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                            <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="8" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTipoButacaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTipoButacaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPPatenteTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPPatenteValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPTaraTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPTaraValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPMarcaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPMarcaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPAnoTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPAnoValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPMetrosTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPMetrosValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+                <td rowspan="2" width="50%" class="top">
+                    <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                    <tr>
+                        <td rowspan="12" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                    </tr>
+                    -->
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                        <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="2" width="3%">&nbsp;</td>
+                        <td><span class="titulo-seccion">SERVICIO<br />A BORDO</span></td>
+                        <td class="servicio"><img src="{!URLFOR($Resource.QR_Tickets)}" width="70px"/></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table align="center" cellpadding="0" cellspacing="0" class="space">
+                    <tr>
+                        <td class="middle"><b>Proceso de embarque</b></td>
+                        <td>
+                            <ul>
+                                <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                                <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="thanks">
+                    <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+                </td>
+            </tr>
+            </table>
+            
+            <table width="100%" border="1" style="{!IF(ticket.esVehiculo,'display:inherit','display:none')}" cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="2" width="100%">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                    <tr>
+                        <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina2}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-bottom:5px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                                <td width="70%" class="middle">
+                                    <span class="titulo">{!ticket.titulo}</span><br />
+                                    <span class="fono">{!ticket.telefono}</span><br />
+                                    <span class="direccion">{!ticket.direccion}</span>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60%" class="left">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                            </tr>
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td width="40%" class="middle">
+                            <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                            <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="8" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTipoButacaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTipoButacaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPPatenteTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPPatenteValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPTaraTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPTaraValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPMarcaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPMarcaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPAnoTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPAnoValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPMetrosTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPMetrosValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+                <td rowspan="2" width="50%" class="top">
+                    <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                    <tr>
+                        <td rowspan="12" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                    </tr>
+                    -->
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                        <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                    </tr>
+                    </table>
+                   <!--  <table>
+                    <hr/>
+                    <tr>
+                    <td><span class="tituloBold">{!ticket.dPInfornaciontTitulo}</span>:</td>
+                    <td width="50%"><span class="val-nb">{!ticket.dPInfornacion}</span></td>
+                    </tr>
+			    </table> -->
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="2" width="3%">&nbsp;</td>
+                        <td><span class="titulo-seccion">SERVICIO<br />A BORDO</span></td>
+                        <td class="servicio"><img src="{!URLFOR($Resource.QR_Tickets)}" width="70px"/></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table align="center" cellpadding="0" cellspacing="0" class="space">
+                    <tr>
+                        <td class="middle"><b>Proceso de embarque</b></td>
+                        <td>
+                            <ul>
+                                <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                                <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                                
+                            </ul>
+                        </td>
+                        </tr>    
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="thanks">
+                    <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+                </td>
+            </tr>
+            </table>
+        <!-- FIN Vehiculos -->
+        <!-- INICIO Bicicletas -->
+            <table width="100%" border="1" style="{!IF(ticket.esBicicleta,'display:inherit; page-break-after:always;','display:none')}" cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="2" width="100%">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                    <tr>
+                        <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina1}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-bottom:5px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                                <td width="70%" class="middle">
+                                    <span class="titulo">{!ticket.titulo}</span><br />
+                                    <span class="fono">{!ticket.telefono}</span><br />
+                                    <span class="direccion">{!ticket.direccion}</span>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60%" class="left">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                            </tr>
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td width="40%" class="middle">
+                            <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                            <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="3" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTipoButacaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTipoButacaValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+                <td rowspan="2" width="50%" class="top">
+                    <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                    <tr>
+                        <td rowspan="12" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                    </tr>
+                    -->
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                        <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="2" width="3%">&nbsp;</td>
+                        <td><span class="titulo-seccion">SERVICIO<br />A BORDO</span></td>
+                        <td class="servicio"><img src="{!URLFOR($Resource.QR_Tickets)}" width="70px"/></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table align="center" cellpadding="0" cellspacing="0" class="space">
+                    <tr>
+                        <td class="middle"><b>Proceso de embarque</b></td>
+                        <td>
+                            <ul>
+                                <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                                <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="thanks">
+                    <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+                </td>
+            </tr>
+            </table>
+            
+            <table width="100%" border="1" style="{!IF(ticket.esBicicleta,'display:inherit','display:none')}" cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="2" width="100%">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                    <tr>
+                        <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina2}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-bottom:5px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                                <td width="70%" class="middle">
+                                    <span class="titulo">{!ticket.titulo}</span><br />
+                                    <span class="fono">{!ticket.telefono}</span><br />
+                                    <span class="direccion">{!ticket.direccion}</span>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60%" class="left">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                            </tr>
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td width="40%" class="middle">
+                            <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                            <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="3" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTipoButacaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTipoButacaValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+                <td rowspan="2" width="50%" class="top">
+                    <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                    <tr>
+                        <td rowspan="12" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                    </tr>
+                    -->
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                        <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="2" width="3%">&nbsp;</td>
+                        <td><span class="titulo-seccion">SERVICIO<br />A BORDO</span></td>
+                        <td class="servicio"><img src="{!URLFOR($Resource.QR_Tickets)}" width="70px"/></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table align="center" cellpadding="0" cellspacing="0" class="space">
+                    <tr>
+                        <td class="middle"><b>Proceso de embarque</b></td>
+                        <td>
+                            <ul>
+                                <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                                <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="thanks">
+                    <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+                </td>
+            </tr>
+            </table>
+        <!-- FIN Bicicletas -->
+        <!-- INICIO Cargas -->
+            <table width="100%" border="1" style="{!IF(ticket.esCarga,'display:inherit; page-break-after:always;','display:none')}" cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="2" width="100%">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                    <tr>
+                        <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina1}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-bottom:5px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                                <td width="70%" class="middle">
+                                    <span class="titulo">{!ticket.titulo}</span><br />
+                                    <span class="fono">{!ticket.telefono}</span><br />
+                                    <span class="direccion">{!ticket.direccion}</span>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60%" class="left">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                            </tr>
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td width="40%" class="middle">
+                            <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                            <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="5" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPCargaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPCargaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPUnidadTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPUnidadValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPCantidadTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPCantidadValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+                <td rowspan="2" width="50%" class="top">
+                    <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                    <tr>
+                        <td rowspan="12" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                    </tr>
+                    -->
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                        <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="2" width="3%">&nbsp;</td>
+                        <td><span class="titulo-seccion">SERVICIO<br />A BORDO</span></td>
+                        <td class="servicio"><img src="{!URLFOR($Resource.QR_Tickets)}" width="70px"/></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table align="center" cellpadding="0" cellspacing="0" class="space">
+                    <tr>
+                        <td class="middle"><b>Proceso de embarque</b></td>
+                        <td>
+                            <ul>
+                                <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                                <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="thanks">
+                    <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+                </td>
+            </tr>
+            </table>
+            
+            <table width="100%" border="1" style="{!IF(ticket.esCarga,'display:inherit','display:none')}" cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="2" width="100%">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                    <tr>
+                        <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina2}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-bottom:5px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                                <td width="70%" class="middle">
+                                    <span class="titulo">{!ticket.titulo}</span><br />
+                                    <span class="fono">{!ticket.telefono}</span><br />
+                                    <span class="direccion">{!ticket.direccion}</span>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60%" class="left">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                            </tr>
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td width="40%" class="middle">
+                            <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                            <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="5" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPCargaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPCargaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPUnidadTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPUnidadValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPCantidadTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPCantidadValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+                <td rowspan="2" width="50%" class="top">
+                    <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                    <tr>
+                        <td rowspan="12" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                    </tr>
+                    -->
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                        <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="2" width="3%">&nbsp;</td>
+                        <td><span class="titulo-seccion">SERVICIO<br />A BORDO</span></td>
+                        <td class="servicio"><img src="{!URLFOR($Resource.QR_Tickets)}" width="70px"/></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table align="center" cellpadding="0" cellspacing="0" class="space">
+                    <tr>
+                        <td class="middle"><b>Proceso de embarque</b></td>
+                        <td>
+                            <ul>
+                                <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                                <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="thanks">
+                    <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+                </td>
+            </tr>
+            </table>
+        <!-- FIN Cargas -->
+              <!-- INICIO VentaCruzada -->
+        <table width="100%" border="1" style="{!IF(ticket.esVentaCruzada,'display:inherit; page-break-after:always;','display:none')}" cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="2" width="100%">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                    <tr>
+                        <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina1}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-bottom:5px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                                <td width="70%" class="middle">
+                                    <span class="titulo">{!ticket.titulo}</span><br />
+                                    <span class="fono">{!ticket.telefono}</span><br />
+                                    <span class="direccion">{!ticket.direccion}</span>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60%" class="left">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                            </tr>
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td width="40%" class="middle">
+                            <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                            <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="8" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+                <td rowspan="2" width="50%" class="top">
+                    <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                    <tr>
+                        <td rowspan="12" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDescuentoTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvDescuentoValor}</span></td>
+                    </tr>
+                    -->
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                        <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                        <tr>
+                            <td><span class="tituloBold">{!ticket.dPPatenteTitulo}</span>:</td>
+                            <td><span class="val-nb">{!ticket.dPPatenteValor}</span></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table align="center" cellpadding="0" cellspacing="0" class="space">
+                    <tr>
+                        <td class="middle"><b>Proceso de embarque</b></td>
+                        <td>
+                            <ul>
+                                <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                                <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="thanks">
+                    <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+                </td>
+            </tr>
+            </table>
+            
+            <table width="100%" border="1" style="{!IF(ticket.esVentaCruzada,'display:inherit','display:none')}" cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="2" width="100%">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:3px;">
+                    <tr>
+                        <td width="100%" colspan="2" class="idPagina"><span>{!ticket.idPagina2}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-bottom:5px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="30%" class="logo"><img src="{!URLFOR($Resource.LogoBN)}" width="70px"/></td>
+                                <td width="70%" class="middle">
+                                    <span class="titulo">{!ticket.titulo}</span><br />
+                                    <span class="fono">{!ticket.telefono}</span><br />
+                                    <span class="direccion">{!ticket.direccion}</span>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60%" class="left">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.fechaEmisionTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.fechaEmisionValor}</span></td>
+                            </tr>
+                            <tr>
+                                <td width="35%"><span class="titulo-nb">{!ticket.oficinaTitulo}</span>:</td>
+                                <td class="left"><span class="valBold">{!ticket.oficinaValor}</span></td>
+                            </tr>
+                            </table>
+                        </td>
+                        <td width="40%" class="middle">
+                            <span class="codigoRuta">{!ticket.codigoRuta}</span><br />
+                            <span class="titulo-nb">{!ticket.ticketNombre}</span>: <span class="valBold">{!ticket.ticketValor}</span>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td rowspan="8" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosPasajeroTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="33%"><span class="tituloBold">{!ticket.dPNombreTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPNombreValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+                <td rowspan="2" width="50%" class="top">
+                    <table cellpadding="0" cellspacing="0" class="space extraLeft">
+                    <tr>
+                        <td rowspan="12" width="3%">&nbsp;</td>
+                        <td colspan="2"><span class="titulo-seccion">{!ticket.datosViajeTitulo}</span></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><span class="tituloBold">{!ticket.dvOrigenTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvOrigenValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvDestinoTitulo}</span>:</td>
+                        <td><span class="val-nb" style="display:inline-block;">{!ticket.dvDestinoValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvNaveTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvNaveValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvFechaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvFechaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvHoraTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvHoraValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTarifaTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTarifaValor}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTasaEmbarqueTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dvTasaEmbarqueValor}</span></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="3">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dvTotalTitulo}</span>:</td>
+                        <td><span class="valBold big">{!ticket.dvTotalValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td width="50%">
+                    <table cellpadding="0" cellspacing="0" width="100%" class="space">
+                    <tr>
+                        <td><span class="tituloBold">{!ticket.dPPatenteTitulo}</span>:</td>
+                        <td><span class="val-nb">{!ticket.dPPatenteValor}</span></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table align="center" cellpadding="0" cellspacing="0" class="space">
+                    <tr>
+                        <td class="middle"><b>Proceso de embarque</b></td>
+                        <td>
+                            <ul>
+                                <li>Pasajeros deben presentarse con 1 hora de anticipación al horario del zarpe.</li>
+                                <li>Con vehículos, presentarse con 2 horas de anticipación al horario de zarpe.</li>
+                                
+                            </ul>
+                        </td>
+                        </tr>    
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="thanks">
+                    <span>¡Gracias por viajar con <b>Naviera Austral</b>!</span>
+                </td>
+            </tr>
+            </table>
+        <!-- FIN VentaCruzada -->
+        <apex:variable var="numRows" value="{!numRows + 1}"/>
+        <div style="{!IF(numRows <= tickets.size,'page-break-after:always;','display:none')}">&nbsp;</div>
+    </apex:repeat>
+</body>
+</apex:page>

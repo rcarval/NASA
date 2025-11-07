@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>Se le asigna la caja de la acreditación a la forma de pago que se creó</description>
+    <interviewLabel>Asignar Caja a Forma de Pago {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Asignar Caja a Forma de Pago</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <description>Se asigna la caja de la acreditación a la forma de pago</description>
+        <name>AsignarCajaFP</name>
+        <label>Asignar Caja a FP</label>
+        <locationX>583</locationX>
+        <locationY>365</locationY>
+        <inputAssignments>
+            <field>Caja__c</field>
+            <value>
+                <elementReference>$Record.Acreditacion__r.Caja__r.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>458</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>AsignarCajaFP</targetReference>
+        </connector>
+        <object>Forma_de_pago__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

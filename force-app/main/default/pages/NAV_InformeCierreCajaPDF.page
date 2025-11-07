@@ -1,0 +1,600 @@
+<!--**********************************************************************************
+Desarrollado por: Nectia
+Autor: Esteban Flores (EFR)
+Proyecto: Naviera Austral Puntos Críticos
+Descripción: Visualforce para cotizacion de Naviera
+---------------------------------------------------------------------------------
+No. Fecha                Autor                     Descripción
+------ ---------- ---------------------------------------------------------------
+1.0 18-12-2022            EFR                   Creación de la Página.
+2.0 17-01-2023            EFR                   Actualización formato.
+***********************************************************************************-->
+<apex:page standardController="Caja__c" extensions="NAV_InformeCierreCajaVFController" standardstylesheets="false" renderAs="PDF" showheader="false" sidebar="false" applyBodyTag="false" applyHtmlTag="false">
+    <head>
+        <title>Infome de Caja</title>
+        <style>
+            @page {
+                border: 1px solid #000;
+              /*  size: landscape;*/
+                size: letter;
+              
+                margin: 3mm;
+            }
+            * {
+                font-family: 'Arial Unicode MS';
+                font-size: 12px;
+            }
+            .titulo{
+                font-size: 28px;
+                font-weight: bold;
+                font-weight: bolder;
+                text-align: center;
+            }
+            .minititulo{
+                padding-left: 5px;
+                font-weight: bold;
+                font-weight: bolder;
+            }
+            .dato{
+                padding-left: 5px;
+            }
+            .derecha{
+                text-align: right;
+            }
+            .spacing{
+                padding-bottom: 35px;
+            }
+            .spacingtDT{
+                padding-bottom: 10px;
+            }
+            .tablaDocumentos th {
+                padding: 8px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+                font-size: 10px; 
+            }
+        
+            .tablaDocumentos td {
+                padding: 8px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+                font-size: 10px; 
+            }
+
+        </style>
+    </head>
+    <body>
+        <table > 
+            <table width="100%" class="tablaCompleta" cellpading="0" cellspacing="0" style="display: {!IF(showTable,'','none')}">
+                <tr>
+                    <td width="5%"><img src="{!URLFOR($Resource.Logo)}" width="130px"/></td>
+                    <td width="95%">&nbsp;</td>
+                </tr>
+            </table><br />
+            <table width="90%" class="tablaCompleta" cellpading="0" cellspacing="0" style="display: {!IF(showTable,'','none')}">
+                <tr>
+                    <td colspan="8" width="100%" class="titulo spacing">Informe Cierre de Caja Naviera</td>
+                </tr>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td class="minititulo derecha">Fecha Apertura</td>
+                    <td class="dato">{!fechaApertura}</td>
+                    <td class="minititulo derecha">Fecha Cierre</td>
+                    <td class="dato">{!fechaCierre}</td>
+                    <td class="minititulo derecha">Agencia</td>
+                    <td class="dato">{!agencia}</td>
+                    <td width="5%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td class="minititulo derecha">Cajero</td>
+                    <td class="dato">{!nombreCajero}</td>
+                    <td class="minititulo derecha">Id Cajero</td>
+                    <td class="dato">{!idCajero}</td>
+                    <td class="minititulo derecha">Sucursal</td>
+                    <td class="dato">{!sucursal}</td>
+                    <td width="5%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="8" width="100%" class="spacing">&nbsp;</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td width="45%" colspan="3" valign="top" align="right" >
+                        <table width="90%" class="tablaInterna" cellpading="0" cellspacing="0" border="1" >
+                            <tr>
+                                <th  align="Center" style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Condición de pago</th>
+                                <th  align="Center" style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Cantidad</th>
+                                <th  align="Center" style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Monto</th>
+                            </tr>
+                            <tr>
+                                <td align="Left">Documento Anulación de Venta (No Tributario)</td>
+                                <td >{!cTickets}</td>
+                                <td>{!mTickets}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Débito</td>
+                                <td>{!cDebito}</td>
+                                <td>{!mDebito}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Tarjeta de crédito</td>
+                                <td>{!cTCredito}</td>
+                                <td>{!mTCredito}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Crédito</td>
+                                <td>{!cCredito}</td>
+                                <td>{!mCredito}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Efectivo</td>
+                                <td>{!cEfectivo}</td>
+                                <td>{!mEfectivo}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Transferencias</td>
+                                <td>{!cTransferencias}</td>
+                                <td>{!mTransferencias}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Cheques</td>
+                                <td>{!cCheques}</td>
+                                <td>{!mCheques}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Crédito a 30 días</td>
+                                <td>{!cCredito30}</td>
+                                <td>{!mCredito30}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Pago de Contado</td>
+                                <td>{!cContado}</td>
+                                <td>{!mContado}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Con Notas</td>
+                                <td>{!cNotas}</td>
+                                <td>{!mNotas}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Cuponeras</td>
+                                <td>{!cCuponera}</td>
+                                <td>{!mCuponera}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Depósitos</td>
+                                <td>{!cDeposito}</td>
+                                <td>{!mDeposito}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Web</td>
+                                <td>{!cWeb}</td>
+                                <td>{!mWeb}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Pendientes</td>
+                                <td>{!cPendiente}</td>
+                                <td>{!mPendiente}</td>
+                            </tr>
+                            <tr style="background-color: #dadada; color: #000;">
+                                <td>TOTALES</td>
+                                <td>{!ConteoTotalFMPNAV}</td>
+                                <td> $ {!MontoTotalFMPNAV}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="45%" colspan="3" valign="top" align="right">
+                        <table width="100%" class="tablaInterna" cellpading="0" cellspacing="0" border="1">
+                            <tr>
+                                <th style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Documentos Emitidos</th>
+                                <th style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Cantidad</th>
+                                <th style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Monto</th>
+                            </tr>
+                            <tr>
+                                <td align="Left">Afecto</td>
+                                <td>{!cAfecto}</td>
+                                <td>{!mAfecto}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Exento</td>
+                                <td>{!cExento}</td>
+                                <td>{!mExento}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Notas de Crédito</td>
+                                <td>{!cNC}</td>
+                                <td>{!mNC}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Mixtas</td>
+                                <td>{!cMixtas}</td>
+                                <td>{!mMixtas}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Boletas</td>
+                                <td>{!cBoletas}</td>
+                                <td>{!mBoletas}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Tickets</td>
+                                <td>{!cTicket}</td>
+                                <td>{!mTicket}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Anulaciones</td>
+                                <td>{!cAnulacion}</td>
+                                <td>{!mAnulacion}</td>
+                            </tr>
+                            <tr style="background-color: #dadada; color: #000;">
+                                <td>TOTALES</td>
+                                <td>{!ConteoTotalDOCNAV}</td>
+                                <td>$ {!MontoTotalDOCNAV}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="5%">&nbsp;</td>
+                    <tr>
+                        <td colspan="3" width="100%" class="titulo spacing"></td>
+                    </tr>
+                </tr>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td colspan="4" width="90%">Observaciones<br />{!observaciones}</td>
+                    <td width="5%">&nbsp;</td>
+                </tr>
+            </table>
+            
+        </table>
+            <table style="page-break-after: always">
+                <table width="100%" class="tablaCompleta" cellpading="0" cellspacing="0" style="display: {!IF(showTable,'','none')}">
+                    <tr>
+                        <td width="5%"><img src="{!URLFOR($Resource.Logo)}" width="130px"/></td>
+                        <td width="95%">&nbsp;</td>
+                    </tr>
+                </table><br />
+                <table width="100%" class="tablaCompleta" cellpading="0" cellspacing="0" style="display: {!IF(showTable,'','none')}">
+                    <tr>
+                        <td colspan="8" width="100%" class="titulo spacing">Detalle Cierre de Caja Naviera</td>
+                    </tr>
+                    <tr>
+                        <td width="5%">&nbsp;</td>
+                        <td class="minititulo derecha">Fecha Apertura</td>
+                        <td class="dato">{!fechaApertura}</td>
+                        <td class="minititulo derecha">Fecha Cierre</td>
+                        <td class="dato">{!fechaCierre}</td>
+                        <td class="minititulo derecha">Agencia</td>
+                        <td class="dato">{!agencia}</td>
+                        <td width="5%">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td width="5%">&nbsp;</td>
+                        <td class="minititulo derecha">Cajero</td>
+                        <td class="dato">{!nombreCajero}</td>
+                        <td class="minititulo derecha">Id Cajero</td>
+                        <td class="dato">{!idCajero}</td>
+                        <td class="minititulo derecha">Sucursal</td>
+                        <td class="dato">{!sucursal}</td>
+                        <td width="5%">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" width="100%" class="spacingtDT">
+                            <hr style="border: 1px solid #000;"/>
+                        </td>
+                    </tr>
+                </table>
+                    <apex:pageBlock >
+                    <apex:pageBlockTable value="{!listaDocumentosNAV}" var="doc" styleClass="tablaDocumentos" align="center">
+                        <apex:column >
+                            <apex:facet name="header">
+                                <span style="font-weight: bold; font-size: 14px;">Fecha Creación</span>
+                            </apex:facet>
+                            <apex:outputText value="{!TEXT(DATEVALUE(doc.CreatedDate))}"/>
+                        </apex:column>
+                    <!-- Columna de Tipo de Documento -->
+                        <apex:column >
+                            <apex:facet name="header">
+                                <span style="font-weight: bold; font-size: 14px;">Tipo de Documento</span> 
+                            </apex:facet>
+                            <apex:outputText value="{!doc.RecordType.Name}"/>
+                        </apex:column>
+                        
+                        <!-- Columna de Número -->
+                        <apex:column >
+                            <apex:facet name="header">
+                                <span style="font-weight: bold; font-size: 14px;">Folio</span> 
+                            </apex:facet>
+                            <apex:outputText value="{!doc.N_Documento__c}"/>
+                        </apex:column>
+
+                        <apex:column >
+                            <apex:facet name="header">
+                                <span style="font-weight: bold; font-size: 14px;">Correlativo Unico</span> 
+                            </apex:facet>
+                            <apex:outputText value="{!doc.Correlativo_unico__c}"/>
+                        </apex:column>
+                        
+                        <!-- Columna de Valor -->
+                        <apex:column >
+                            <apex:facet name="header">
+                                <span style="font-weight: bold; font-size: 14px;">Valor</span> 
+                            </apex:facet>
+                            <apex:outputText value="$ {!doc.SUBTOTAL_BRUTO__c}"/>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                    <tr>
+                        <td colspan="8" width="100%" class="spacing">&nbsp;</td>
+                    </tr>
+                </apex:pageBlock>
+            
+            </table> 
+        <table style="page-break-after: always"> 
+            <table width="100%" class="tablaCompleta" cellpading="0" cellspacing="0" style="display: {!IF(showTable,'','none')}">
+                <tr>
+                    <td width="5%"><img src="{!URLFOR($Resource.LogoPuelcheColor)}" width="130px"/></td>
+                    <td width="95%">&nbsp;</td>
+                </tr>
+            </table><br />
+            <table width="100%" class="tablaCompleta" cellpading="0" cellspacing="0" style="display: {!IF(showTable,'','none')}">
+                <tr>
+                    <td colspan="8" width="100%" class="titulo spacing">Informe Cierre de Caja Puelche</td>
+                </tr>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td class="minititulo derecha">Fecha Apertura</td>
+                    <td class="dato">{!fechaApertura}</td>
+                    <td class="minititulo derecha">Fecha Cierre</td>
+                    <td class="dato">{!fechaCierre}</td>
+                    <td class="minititulo derecha">Agencia</td>
+                    <td class="dato">{!agencia}</td>
+                    <td width="5%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td class="minititulo derecha">Cajero</td>
+                    <td class="dato">{!nombreCajero}</td>
+                    <td class="minititulo derecha">Id Cajero</td>
+                    <td class="dato">{!idCajero}</td>
+                    <td class="minititulo derecha">Sucursal</td>
+                    <td class="dato">{!sucursal}</td>
+                    <td width="5%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="8" width="100%" class="spacing">&nbsp;</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td width="45%" colspan="3" valign="top" align="right">
+                        <table width="90%" class="tablaInterna" cellpading="0" cellspacing="0" border="1">
+                            <tr>
+                                <th  align="Center" style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Condición de pago</th>
+                                <th  align="Center" style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Cantidad</th>
+                                <th  align="Center" style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Monto</th>
+                            </tr>
+                            <tr>
+                                <td align="Left">Documento Anulación de Venta (No Tributario)</td>
+                                <td>{!cTicketsPue}</td>
+                                <td>{!mTicketsPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Débito</td>
+                                <td>{!cDebitoPue}</td>
+                                <td>{!mDebitoPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Tarjeta de crédito</td>
+                                <td>{!cTCreditoPue}</td>
+                                <td>{!mTCreditoPue}</td>
+                            </tr>
+                                <tr>
+                                <td align="Left">Crédito</td>
+                                <td>{!cCreditoPue}</td>
+                                <td>{!mCreditoPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Efectivo</td>
+                                <td>{!cEfectivoPue}</td>
+                                <td>{!mEfectivoPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Transferencias</td>
+                                <td>{!cTransferenciasPue}</td>
+                                <td>{!mTransferenciasPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Cheques</td>
+                                <td>{!cChequesPue}</td>
+                                <td>{!mChequesPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Crédito a 30 días</td>
+                                <td>{!cCredito30Pue}</td>
+                                <td>{!mCredito30Pue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Pago de Contado</td>
+                                <td>{!cContadoPue}</td>
+                                <td>{!mContadoPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Con Notas</td>
+                                <td>{!cNotasPue}</td>
+                                <td>{!mNotasPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Cuponeras</td>
+                                <td>{!cCuponeraPue}</td>
+                                <td>{!mCuponeraPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Depósitos</td>
+                                <td>{!cDepositoPue}</td>
+                                <td>{!mDepositoPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Web</td>
+                                <td>{!cWebPue}</td>
+                                <td>{!mWebPue}</td>
+                            </tr>
+                            <tr>
+                                <td align="Left">Pendientes</td>
+                                <td>{!cPendientePue}</td>
+                                <td>{!mPendientePue}</td>
+                            </tr>
+                            <tr style="background-color: #c3c3c3; color: #000;">
+                                <td>TOTALES</td>
+                                <td>{!ConteoTotalFMPPue}</td>
+                                <td>$ {!MontoTotalFMPPue}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="45%" colspan="3" valign="top" align="right">
+                        <table width="100%" class="tablaInterna" cellpading="0" cellspacing="0" border="1">
+                            <tr>
+                                <th style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Documentos Emitidos</th>
+                                <th style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Cantidad</th>
+                                <th style="font-weight: bold; font-size: 12px;background-color: #dadada; color: #000;">Monto</th>
+                            </tr>
+                            <tr>
+                                <td>Afecto</td>
+                                <td>{!cAfectoPue}</td>
+                                <td>{!mAfectoPue}</td>
+                            </tr>
+                            <tr>
+                                <td>Exento</td>
+                                <td>{!cExentoPue}</td>
+                                <td>{!mExentoPue}</td>
+                            </tr>
+                            <tr>
+                                <td>Notas de Crédito</td>
+                                <td>{!cNCPue}</td>
+                                <td>{!mNCPue}</td>
+                            </tr>
+                            <tr>
+                                <td>Mixtas</td>
+                                <td>{!cMixtasPue}</td>
+                                <td>{!mMixtasPue}</td>
+                            </tr>
+                            <tr>
+                                <td>Boletas</td>
+                                <td>{!cBoletasPue}</td>
+                                <td>{!mBoletasPue}</td>
+                            </tr>
+                            <tr>
+                                <td>Tickets</td>
+                                <td>{!cTicketPue}</td>
+                                <td>{!mTicketPue}</td>
+                            </tr>
+                            <tr>
+                                <td>Anulaciones</td>
+                                <td>{!cAnulacionPue}</td>
+                                <td>{!mAnulacionPue}</td>
+                            </tr>
+                            <tr style="background-color: #c3c3c3; color: #000;">
+                                <td>TOTALES</td>
+                                <td>{!ConteoTotalDOCPue}</td>
+                                <td>$ {!MontoTotalDOCPue}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="5%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="3" width="100%" class="spacing">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td colspan="4" width="90%">Observaciones<br />{!observaciones}</td>
+                    <td width="5%">&nbsp;</td>
+                </tr>
+            </table>
+        </table>
+        <table style="page-break-after: always">
+            <table width="100%" class="tablaCompleta" cellpading="0" cellspacing="0" style="display: {!IF(showTable,'','none')}">
+                <tr>
+                    <td width="5%"><img src="{!URLFOR($Resource.LogoPuelcheColor)}" width="130px"/></td>
+                    <td width="95%">&nbsp;</td>
+                </tr>
+            </table><br />
+            <table width="100%" class="tablaCompleta" cellpading="0" cellspacing="0" style="display: {!IF(showTable,'','none')}">
+                <tr>
+                    <td colspan="8" width="100%" class="titulo spacing">Detalle Cierre de Caja Puelche</td>
+                </tr>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td class="minititulo derecha">Fecha Apertura</td>
+                    <td class="dato">{!fechaApertura}</td>
+                    <td class="minititulo derecha">Fecha Cierre</td>
+                    <td class="dato">{!fechaCierre}</td>
+                    <td class="minititulo derecha">Agencia</td>
+                    <td class="dato">{!agencia}</td>
+                    <td width="5%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td class="minititulo derecha">Cajero</td>
+                    <td class="dato">{!nombreCajero}</td>
+                    <td class="minititulo derecha">Id Cajero</td>
+                    <td class="dato">{!idCajero}</td>
+                    <td class="minititulo derecha">Sucursal</td>
+                    <td class="dato">{!sucursal}</td>
+                    <td width="5%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="8" width="100%" class="spacingtDT">
+                        <hr style="border: 1px solid #000;"/>
+                    </td>
+                </tr>
+            </table>
+            <apex:pageBlock >
+                <apex:pageBlockTable value="{!listaDocumentosPUE}" var="doc" styleClass="tablaDocumentos" align="center">
+                    <apex:column >
+                        <apex:facet name="header">
+                            <span style="font-weight: bold; font-size: 14px;">Fecha Creación</span>
+                        </apex:facet>
+                        <apex:outputText value="{!TEXT(DATEVALUE(doc.CreatedDate))}"/>
+                    </apex:column>
+                <!-- Columna de Tipo de Documento -->
+                    <apex:column >
+                        <apex:facet name="header">
+                            <span style="font-weight: bold; font-size: 14px;">Tipo de Documento</span> 
+                        </apex:facet>
+                        <apex:outputText value="{!doc.RecordType.Name}"/>
+                    </apex:column>
+                    
+                    <!-- Columna de Número -->
+                    <apex:column >
+                        <apex:facet name="header">
+                            <span style="font-weight: bold; font-size: 14px;">Folio</span> 
+                        </apex:facet>
+                        <apex:outputText value="{!doc.N_Documento__c}"/>
+                    </apex:column>
+
+                    <apex:column >
+                        <apex:facet name="header">
+                            <span style="font-weight: bold; font-size: 14px;">Correlativo Unico</span> 
+                        </apex:facet>
+                        <apex:outputText value="{!doc.Correlativo_unico__c}"/>
+                    </apex:column>
+                    
+                    <!-- Columna de Valor -->
+                    <apex:column >
+                        <apex:facet name="header">
+                            <span style="font-weight: bold; font-size: 14px;">Valor</span> 
+                        </apex:facet>
+                        <apex:outputText value="{!doc.SUBTOTAL_BRUTO__c}"/>
+                    </apex:column>
+                    <tr>
+                        <td colspan="8" width="100%" class="spacing">&nbsp;</td>
+                    </tr>
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </table>
+    </body>
+</apex:page>

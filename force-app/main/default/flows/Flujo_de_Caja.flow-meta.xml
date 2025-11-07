@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <description>Se crea el nombre de la caja en la variable para ver si existe</description>
+        <name>Crear_Nombre_de_Caja</name>
+        <label>Crear Nombre de Caja</label>
+        <locationX>566</locationX>
+        <locationY>433</locationY>
+        <assignmentItems>
+            <assignToReference>Nombre_de_la_Caja</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Concatenar_nombre</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Buscar_Caja</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <description>Si existe la caja, asociar la forma de pago a esta, si no, crear una</description>
+        <name>Existe_una_caja_para_este_usuario_hoy</name>
+        <label>¿Existe una caja para este usuario hoy?</label>
+        <locationX>641</locationX>
+        <locationY>636</locationY>
+        <defaultConnector>
+            <targetReference>Crear_Caja_al_usuario</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>SI</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Buscar_Caja</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Asignar_Caja_a_FP</targetReference>
+            </connector>
+            <label>SI</label>
+        </rules>
+    </decisions>
+    <description>Flujo que crea las cajas de los usuarios y asocia las formas de pago a esta</description>
+    <formulas>
+        <description>se concatena el nombre del usuario con la fecha de hoy</description>
+        <name>Concatenar_nombre</name>
+        <dataType>String</dataType>
+        <expression>{!$User.Alias}+&quot;-&quot;+TEXT({!$Flow.CurrentDate})+&quot;Prueba&quot;</expression>
+    </formulas>
+    <interviewLabel>Flujo de Caja {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Flujo de Caja</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <description>Se le crea la caja al usuario</description>
+        <name>Crear_Caja_al_usuario</name>
+        <label>Crear Caja al usuario</label>
+        <locationX>1035</locationX>
+        <locationY>607</locationY>
+        <connector>
+            <targetReference>Buscar_Caja</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>Nombre_de_la_Caja</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Id_del_usuario</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Caja__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <description>Buscar si existe una caja con ese nombre</description>
+        <name>Buscar_Caja</name>
+        <label>Buscar Caja</label>
+        <locationX>784</locationX>
+        <locationY>407</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Existe_una_caja_para_este_usuario_hoy</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Nombre_de_la_Caja</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Caja__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <description>Se asigna la caja a la acreditación de la Forma de pago</description>
+        <name>Asignar_Caja_a_Acreditacion</name>
+        <label>Asignar Caja a Acreditacion</label>
+        <locationX>198</locationX>
+        <locationY>571</locationY>
+        <connector>
+            <targetReference>Asignar_Caja_a_Reserva</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Acreditacion__r.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Caja__c</field>
+            <value>
+                <elementReference>Buscar_Caja.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Acreditacion__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Asignar_Caja_a_FP</name>
+        <label>Asignar Caja a FP</label>
+        <locationX>379</locationX>
+        <locationY>624</locationY>
+        <connector>
+            <targetReference>Asignar_Caja_a_Acreditacion</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Caja__c</field>
+            <value>
+                <elementReference>Buscar_Caja.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <description>Asignar la caja correspondiente a la reserva de la forma de pago</description>
+        <name>Asignar_Caja_a_Reserva</name>
+        <label>Asignar Caja a Reserva</label>
+        <locationX>62</locationX>
+        <locationY>685</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Acreditacion__r.Reserva__r.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Caja__c</field>
+            <value>
+                <elementReference>Buscar_Caja.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Reserva__c</object>
+    </recordUpdates>
+    <start>
+        <locationX>458</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>Crear_Nombre_de_Caja</targetReference>
+        </connector>
+        <object>Forma_de_pago__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+    <variables>
+        <description>La acreditación asociada a la forma de pago</description>
+        <name>Acreditacion_de_la_FP</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Acreditacion__c</objectType>
+    </variables>
+    <variables>
+        <name>Caja_Existente</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Caja__c</objectType>
+    </variables>
+    <variables>
+        <description>ID del usuario</description>
+        <name>Id_del_usuario</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <elementReference>$User.Id</elementReference>
+        </value>
+    </variables>
+    <variables>
+        <description>El nombre que tiene el registro de la caja</description>
+        <name>Nombre_de_la_Caja</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>
