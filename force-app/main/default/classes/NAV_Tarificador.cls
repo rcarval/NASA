@@ -740,12 +740,10 @@ public class NAV_Tarificador  {
             
             //Si el Tipo de Registro de Detalle Reserva es Butaca, calculamos edad de Pasajero
             if(detalleReserva.RecordType.DeveloperName == 'Butaca'){
-																			  
-                dias = (detalleReserva.Nombre_Pasajero__r.PersonBirthdate.daysBetween(Date.today())); 
-																							
-																												 
-				 
-                edadPasajero = (dias/365);
+                if(detalleReserva.Nombre_Pasajero__r != null && detalleReserva.Nombre_Pasajero__r.PersonBirthdate != null){
+                    dias = (detalleReserva.Nombre_Pasajero__r.PersonBirthdate.daysBetween(Date.today())); 
+                    edadPasajero = (dias/365);
+                }
             }
 
             System.debug('\nDATOS DETALLE SERVICIO\n');

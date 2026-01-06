@@ -15,7 +15,58 @@ No. Fecha                Autor                     Descripción
         <script type="text/javascript" src="{!URLFOR($Resource.jquery)}"></script>
         <script type="text/javascript"  src="{!URLFOR($Resource.jqueryui)}"></script>
         <link href="{!URLFOR($Resource.jqueryui_css)}" rel="stylesheet" />
+        <!-- intl-tel-input library for international phone number selection -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.0/build/css/intlTelInput.css" />
+        <script>
+            // Cargar intl-tel-input de forma asíncrona y verificar que se cargue
+            (function() {
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.0/build/js/intlTelInput.min.js';
+                script.async = true;
+                script.onload = function() {
+                    console.log('intl-tel-input script cargado correctamente');
+                };
+                script.onerror = function() {
+                    console.error('Error cargando intl-tel-input script');
+                };
+                document.head.appendChild(script);
+            })();
+        </script>
         <style>
+            /* Estilos para intl-tel-input */
+            .iti {
+                width: 100% !important;
+                position: relative !important;
+                display: block !important;
+                margin-bottom: 0 !important;
+            }
+            .iti__flag-container {
+                position: absolute !important;
+                top: 0 !important;
+                bottom: 0 !important;
+                right: auto !important;
+                left: 0 !important;
+                z-index: 2 !important;
+                margin: 0 !important;
+            }
+            .iti__selected-flag {
+                z-index: 1 !important;
+                position: relative !important;
+                display: flex !important;
+                height: 100% !important;
+                align-items: center !important;
+                padding: 0 6px 0 8px !important;
+                margin: 0 !important;
+            }
+            .iti input, .iti input[type=tel] {
+                padding-left: 52px !important;
+                margin: 0 !important;
+            }
+            /* Asegurar que el contenedor .iti mantenga su posición incluso con mensaje de error */
+            .iti-wrapper {
+                position: relative !important;
+                width: 100% !important;
+            }
             .fijo {
                 position: absolute !important;
                 top: 15px;
@@ -276,6 +327,245 @@ No. Fecha                Autor                     Descripción
                 $('#siguiente').prop('disabled', false);
                 $("#overlay").hide();
             }
+            // Función global para configurar autocompletado del código de país
+            function setupPhoneAutoComplete(telInput, iti) {
+                // Función para obtener la longitud máxima permitida del número según el país
+                function getMaxLengthForCountry(itiInstance) {
+                    try {
+                        var countryData = itiInstance.getSelectedCountryData();
+                        var countryCode = countryData.iso2;
+                        
+                        // Usar intlTelInputUtils si está disponible para obtener información del formato
+                        if (typeof intlTelInputUtils !== 'undefined' && intlTelInputUtils.getCountryData) {
+                            var countryDataFull = intlTelInputUtils.getCountryData();
+                            var countryInfo = countryDataFull.find(function(c) {
+                                return c.iso2 === countryCode;
+                            });
+                            
+                            if (countryInfo && countryInfo.format) {
+                                // Contar los dígitos en el formato (X representa un dígito)
+                                var format = countryInfo.format;
+                                var digitCount = (format.match(/X/g) || []).length;
+                                if (digitCount > 0) {
+                                    return digitCount;
+                                }
+                            }
+                        }
+                        
+                        // Valores por defecto para países comunes (en caso de que no esté disponible intlTelInputUtils)
+                        var defaultLengths = {
+                            'cl': 9,  // Chile: 9 dígitos
+                            'us': 10, // USA: 10 dígitos
+                            'ar': 10, // Argentina: 10 dígitos
+                            'pe': 9,  // Perú: 9 dígitos
+                            'co': 10, // Colombia: 10 dígitos
+                            'mx': 10, // México: 10 dígitos
+                            'br': 11, // Brasil: 11 dígitos
+                            'es': 9   // España: 9 dígitos
+                        };
+                        
+                        return defaultLengths[countryCode] || 15; // Default: 15 dígitos (máximo internacional)
+                    } catch (e) {
+                        console.error('Error obteniendo longitud máxima:', e);
+                        return 15; // Default seguro
+                    }
+                }
+                
+                // Función para obtener solo los dígitos del número (sin código de país ni espacios)
+                function getDigitsOnly(value) {
+                    if (!value) return '';
+                    // Remover todo excepto dígitos
+                    return value.replace(/\D/g, '');
+                }
+                
+                // Limitar la entrada de caracteres según la longitud máxima del país
+                telInput.on('input', function(e) {
+                    var currentValue = telInput.val() || '';
+                    var countryData = iti.getSelectedCountryData();
+                    var dialCode = '+' + countryData.dialCode;
+                    
+                    // Obtener solo los dígitos del número completo (incluyendo código de país)
+                    var allDigits = getDigitsOnly(currentValue);
+                    var dialCodeDigits = getDigitsOnly(dialCode);
+                    var numberDigits = allDigits.substring(dialCodeDigits.length);
+                    
+                    // Obtener la longitud máxima permitida para el país
+                    var maxLength = getMaxLengthForCountry(iti);
+                    
+                    // Si el número excede la longitud máxima, truncarlo
+                    if (numberDigits.length > maxLength) {
+                        var truncatedNumber = numberDigits.substring(0, maxLength);
+                        var newValue = dialCode + ' ' + truncatedNumber;
+                        // Usar setNumber en lugar de val() directamente para mantener la integridad del componente
+                        iti.setNumber(newValue);
+                        
+                        // Mover el cursor al final
+                        setTimeout(function() {
+                            var len = telInput.val().length;
+                            telInput[0].setSelectionRange(len, len);
+                        }, 0);
+                    }
+                });
+                
+                // También validar en keypress para prevenir la entrada
+                telInput.on('keypress', function(e) {
+                    // Permitir teclas de control (backspace, delete, tab, etc.)
+                    if (e.which < 32 || (e.which >= 37 && e.which <= 40)) {
+                        return true;
+                    }
+                    
+                    var currentValue = telInput.val() || '';
+                    var countryData = iti.getSelectedCountryData();
+                    var dialCode = '+' + countryData.dialCode;
+                    
+                    // Obtener solo los dígitos del número
+                    var allDigits = getDigitsOnly(currentValue);
+                    var dialCodeDigits = getDigitsOnly(dialCode);
+                    var numberDigits = allDigits.substring(dialCodeDigits.length);
+                    
+                    // Obtener la longitud máxima permitida
+                    var maxLength = getMaxLengthForCountry(iti);
+                    
+                    // Si ya se alcanzó la longitud máxima y se intenta ingresar un dígito, prevenir
+                    if (numberDigits.length >= maxLength && /\d/.test(String.fromCharCode(e.which))) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+                
+                // Autocompletar código de país cuando se selecciona un país
+                telInput[0].addEventListener('countrychange', function() {
+                    // Usar requestAnimationFrame para asegurar que el DOM se actualice correctamente
+                    requestAnimationFrame(function() {
+                        var countryData = iti.getSelectedCountryData();
+                        var dialCode = '+' + countryData.dialCode;
+                        
+                        // Limpiar el campo y mostrar solo el código de país con placeholder
+                        // Esto borra cualquier dígito ingresado previamente y establece el código correcto
+                        var newValue = dialCode + ' ';
+                        
+                        // Usar setNumber de intl-tel-input para establecer el nuevo código
+                        iti.setNumber(newValue);
+                        
+                        // Mover el cursor al final después de que se actualice el DOM
+                        setTimeout(function() {
+                            var len = telInput.val().length;
+                            telInput[0].setSelectionRange(len, len);
+                        }, 10);
+                    });
+                });
+                
+                // Asegurar que siempre tenga el código de país al enfocar si está vacío
+                telInput.on('focus', function() {
+                    var currentValue = telInput.val() || '';
+                    if (!currentValue || currentValue.trim() === '') {
+                        var countryData = iti.getSelectedCountryData();
+                        var dialCode = '+' + countryData.dialCode;
+                        // Usar setNumber en lugar de val() directamente
+                        iti.setNumber(dialCode + ' ');
+                        setTimeout(function() {
+                            var len = telInput.val().length;
+                            telInput[0].setSelectionRange(len, len);
+                        }, 50);
+                    } else if (!currentValue.startsWith('+')) {
+                        // Si tiene valor pero no empieza con +, agregar el código de país
+                        var countryData = iti.getSelectedCountryData();
+                        var dialCode = '+' + countryData.dialCode;
+                        // Usar setNumber en lugar de val() directamente
+                        iti.setNumber(dialCode + ' ' + currentValue);
+                        setTimeout(function() {
+                            var len = telInput.val().length;
+                            telInput[0].setSelectionRange(len, len);
+                        }, 50);
+                    }
+                });
+                
+                // Prevenir que el usuario borre el código de país
+                telInput.on('keydown', function(e) {
+                    var currentValue = telInput.val() || '';
+                    var countryData = iti.getSelectedCountryData();
+                    var dialCode = '+' + countryData.dialCode;
+                    var cursorPos = telInput[0].selectionStart;
+                    
+                    // Si el cursor está antes del código de país y presiona backspace o delete, prevenir
+                    if ((e.key === 'Backspace' || e.key === 'Delete') && cursorPos <= dialCode.length) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            }
+            
+            // Función global para agregar validación en tiempo real a campos de teléfono
+            function addPhoneValidation(telInput, iti) {
+                // Función para validar y mostrar errores
+                function validatePhoneInput(input, itiInstance) {
+                    var isValid = itiInstance.isValidNumber();
+                    var errorCode = itiInstance.getValidationError();
+                    var errorMsg = '';
+                    
+                    if (!isValid && input.val().length > 0) {
+                        // Usar códigos numéricos si intlTelInputUtils no está disponible
+                        if (typeof intlTelInputUtils !== 'undefined') {
+                            switch(errorCode) {
+                                case intlTelInputUtils.validationError.INVALID_COUNTRY_CODE:
+                                    errorMsg = 'Código de país inválido';
+                                    break;
+                                case intlTelInputUtils.validationError.TOO_SHORT:
+                                    errorMsg = 'Número demasiado corto para este país';
+                                    break;
+                                case intlTelInputUtils.validationError.TOO_LONG:
+                                    errorMsg = 'Número demasiado largo para este país';
+                                    break;
+                                case intlTelInputUtils.validationError.NOT_A_NUMBER:
+                                    errorMsg = 'No es un número válido';
+                                    break;
+                                default:
+                                    errorMsg = 'Número de teléfono inválido para ' + itiInstance.getSelectedCountryData().name;
+                            }
+                        } else {
+                            // Mensaje genérico si utils no está disponible
+                            errorMsg = 'Número de teléfono inválido para ' + itiInstance.getSelectedCountryData().name;
+                        }
+                        
+                        // Mostrar error visual
+                        input.addClass('slds-has-error');
+                        // Obtener el contenedor .iti del input
+                        var itiContainer = input.closest('.iti');
+                        // Crear o actualizar mensaje de error después del contenedor .iti
+                        var errorDiv = itiContainer.siblings('.slds-form-element__help');
+                        if(errorDiv.length === 0){
+                            errorDiv = $('<div class="slds-form-element__help slds-text-color_error" style="margin-top: 4px; display: block;"></div>');
+                            itiContainer.after(errorDiv);
+                        }
+                        errorDiv.text(errorMsg).show();
+                    } else {
+                        // Remover error visual
+                        input.removeClass('slds-has-error');
+                        var itiContainer = input.closest('.iti');
+                        itiContainer.siblings('.slds-form-element__help').hide();
+                    }
+                }
+                
+                // Agregar validación en tiempo real al perder el foco
+                telInput.on('blur', function() {
+                    validatePhoneInput(telInput, iti);
+                });
+                
+                // Validar también mientras escribe (con debounce)
+                var validationTimeout;
+                telInput.on('input', function() {
+                    clearTimeout(validationTimeout);
+                    validationTimeout = setTimeout(function() {
+                        if(telInput.val().length > 0) {
+                            validatePhoneInput(telInput, iti);
+                        } else {
+                            telInput.removeClass('slds-has-error');
+                            telInput.siblings('.slds-form-element__help').hide();
+                        }
+                    }, 500);
+                });
+            }
+            
             var Fn = {
                 // Valida el rut con su cadena completa "XXXXXXXX-X"
                 validaRut : function (rutCompleto) {
@@ -299,11 +589,67 @@ No. Fecha                Autor                     Descripción
                     console.log((emailCompleto.length > 0 && emailReg.test( emailCompleto )));
                     return (emailCompleto.length > 0 && emailReg.test( emailCompleto ));
                 },
-                validaTelefono : function(telefonoCompleto){
-                    var telefonoReg = /^(\+?56){1}(\s?)([2-9]{1})([0-9]\d{7})$/;
-                    console.log('validando telefono');
-                    console.log((telefonoCompleto.length > 0 && telefonoReg.test( telefonoCompleto )));
-                    return (telefonoCompleto.length > 0 && telefonoReg.test( telefonoCompleto ));
+                validaTelefono : function(telefonoInput){
+                    // Si el input tiene intl-tel-input, usar su validación
+                    var inputElement = typeof telefonoInput === 'string' ? $('#'+telefonoInput) : $(telefonoInput);
+                    if(inputElement.length > 0 && inputElement.data('iti')){
+                        var iti = inputElement.data('iti');
+                        if(iti.isValidNumber()){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    }
+                    // Fallback: validación básica para números internacionales
+                    var telefonoValue = typeof telefonoInput === 'string' ? telefonoInput : inputElement.val();
+                    if(telefonoValue && telefonoValue.length > 0){
+                        // Acepta números que empiecen con + seguido de dígitos (formato internacional)
+                        var telefonoReg = /^\+[1-9]\d{1,14}$/;
+                        // También acepta formato chileno antiguo para compatibilidad
+                        var telefonoRegCL = /^(\+?56){1}(\s?)([2-9]{1})([0-9]\d{7})$/;
+                        return telefonoReg.test(telefonoValue) || telefonoRegCL.test(telefonoValue);
+                    }
+                    return false;
+                },
+                getTelefonoCompleto : function(telefonoInput){
+                    // Obtener número completo con código de país usando intl-tel-input
+                    var inputElement = typeof telefonoInput === 'string' ? $('#'+telefonoInput) : $(telefonoInput);
+                    if(inputElement.length > 0 && inputElement.data('iti')){
+                        var iti = inputElement.data('iti');
+                        var currentValue = inputElement.val() || '';
+                        
+                        // Si el valor no empieza con +, asegurar que tenga el código de país
+                        if(currentValue && !currentValue.startsWith('+')) {
+                            var countryData = iti.getSelectedCountryData();
+                            var dialCode = '+' + countryData.dialCode;
+                            // Actualizar el valor en el input si es necesario
+                            if(!currentValue.startsWith(dialCode)) {
+                                inputElement.val(dialCode + ' ' + currentValue.replace(/^\+?\d+\s*/, ''));
+                                iti.setNumber(dialCode + ' ' + currentValue.replace(/^\+?\d+\s*/, ''));
+                            }
+                        }
+                        
+                        // Obtener el número completo en formato internacional
+                        var fullNumber = iti.getNumber();
+                        if(fullNumber) {
+                            return fullNumber;
+                        }
+                        
+                        // Si no se puede obtener el número formateado, construir uno manualmente
+                        if(currentValue && currentValue.trim() !== '') {
+                            var countryData = iti.getSelectedCountryData();
+                            var dialCode = '+' + countryData.dialCode;
+                            // Remover espacios y caracteres no numéricos excepto +
+                            var cleanNumber = currentValue.replace(/\s+/g, '').replace(/[^\d+]/g, '');
+                            if(cleanNumber.startsWith('+')) {
+                                return cleanNumber;
+                            } else {
+                                return dialCode + cleanNumber;
+                            }
+                        }
+                    }
+                    // Fallback: retornar el valor tal cual
+                    return typeof telefonoInput === 'string' ? telefonoInput : inputElement.val();
                 }
             };
             function loadModelo(index){
@@ -2489,8 +2835,8 @@ No. Fecha                Autor                     Descripción
                             formPersona += '<tr>';
                             formPersona += '<td colspan="2" style="padding-right: 10px !important;">';
                             formPersona += '<div class="container" style="padding-left:60px !important;">';
-                            if(pArrayDocu[i] == 'RUT'){
-                                formPersona += '<input type="radio" value="Rut" id="pCheck_'+(i+1)+'_rut" name="doc_'+(i+1)+'" checked>';
+                            if(pArrayDocu[i] == 'Pasaporte'){
+                                formPersona += '<input type="radio" value="Rut" id="pCheck_'+(i+1)+'_rut" name="doc_'+(i+1)+'">';
                             }else{
                                 formPersona += '<input type="radio" value="Rut" id="pCheck_'+(i+1)+'_rut" name="doc_'+(i+1)+'" checked>';
                             }
@@ -2516,6 +2862,17 @@ No. Fecha                Autor                     Descripción
                             }else{
                                 formPersona += '<input id="documento_'+(i+1)+'" indi="'+(i+1)+'" name="documento_'+(i+1)+'" indi="'+(i+1)+'" type="text" class="slds-input mayuscu" autocomplete="off">';
                             }
+                            formPersona += '</div>';
+                            formPersona += '</td>';
+                            formPersona += '</tr>';
+                            // Campo de nacionalidad (solo visible cuando se selecciona Pasaporte)
+                            formPersona += '<tr id="nacionalidad_row_'+(i+1)+'" style="display:none;">';
+                            formPersona += '<td colspan="2" style="padding-right: 10px !important;">';
+                            formPersona += '<label class="slds-form-element__label" for="nacionalidad_'+(i+1)+'">Nacionalidad de Origen</label><br />';
+                            formPersona += '<div class="slds-form-element">';
+                            formPersona += '<select id="nacionalidad_'+(i+1)+'" name="nacionalidad_'+(i+1)+'" class="slds-select" style="width:100% !important;">';
+                            formPersona += '<option value="">Seleccionar...</option>';
+                            formPersona += '</select>';
                             formPersona += '</div>';
                             formPersona += '</td>';
                             formPersona += '</tr>';
@@ -2575,9 +2932,9 @@ No. Fecha                Autor                     Descripción
                             formPersona += '<label class="slds-form-element__label" for="telefono_'+(i+1)+'">Teléfono</label><br />';
                             formPersona += '<div class="fecha slds-form-element">';
                             if(typeof pArrayTele[i] != 'undefined'){
-                                formPersona += '<input id="telefono_'+(i+1)+'" name="telefono_'+(i+1)+'" type="text" class="slds-input" autocomplete="off" value="'+pArrayTele[i]+'">';
+                                formPersona += '<input id="telefono_'+(i+1)+'" name="telefono_'+(i+1)+'" type="tel" class="slds-input" autocomplete="tel" value="'+pArrayTele[i]+'" style="padding-left: 52px;">';
                             }else{
-                                formPersona += '<input id="telefono_'+(i+1)+'" name="telefono_'+(i+1)+'" type="text" class="slds-input" autocomplete="off">';
+                                formPersona += '<input id="telefono_'+(i+1)+'" name="telefono_'+(i+1)+'" type="tel" class="slds-input" autocomplete="tel" style="padding-left: 52px;">';
                             }
                             formPersona += '</div>';
                             formPersona += '</td>';
@@ -2651,8 +3008,139 @@ No. Fecha                Autor                     Descripción
                         }
                         table.append(tableTr);
                         raizP.append(table);
+                        // Cargar nacionalidades desde el endpoint
+                        var nacionalidadesList = [];
+                        $.ajax({
+                            type: "GET",
+                            url: '/apex/NAV_ReservasDestinos?core.apexpages.devmode.url=0&pa=people&action=nationalities',
+                            dataType: "text",
+                            async: false
+                        }).done(function (responseText) {
+                            try{
+                                var dataNac;
+                                // Limpiar espacios en blanco al inicio y final
+                                responseText = (responseText || '').trim();
+                                // Limpiar respuesta solo si realmente es JSONP (formato: callbackName({...}))
+                                // Verificar si comienza con un identificador seguido de paréntesis
+                                var jsonpPattern = /^[a-zA-Z_$][a-zA-Z0-9_$]*\s*\(/;
+                                if(jsonpPattern.test(responseText)){
+                                    var start = responseText.indexOf('(') + 1;
+                                    var end = responseText.lastIndexOf(')');
+                                    if(start > 0 && end > start){
+                                        responseText = responseText.substring(start, end).trim();
+                                    }
+                                }
+                                if(responseText){
+                                    dataNac = JSON.parse(responseText);
+                                    if(typeof dataNac.nacionalidades != 'undefined' && Array.isArray(dataNac.nacionalidades)){
+                                        nacionalidadesList = dataNac.nacionalidades;
+                                        console.log('Nacionalidades cargadas: ' + nacionalidadesList.length, nacionalidadesList);
+                                    }else{
+                                        console.error('Formato de respuesta inesperado:', dataNac);
+                                    }
+                                }else{
+                                    console.error('Respuesta vacía del servidor');
+                                }
+                            }catch(e){
+                                console.error('Error parseando nacionalidades:', e, 'Response:', responseText);
+                            }
+                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                            console.error('Error en petición AJAX para nacionalidades:', textStatus, errorThrown, jqXHR.responseText);
+                        });
                         for(var i = 0; i<totalGente; i++){
                             $('#fechaNacimiento_'+(i+1)).datepicker({ changeMonth: true, changeYear: true, yearRange: '1900:{!YEAR(TODAY())}' });
+                            
+                            // Llenar select de nacionalidades
+                            var selectNacionalidad = $('#nacionalidad_'+(i+1));
+                            if(selectNacionalidad.length > 0){
+                                // Limpiar opciones existentes excepto la primera
+                                selectNacionalidad.find('option:not(:first)').remove();
+                                for(var j = 0; j < nacionalidadesList.length; j++){
+                                    if(nacionalidadesList[j] && nacionalidadesList[j] !== ''){
+                                        selectNacionalidad.append('<option value="'+nacionalidadesList[j]+'">'+nacionalidadesList[j]+'</option>');
+                                    }
+                                }
+                                if(nacionalidadesList.length === 0){
+                                    console.warn('No se cargaron nacionalidades para pasajero '+(i+1));
+                                }
+                            }
+                            
+                            // Verificar estado inicial y mostrar/ocultar campo de nacionalidad
+                            var pasaChecked = $('#pCheck_'+(i+1)+'_pasa').is(':checked');
+                            if(pasaChecked){
+                                $('#nacionalidad_row_'+(i+1)).show();
+                                $('#nacionalidad_'+(i+1)).attr('required', 'required');
+                            }else{
+                                $('#nacionalidad_row_'+(i+1)).hide();
+                                $('#nacionalidad_'+(i+1)).removeAttr('required');
+                            }
+                            
+                            // Eventos para mostrar/ocultar campo de nacionalidad según tipo de documento
+                            $('#pCheck_'+(i+1)+'_rut').on('change', function(){
+                                var indi = $(this).attr('id').replace('pCheck_','').replace('_rut','');
+                                $('#nacionalidad_row_'+indi).hide();
+                                $('#nacionalidad_'+indi).val('').removeAttr('required');
+                            });
+                            $('#pCheck_'+(i+1)+'_pasa').on('change', function(){
+                                var indi = $(this).attr('id').replace('pCheck_','').replace('_pasa','');
+                                $('#nacionalidad_row_'+indi).show();
+                                $('#nacionalidad_'+indi).attr('required', 'required');
+                            });
+                            
+                            // Inicializar intl-tel-input para el campo de teléfono
+                            var telInput = $('#telefono_'+(i+1));
+                            if(telInput.length > 0){
+                                // Función para inicializar intl-tel-input con múltiples reintentos
+                                var retryCount = 0;
+                                var maxRetries = 10;
+                                function initTelInput(){
+                                    if(typeof intlTelInput !== 'undefined'){
+                                        try{
+                                            // Verificar si ya está inicializado
+                                            if(telInput.data('iti')){
+                                                return;
+                                            }
+                                            var iti = intlTelInput(telInput[0], {
+                                                initialCountry: "cl",
+                                                preferredCountries: ["cl", "ar", "pe", "co", "us"],
+                                                utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.0/build/js/utils.js",
+                                                separateDialCode: false,
+                                                nationalMode: false,
+                                                autoPlaceholder: "aggressive",
+                                                formatOnDisplay: true
+                                            });
+                                            
+                                            telInput.data('iti', iti);
+                                            
+                                            // Autocompletar código de país
+                                            setupPhoneAutoComplete(telInput, iti);
+                                            // Agregar validación en tiempo real
+                                            addPhoneValidation(telInput, iti);
+                                            
+                                            console.log('intl-tel-input inicializado para telefono_'+(i+1));
+                                        }catch(e){
+                                            console.error('Error inicializando intl-tel-input:', e);
+                                            if(retryCount < maxRetries){
+                                                retryCount++;
+                                                setTimeout(initTelInput, 500);
+                                            }
+                                        }
+                                    }else{
+                                        // Si no está disponible, reintentar después de un momento
+                                        if(retryCount < maxRetries){
+                                            retryCount++;
+                                            setTimeout(initTelInput, 500);
+                                        }else{
+                                            console.error('intlTelInput no está disponible después de ' + maxRetries + ' intentos');
+                                        }
+                                    }
+                                }
+                                // Intentar inicializar después de que el DOM esté completamente listo
+                                setTimeout(function(){
+                                    initTelInput();
+                                }, 100);
+                            }
+                            
                             $('#documento_'+(i+1)).on('blur',function(){
                                 if(!Fn.validaRut(this.value) && $('#pCheck_'+$(this).attr('indi')+'_rut').is(':checked')){
                                     alert("Este rut "+this.value+" es inválido.");
@@ -2670,6 +3158,7 @@ No. Fecha                Autor                     Descripción
                                 var Dis = $('#discapacidad_'+$(this).attr('indi'));
                                 var Res = $('#residente_'+$(this).attr('indi'));
                                 var Est = $('#estudiante_'+$(this).attr('indi'));
+                                var Nac = $('#nacionalidad_'+$(this).attr('indi'));
                                 console.log('Buscando documento');
                                 var rutPas = this.value;
                                 $.ajax({
@@ -2764,6 +3253,17 @@ No. Fecha                Autor                     Descripción
                                         }else{
                                             console.log('Estudiante Undef: '+dataP.Persona.Estudiante);
                                         }
+                                        // Cargar nacionalidad si existe
+                                        if(typeof dataP.Persona.Nacionalidad != 'undefined' && dataP.Persona.Nacionalidad != null){
+                                            $(Nac).val(dataP.Persona.Nacionalidad);
+                                            // Si tiene nacionalidad y es Pasaporte, mostrar el campo
+                                            if($('#pCheck_'+$(ruXX).attr('indi')+'_pasa').is(':checked')){
+                                                $('#nacionalidad_row_'+$(ruXX).attr('indi')).show();
+                                            }
+                                            console.log('Nacionalidad: '+dataP.Persona.Nacionalidad);
+                                        }else{
+                                            console.log('Nacionalidad Undef: '+dataP.Persona.Nacionalidad);
+                                        }
                                     }
                                 });
                             });
@@ -2800,6 +3300,7 @@ No. Fecha                Autor                     Descripción
                         const pArrayResi = [];
                         const pArrayEstu = [];
                         const pArrayButa = [];
+                        const pArrayNacionalidad = [];
                         conductoresCombo = '<option value="Sin Conductor">Sin Conductor</option>';
                         counterTelefono = 0;
                         var totalGente = personas + sAcomodacion;
@@ -2846,8 +3347,9 @@ No. Fecha                Autor                     Descripción
                                 return;
                             }
                             if($('#telefono_'+x).val() != ''){
-                                if(Fn.validaTelefono($('#telefono_'+x).val())){
-                                    pArrayTele.push($('#telefono_'+x).val());
+                                if(Fn.validaTelefono($('#telefono_'+x))){
+                                    var telefonoCompleto = Fn.getTelefonoCompleto($('#telefono_'+x));
+                                    pArrayTele.push(telefonoCompleto);
                                     console.log('arreglo telefonos');
                                     console.log(pArrayTele);
                                     counterTelefono = counterTelefono + 1;
@@ -2860,6 +3362,18 @@ No. Fecha                Autor                     Descripción
                                 pArrayTele.push('null');
                                 console.log('arreglo telefonos 2');
                                 console.log(pArrayTele);    
+                            }
+                            // Capturar nacionalidad
+                            if($('#pCheck_'+x+'_pasa').is(':checked')){
+                                if($('#nacionalidad_'+x).val() == '' || $('#nacionalidad_'+x).val() == null){
+                                    alert("Debes seleccionar la nacionalidad de origen del pasajero");
+                                    terminaEspera();
+                                    return;
+                                }
+                                pArrayNacionalidad.push($('#nacionalidad_'+x).val());
+                            }else{
+                                // Si es RUT, asignar "Chileno(a)" por defecto
+                                pArrayNacionalidad.push('Chileno(a)');
                             }
                             if($('#email_'+x).val() != ''){
                                 if(Fn.validaEmail($('#email_'+x).val())){
@@ -2918,7 +3432,7 @@ No. Fecha                Autor                     Descripción
                         }
                         $.ajax({
                             type: "POST",
-                            url: '/apex/NAV_ReservasDestinos?core.apexpages.devmode.url=0&pa=3&uuid='+uuid+'&i='+itinerario+'&o='+origen+'&d='+destino+'&Ptd='+pArrayDocu+'&Pdo='+pArrayNDoc+'&Pn='+pArrayName+'&Pap='+pArrayLNam+'&Pt='+pArrayTele+'&PEm='+pArrayEmai+'&PfN='+pArrayFNac+'&Pg='+pArraySexo+'&Pd='+pArrayDisc+'&Pr='+pArrayResi+'&Pe='+pArrayEstu+'&Pbut='+pArrayButa,
+                            url: '/apex/NAV_ReservasDestinos?core.apexpages.devmode.url=0&pa=3&uuid='+uuid+'&i='+itinerario+'&o='+origen+'&d='+destino+'&Ptd='+pArrayDocu+'&Pdo='+pArrayNDoc+'&Pn='+pArrayName+'&Pap='+pArrayLNam+'&Pt='+pArrayTele+'&PEm='+pArrayEmai+'&PfN='+pArrayFNac+'&Pg='+pArraySexo+'&Pd='+pArrayDisc+'&Pr='+pArrayResi+'&Pe='+pArrayEstu+'&Pbut='+pArrayButa+'&PNac='+pArrayNacionalidad,
                             dataType: "jsonp"
                         }).complete(function (response) {
                             var dataP = JSON.parse(response.responseText);
@@ -3054,7 +3568,7 @@ No. Fecha                Autor                     Descripción
                                 formVehiculo += '<td colspan="2" style="padding-right: 10px !important;">';
                                 formVehiculo += '<label class="slds-form-element__label" for="e_telefono_'+(i+1)+'">Teléfono</label><br />';
                                 formVehiculo += '<div class="fecha slds-form-element">';
-                                formVehiculo += '<input id="e_telefono_'+(i+1)+'" name="e_telefono_'+(i+1)+'" type="text" class="slds-input" autocomplete="off">';
+                                formVehiculo += '<input id="e_telefono_'+(i+1)+'" name="e_telefono_'+(i+1)+'" type="tel" class="slds-input" autocomplete="tel" style="padding-left: 52px;">';
                                 formVehiculo += '</div>';
                                 formVehiculo += '</td>';
                                 formVehiculo += '</tr>';
@@ -3100,7 +3614,7 @@ No. Fecha                Autor                     Descripción
                                 formVehiculo += '<td colspan="2" style="padding-right: 10px !important;">';
                                 formVehiculo += '<label class="slds-form-element__label" for="r_telefono_'+(i+1)+'">Teléfono</label><br />';
                                 formVehiculo += '<div class="fecha slds-form-element">';
-                                formVehiculo += '<input id="r_telefono_'+(i+1)+'" name="r_telefono_'+(i+1)+'" type="text" class="slds-input" autocomplete="off">';
+                                formVehiculo += '<input id="r_telefono_'+(i+1)+'" name="r_telefono_'+(i+1)+'" type="tel" class="slds-input" autocomplete="tel" style="padding-left: 52px;">';
                                 formVehiculo += '<input id="id_vehiculo_'+(i+1)+'" name="id_vehiculo_'+(i+1)+'" type="hidden" class="slds-input" autocomplete="off" value="Camiones/Máquinas_'+(i+1)+'">';
                                 formVehiculo += '</div>';
                                 formVehiculo += '</td>';
@@ -3178,7 +3692,7 @@ No. Fecha                Autor                     Descripción
                                     formVehiculo += '<td colspan="2" style="padding-right: 10px !important;">';
                                     formVehiculo += '<label class="slds-form-element__label" for="e_telefono_'+(i+1)+'">Teléfono</label><br />';
                                     formVehiculo += '<div class="fecha slds-form-element">';
-                                    formVehiculo += '<input id="e_telefono_'+(i+1)+'" name="e_telefono_'+(i+1)+'" type="text" class="slds-input" autocomplete="off">';
+                                    formVehiculo += '<input id="e_telefono_'+(i+1)+'" name="e_telefono_'+(i+1)+'" type="tel" class="slds-input" autocomplete="tel" style="padding-left: 52px;">';
                                     formVehiculo += '</div>';
                                     formVehiculo += '</td>';
                                     formVehiculo += '</tr>';
@@ -3224,7 +3738,7 @@ No. Fecha                Autor                     Descripción
                                     formVehiculo += '<td colspan="2" style="padding-right: 10px !important;">';
                                     formVehiculo += '<label class="slds-form-element__label" for="r_telefono_'+(i+1)+'">Teléfono</label><br />';
                                     formVehiculo += '<div class="fecha slds-form-element">';
-                                    formVehiculo += '<input id="r_telefono_'+(i+1)+'" name="r_telefono_'+(i+1)+'" type="text" class="slds-input" autocomplete="off">';
+                                    formVehiculo += '<input id="r_telefono_'+(i+1)+'" name="r_telefono_'+(i+1)+'" type="tel" class="slds-input" autocomplete="tel" style="padding-left: 52px;">';
                                     formVehiculo += '<input id="id_vehiculo_'+(i+1)+'" name="id_vehiculo_'+(i+1)+'" type="hidden" class="slds-input" autocomplete="off" value="Camiones/Máquinas_'+(i+1)+'">';
                                     formVehiculo += '</div>';
                                 }
@@ -3312,7 +3826,7 @@ No. Fecha                Autor                     Descripción
                                 formVehiculo += '<td colspan="2" style="padding-right: 10px !important;" class="receptores_data_'+(i+1)+'">';
                                 formVehiculo += '<label class="slds-form-element__label" for="e_telefono_'+(i+1)+'">Teléfono</label><br />';
                                 formVehiculo += '<div class="fecha slds-form-element">';
-                                formVehiculo += '<input id="e_telefono_'+(i+1)+'" name="e_telefono_'+(i+1)+'" type="text" class="slds-input" autocomplete="off">';
+                                formVehiculo += '<input id="e_telefono_'+(i+1)+'" name="e_telefono_'+(i+1)+'" type="tel" class="slds-input" autocomplete="tel" style="padding-left: 52px;">';
                                 formVehiculo += '</div>';
                                 formVehiculo += '</td>';
                                 formVehiculo += '</tr>';
@@ -3358,7 +3872,7 @@ No. Fecha                Autor                     Descripción
                                 formVehiculo += '<td colspan="2" style="padding-right: 10px !important;" class="receptores_data_'+(i+1)+'">';
                                 formVehiculo += '<label class="slds-form-element__label" for="r_telefono_'+(i+1)+'">Teléfono</label><br />';
                                 formVehiculo += '<div class="fecha slds-form-element">';
-                                formVehiculo += '<input id="r_telefono_'+(i+1)+'" name="r_telefono_'+(i+1)+'" type="text" class="slds-input" autocomplete="off">';
+                                formVehiculo += '<input id="r_telefono_'+(i+1)+'" name="r_telefono_'+(i+1)+'" type="tel" class="slds-input" autocomplete="tel" style="padding-left: 52px;">';
                                 formVehiculo += '<input id="id_vehiculo_'+(i+1)+'" name="id_vehiculo_'+(i+1)+'" type="hidden" class="slds-input" autocomplete="off" value="'+arrTipos[i]+'_'+(i+1)+'">';
                                 formVehiculo += '</div>';
                                 formVehiculo += '</td>';
@@ -3383,6 +3897,78 @@ No. Fecha                Autor                     Descripción
                         }
                         table.append(tableTr);
                         raizP.append(table);
+                        // Inicializar intl-tel-input para campos de teléfono de vehículos
+                        for(var i = 0; i< vehiculos; i++){
+                            var telInputE = $('#e_telefono_'+(i+1));
+                            if(telInputE.length > 0){
+                                var itiE = intlTelInput(telInputE[0], {
+                                    initialCountry: "cl",
+                                    preferredCountries: ["cl", "ar", "pe", "co", "us"],
+                                    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.0/build/js/utils.js",
+                                    separateDialCode: false,
+                                    nationalMode: false,
+                                    autoPlaceholder: "aggressive",
+                                    formatOnDisplay: true
+                                });
+                                telInputE.data('iti', itiE);
+                                // Autocompletar código de país
+                                setupPhoneAutoComplete(telInputE, itiE);
+                                // Agregar validación en tiempo real
+                                addPhoneValidation(telInputE, itiE);
+                            }
+                            var telInputR = $('#r_telefono_'+(i+1));
+                            if(telInputR.length > 0){
+                                var itiR = intlTelInput(telInputR[0], {
+                                    initialCountry: "cl",
+                                    preferredCountries: ["cl", "ar", "pe", "co", "us"],
+                                    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.0/build/js/utils.js",
+                                    separateDialCode: false,
+                                    nationalMode: false,
+                                    autoPlaceholder: "aggressive",
+                                    formatOnDisplay: true
+                                });
+                                telInputR.data('iti', itiR);
+                                // Autocompletar código de país
+                                setupPhoneAutoComplete(telInputR, itiR);
+                                // Agregar validación en tiempo real
+                                addPhoneValidation(telInputR, itiR);
+                            }
+                        }
+                        // Inicializar intl-tel-input para campos de teléfono de carga directa
+                        var telInputCE = $('#ce_telefono');
+                        if(telInputCE.length > 0){
+                            var itiCE = intlTelInput(telInputCE[0], {
+                                initialCountry: "cl",
+                                preferredCountries: ["cl", "ar", "pe", "co", "us"],
+                                utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.0/build/js/utils.js",
+                                separateDialCode: false,
+                                nationalMode: false,
+                                autoPlaceholder: "aggressive",
+                                formatOnDisplay: true
+                            });
+                            telInputCE.data('iti', itiCE);
+                            // Autocompletar código de país
+                            setupPhoneAutoComplete(telInputCE, itiCE);
+                            // Agregar validación en tiempo real
+                            addPhoneValidation(telInputCE, itiCE);
+                        }
+                        var telInputCR = $('#cr_telefono');
+                        if(telInputCR.length > 0){
+                            var itiCR = intlTelInput(telInputCR[0], {
+                                initialCountry: "cl",
+                                preferredCountries: ["cl", "ar", "pe", "co", "us"],
+                                utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.0/build/js/utils.js",
+                                separateDialCode: false,
+                                nationalMode: false,
+                                autoPlaceholder: "aggressive",
+                                formatOnDisplay: true
+                            });
+                            telInputCR.data('iti', itiCR);
+                            // Autocompletar código de país
+                            setupPhoneAutoComplete(telInputCR, itiCR);
+                            // Agregar validación en tiempo real
+                            addPhoneValidation(telInputCR, itiCR);
+                        }
                         for(var i = 0; i< vehiculos; i++){
                             if(personas > 0 || sAcomodacion > 0){
                                 //$('#conductor_'+(i+1)).combobox();
@@ -3606,8 +4192,9 @@ No. Fecha                Autor                     Descripción
                                     return;
                                 }
                                 if($('#e_telefono_'+x).val() != ''){
-                                    if(Fn.validaTelefono($('#e_telefono_'+x).val())){
-                                        vArraETele.push($('#e_telefono_'+x).val());
+                                    if(Fn.validaTelefono($('#e_telefono_'+x))){
+                                        var telefonoCompleto = Fn.getTelefonoCompleto($('#e_telefono_'+x));
+                                        vArraETele.push(telefonoCompleto);
                                     }else{
                                         alert("Debes ingresar un teléfono válido para la persona que entrega");
                                         terminaEspera();
@@ -3651,8 +4238,9 @@ No. Fecha                Autor                     Descripción
                                     return;
                                 }
                                 if($('#r_telefono_'+x).val() != ''){
-                                    if(Fn.validaTelefono($('#r_telefono_'+x).val())){
-                                        vArraRTele.push($('#r_telefono_'+x).val());
+                                    if(Fn.validaTelefono($('#r_telefono_'+x))){
+                                        var telefonoCompleto = Fn.getTelefonoCompleto($('#r_telefono_'+x));
+                                        vArraRTele.push(telefonoCompleto);
                                     }else{
                                         alert("Debes ingresar un teléfono válido para la persona que recibe");
                                         terminaEspera();
@@ -3788,9 +4376,16 @@ No. Fecha                Autor                     Descripción
                             return;
                         }
                         if($('#ce_telefono').val() != ''){
-                            cCargaETel = $('#ce_telefono').val();
-                            if(!Fn.validaTelefono(cCargaETel)){
-                                alert("Debes ingresar un teléfono válido para la persona que entrega");
+                            cCargaETel = $('#ce_telefono');
+                            if(cCargaETel.val() != ''){
+                                if(!Fn.validaTelefono(cCargaETel)){
+                                    alert("Debes ingresar un teléfono válido para la persona que entrega");
+                                    terminaEspera();
+                                    return;
+                                }
+                                cCargaETel = Fn.getTelefonoCompleto(cCargaETel);
+                            }else{
+                                alert("Debes ingresar el teléfono de la persona que entrega");
                                 terminaEspera();
                                 return;
                             }
@@ -3832,9 +4427,16 @@ No. Fecha                Autor                     Descripción
                             return;
                         }
                         if($('#cr_telefono').val() != ''){
-                            cCargaRTel = $('#cr_telefono').val();
-                            if(!Fn.validaTelefono(cCargaRTel)){
-                                alert("Debes ingresar un teléfono válido para la persona que recibe");
+                            cCargaRTel = $('#cr_telefono');
+                            if(cCargaRTel.val() != ''){
+                                if(!Fn.validaTelefono(cCargaRTel)){
+                                    alert("Debes ingresar un teléfono válido para la persona que recibe");
+                                    terminaEspera();
+                                    return;
+                                }
+                                cCargaRTel = Fn.getTelefonoCompleto(cCargaRTel);
+                            }else{
+                                alert("Debes ingresar el teléfono de la persona que recibe");
                                 terminaEspera();
                                 return;
                             }
@@ -7323,7 +7925,7 @@ No. Fecha                Autor                     Descripción
                         <td colspan="2" style="padding-right: 10px !important;">
                             <label class="slds-form-element__label" for="ce_telefono">Teléfono</label> <br />
                             <div class="fecha slds-form-element">
-                                <input id="ce_telefono" name="ce_telefono" type="text" class="slds-input" autocomplete="off" />
+                                <input id="ce_telefono" name="ce_telefono" type="tel" class="slds-input" autocomplete="tel" style="padding-left: 52px;" />
                             </div>
                         </td>
                     </tr>
@@ -7370,7 +7972,7 @@ No. Fecha                Autor                     Descripción
                         <td colspan="2" style="padding-right: 10px !important;">
                             <label class="slds-form-element__label" for="cr_telefono">Teléfono</label> <br />
                             <div class="fecha slds-form-element">
-                                <input id="cr_telefono" name="cr_telefono" type="text" class="slds-input" autocomplete="off" />
+                                <input id="cr_telefono" name="cr_telefono" type="tel" class="slds-input" autocomplete="tel" style="padding-left: 52px;" />
                             </div>
                         </td>
                     </tr>

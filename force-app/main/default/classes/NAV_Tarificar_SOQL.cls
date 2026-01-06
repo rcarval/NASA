@@ -35,12 +35,14 @@ public class NAV_Tarificar_SOQL  {
                                              Modelo__c, Nombre_Pasajero__r.PersonBirthdate,
                                              Estudiante__c,
                                              Reserva__r.Puerto_ORIGEN__c, Reserva__r.Puerto_DESTINO__c,
-                                             Nombre_Pasajero__r.Discapacidad__pc, Transportista__c,
+                                             Nombre_Pasajero__r.Discapacidad__pc, Nombre_Pasajero__r.Nacionalidad__pc, Transportista__c,
                                              Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c, 
+                                             Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc,
                                              Categoria_de_Vehiculo__c, Cantidad_de_Metros__c,
                                              Reserva__r.Fecha_de_Reserva__c, Reserva__r.Ocupacion_porcentaje__c,
                                              Reserva__r.Itinerario_admite_DR__c, CreatedDate,
                                              Reserva__r.Fecha_Viaje__c, Persona_que_entrega__r.Tipo_de_identificacion__c,
+                                             Persona_que_entrega__r.Nacionalidad__pc,
                                              Carro_Arrastre__c, ML_Portabicicleta__c,
                                              Reserva__r.Itinerario_asociado__r.Tipo__c,
                                              Reserva__r.Estado_de_Reserva__c, Parametro_Tarifa__c,
@@ -68,12 +70,14 @@ public class NAV_Tarificar_SOQL  {
                                                       Modelo__c, Nombre_Pasajero__r.PersonBirthdate,
                                                       Estudiante__c,
                                                       Reserva__r.Puerto_ORIGEN__c, Reserva__r.Puerto_DESTINO__c,
-                                                      Nombre_Pasajero__r.Discapacidad__pc, Transportista__c,
+                                                      Nombre_Pasajero__r.Discapacidad__pc, Nombre_Pasajero__r.Nacionalidad__pc, Transportista__c,
                                                       Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c, 
+                                                      Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc,
                                                       Categoria_de_Vehiculo__c, Cantidad_de_Metros__c,
                                                       Reserva__r.Fecha_de_Reserva__c, Reserva__r.Ocupacion_porcentaje__c,
                                                       Reserva__r.Itinerario_admite_DR__c, CreatedDate,
                                                       Reserva__r.Fecha_Viaje__c, Persona_que_entrega__r.Tipo_de_identificacion__c,
+                                                      Persona_que_entrega__r.Nacionalidad__pc,
                                                       Carro_Arrastre__c, ML_Portabicicleta__c,
                                                       Reserva__r.Itinerario_asociado__r.Tipo__c,
                                                       Reserva__r.Estado_de_Reserva__c, Parametro_Tarifa__c,
@@ -199,8 +203,17 @@ public class NAV_Tarificar_SOQL  {
                     }
                 }else{
                     //Se considera Nacional cuando el registro de detalle Reserva es del tipo RUT
+                    //y la nacionalidad es Chileno(a) o no está especificada
                     if(detalleReserva.Tipo_de_identificacion__c == 'RUT'){
-                        esNacional = true;
+                        if(detalleReserva.Nombre_Pasajero__r != null && 
+                           detalleReserva.Nombre_Pasajero__r.Nacionalidad__pc != null && 
+                           detalleReserva.Nombre_Pasajero__r.Nacionalidad__pc != 'Chileno(a)'){
+                            esNacional = false; // RUT provisorio con nacionalidad extranjera
+                        }else{
+                            esNacional = true; // RUT con nacionalidad chilena o no especificada
+                        }
+                    }else{
+                        esNacional = false; // Pasaporte u otro tipo de documento
                     }
                     
                     //Búsqueda de Parámetros de Tarifa del tipo Comercial
@@ -451,8 +464,17 @@ public class NAV_Tarificar_SOQL  {
             
             when 'Pallet'{
                 //Se considera Nacional cuando el registro de detalle Reserva de la persona que entrega es del tipo RUT
-                if(detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
-                    esNacional = true;
+                //y la nacionalidad es Chileno(a) o no está especificada
+                if(detalleReserva.Persona_que_entrega__r != null && 
+                   detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
+                    if(detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != null && 
+                       detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != 'Chileno(a)'){
+                        esNacional = false; // RUT provisorio con nacionalidad extranjera
+                    }else{
+                        esNacional = true; // RUT con nacionalidad chilena o no especificada
+                    }
+                }else{
+                    esNacional = false; // Pasaporte u otro tipo de documento
                 }
 
                 //Búsqueda de Parámetros de Tarifa del tipo Comercial
@@ -585,13 +607,31 @@ public class NAV_Tarificar_SOQL  {
                 if(String.isNotBlank(detalleReserva.Detalle_Reserva_Conductor__c)){
                     System.debug('Consulto por Conductor');
                     //Se considera Nacional cuando el registro de detalle Reserva de la persona identificada como conductor es del tipo RUT
-                    if(detalleReserva.Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c == 'RUT'){
-                        esNacional = true;
+                    //y la nacionalidad es Chileno(a) o no está especificada
+                    if(detalleReserva.Detalle_Reserva_Conductor__r != null && 
+                       detalleReserva.Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c == 'RUT'){
+                        if(detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r != null &&
+                           detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc != null && 
+                           detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc != 'Chileno(a)'){
+                            esNacional = false; // RUT provisorio con nacionalidad extranjera
+                        }else{
+                            esNacional = true; // RUT con nacionalidad chilena o no especificada
+                        }
+                    }else{
+                        esNacional = false; // Pasaporte u otro tipo de documento
                     }
                 }else{
                     System.debug('Consulto por Persona que entrega');
-                    if(detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
-                        esNacional = true;
+                    if(detalleReserva.Persona_que_entrega__r != null && 
+                       detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
+                        if(detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != null && 
+                           detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != 'Chileno(a)'){
+                            esNacional = false; // RUT provisorio con nacionalidad extranjera
+                        }else{
+                            esNacional = true; // RUT con nacionalidad chilena o no especificada
+                        }
+                    }else{
+                        esNacional = false; // Pasaporte u otro tipo de documento
                     }
                 }
 
@@ -739,13 +779,31 @@ public class NAV_Tarificar_SOQL  {
                 if(String.isNotBlank(detalleReserva.Detalle_Reserva_Conductor__c)){
                     System.debug('Consulto por Conductor');
                     //Se considera Nacional cuando el registro de detalle Reserva de la persona identificada como conductor es del tipo RUT
-                    if(detalleReserva.Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c == 'RUT'){
-                        esNacional = true;
+                    //y la nacionalidad es Chileno(a) o no está especificada
+                    if(detalleReserva.Detalle_Reserva_Conductor__r != null && 
+                       detalleReserva.Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c == 'RUT'){
+                        if(detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r != null &&
+                           detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc != null && 
+                           detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc != 'Chileno(a)'){
+                            esNacional = false; // RUT provisorio con nacionalidad extranjera
+                        }else{
+                            esNacional = true; // RUT con nacionalidad chilena o no especificada
+                        }
+                    }else{
+                        esNacional = false; // Pasaporte u otro tipo de documento
                     }
                 }else{
                     System.debug('Consulto por Persona que entrega');
-                    if(detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
-                        esNacional = true;
+                    if(detalleReserva.Persona_que_entrega__r != null && 
+                       detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
+                        if(detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != null && 
+                           detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != 'Chileno(a)'){
+                            esNacional = false; // RUT provisorio con nacionalidad extranjera
+                        }else{
+                            esNacional = true; // RUT con nacionalidad chilena o no especificada
+                        }
+                    }else{
+                        esNacional = false; // Pasaporte u otro tipo de documento
                     }
                 }
 
@@ -1029,10 +1087,17 @@ public class NAV_Tarificar_SOQL  {
                         }else{
                             if(parametroTarifa.Tipo_Transporte__c == 'Pasajero'){
                                 //Se considera Nacional cuando el registro de detalle Reserva es del tipo RUT
+                                //y la nacionalidad es Chileno(a) o no está especificada
                                 if(detalleReserva.Tipo_de_identificacion__c == 'RUT'){
-                                    esNacional = true;
+                                    if(detalleReserva.Nombre_Pasajero__r != null && 
+                                       detalleReserva.Nombre_Pasajero__r.Nacionalidad__pc != null && 
+                                       detalleReserva.Nombre_Pasajero__r.Nacionalidad__pc != 'Chileno(a)'){
+                                        esNacional = false; // RUT provisorio con nacionalidad extranjera
+                                    }else{
+                                        esNacional = true; // RUT con nacionalidad chilena o no especificada
+                                    }
                                 }else{
-                                    esNacional = false;
+                                    esNacional = false; // Pasaporte u otro tipo de documento
                                 }
                     
                                 //Búsqueda de Parámetros de Tarifa del tipo Comercial
@@ -1115,8 +1180,17 @@ public class NAV_Tarificar_SOQL  {
                     when 'Pallet'{
                         if(parametroTarifa.Tipo_Transporte__c == 'Carga' && parametroTarifa.Especificacion__c == 'Pallets'){
                             //Se considera Nacional cuando el registro de detalle Reserva de la persona que entrega es del tipo RUT
-                            if(detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
-                                esNacional = true;
+                            //y la nacionalidad es Chileno(a) o no está especificada
+                            if(detalleReserva.Persona_que_entrega__r != null && 
+                               detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
+                                if(detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != null && 
+                                   detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != 'Chileno(a)'){
+                                    esNacional = false; // RUT provisorio con nacionalidad extranjera
+                                }else{
+                                    esNacional = true; // RUT con nacionalidad chilena o no especificada
+                                }
+                            }else{
+                                esNacional = false; // Pasaporte u otro tipo de documento
                             }
 
                             //Búsqueda de Parámetros de Tarifa del tipo Comercial
@@ -1160,12 +1234,28 @@ public class NAV_Tarificar_SOQL  {
                     when 'Pista'{
                         if(parametroTarifa.Tipo_Transporte__c == 'Vehículo'){
                             //Se considera Nacional cuando el registro de detalle Reserva de la persona identificada como conductor es del tipo RUT
-                            if(detalleReserva.Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c == 'RUT'){
-                                esNacional = true;
+                            //y la nacionalidad es Chileno(a) o no está especificada
+                            if(detalleReserva.Detalle_Reserva_Conductor__r != null && 
+                               detalleReserva.Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c == 'RUT'){
+                                if(detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r != null &&
+                                   detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc != null && 
+                                   detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc != 'Chileno(a)'){
+                                    esNacional = false; // RUT provisorio con nacionalidad extranjera
+                                }else{
+                                    esNacional = true; // RUT con nacionalidad chilena o no especificada
+                                }
                             }else{
                                 System.debug('Consulto por Persona que entrega');
-                                if(detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
-                                    esNacional = true;
+                                if(detalleReserva.Persona_que_entrega__r != null && 
+                                   detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
+                                    if(detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != null && 
+                                       detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != 'Chileno(a)'){
+                                        esNacional = false; // RUT provisorio con nacionalidad extranjera
+                                    }else{
+                                        esNacional = true; // RUT con nacionalidad chilena o no especificada
+                                    }
+                                }else{
+                                    esNacional = false; // Pasaporte u otro tipo de documento
                                 }
                             }
 
@@ -1222,8 +1312,18 @@ public class NAV_Tarificar_SOQL  {
                         if(parametroTarifa.Tipo_Transporte__c == 'Vehículo' && parametroTarifa.Especificacion__c == 'Bicicletas'
                         && parametroTarifa.Concepto__c == 'Vehículo - Bicicletas'){
                             //Se considera Nacional cuando el registro de detalle Reserva de la persona identificada como conductor es del tipo RUT
-                            if(detalleReserva.Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c == 'RUT'){
-                                esNacional = true;
+                            //y la nacionalidad es Chileno(a) o no está especificada
+                            if(detalleReserva.Detalle_Reserva_Conductor__r != null && 
+                               detalleReserva.Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c == 'RUT'){
+                                if(detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r != null &&
+                                   detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc != null && 
+                                   detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc != 'Chileno(a)'){
+                                    esNacional = false; // RUT provisorio con nacionalidad extranjera
+                                }else{
+                                    esNacional = true; // RUT con nacionalidad chilena o no especificada
+                                }
+                            }else{
+                                esNacional = false; // Pasaporte u otro tipo de documento
                             }
 
                             //Búsqueda de Parámetros de Tarifa del tipo Comercial
@@ -1482,12 +1582,28 @@ public class NAV_Tarificar_SOQL  {
                     System.debug('Tipo itinerario -> '+tipoItinerario);
                     
                     //Se considera Nacional cuando el registro de detalle Reserva es del tipo RUT
-                    if(detalleReserva.Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c == 'RUT'){
-                        esNacional = true;
+                    //y la nacionalidad es Chileno(a) o no está especificada
+                    if(detalleReserva.Detalle_Reserva_Conductor__r != null && 
+                       detalleReserva.Detalle_Reserva_Conductor__r.Tipo_de_identificacion__c == 'RUT'){
+                        if(detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r != null &&
+                           detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc != null && 
+                           detalleReserva.Detalle_Reserva_Conductor__r.Nombre_Pasajero__r.Nacionalidad__pc != 'Chileno(a)'){
+                            esNacional = false; // RUT provisorio con nacionalidad extranjera
+                        }else{
+                            esNacional = true; // RUT con nacionalidad chilena o no especificada
+                        }
                     }else{
                         System.debug('Consulto por Persona que entrega');
-                        if(detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
-                            esNacional = true;
+                        if(detalleReserva.Persona_que_entrega__r != null && 
+                           detalleReserva.Persona_que_entrega__r.Tipo_de_identificacion__c == 'RUT'){
+                            if(detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != null && 
+                               detalleReserva.Persona_que_entrega__r.Nacionalidad__pc != 'Chileno(a)'){
+                                esNacional = false; // RUT provisorio con nacionalidad extranjera
+                            }else{
+                                esNacional = true; // RUT con nacionalidad chilena o no especificada
+                            }
+                        }else{
+                            esNacional = false; // Pasaporte u otro tipo de documento
                         }
                     }
 

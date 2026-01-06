@@ -179,53 +179,89 @@ public class NAV_Reservas  {
 					jsonText = jsonText + ']}';
 				}
 				when 'people'{
-					String identificador = ApexPages.currentPage().getParameters().get('id');
-					Boolean esResidente = false;
-					jsonText = '{ "Persona": {';
-					try{
-						Account acc = [SELECT Id, LastName, FirstName, PersonBirthdate, Phone, Sexo__pc, PersonEmail,
-										Identificacion__c, Tipo_de_identificacion__c, Discapacidad__pc, IsPersonAccount
-									FROM Account
-									WHERE Identificacion__c =: identificador.replace('k','K').toUpperCase()];
-						if(acc.IsPersonAccount){
-							jsonText = jsonText + '"Nombre":"'+acc.FirstName+'",';
-							jsonText = jsonText + '"Apellido":"'+acc.LastName+'",';
-							jsonText = jsonText + '"Telefono":"'+acc.Phone+'",';
-							jsonText = jsonText + '"Sexo":"'+acc.Sexo__pc+'",';
-							jsonText = jsonText + '"Email":"'+acc.PersonEmail+'",';
-							jsonText = jsonText + '"FechaNacimiento":"'+acc.PersonBirthdate+'",';
-							jsonText = jsonText + '"Discapacitado":"'+acc.Discapacidad__pc+'", ';
+					String action = ApexPages.currentPage().getParameters().get('action');
+					if(action == 'nationalities'){
+						// Devolver lista de nacionalidades desde el picklist de Account
+						jsonText = '{ "nacionalidades": [';
+						List<String> pickListValuesList = new List<String>();
+						List<String> otroList = new List<String>();
+						Schema.DescribeFieldResult fieldResult = Account.Nacionalidad__pc.getDescribe();
+						List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+						for(Schema.PicklistEntry pickListVal : ple){
+							String label = pickListVal.getLabel();
+							if(label != '--' && label != null && label != ''){
+								if(label == 'Otro'){
+									otroList.add(label);
+								}else{
+									pickListValuesList.add(label);
+								}
+							}
+						}
+						// Ordenar alfabéticamente de A a Z
+						pickListValuesList.sort();
+						// Agregar "Otro" al final
+						pickListValuesList.addAll(otroList);
+						String jArray = '';
+						for(String nac : pickListValuesList){
+							jArray = jArray + '"'+nac+'",';
+						}
+						if(jArray.right(1) == ','){
+							jsonText = jsonText + jArray.substring(0,jArray.length() -1);
+						}
+						jsonText = jsonText + ']}';
+					}else{
+						// Comportamiento original para obtener datos de persona
+						String identificador = ApexPages.currentPage().getParameters().get('id');
+						Boolean esResidente = false;
+						jsonText = '{ "Persona": {';
+						try{
+							Account acc = [SELECT Id, LastName, FirstName, PersonBirthdate, Phone, Sexo__pc, PersonEmail,
+											Identificacion__c, Tipo_de_identificacion__c, Discapacidad__pc, IsPersonAccount, Nacionalidad__pc
+										FROM Account
+										WHERE Identificacion__c =: identificador.replace('k','K').toUpperCase()];
+							if(acc.IsPersonAccount){
+								jsonText = jsonText + '"Nombre":"'+acc.FirstName+'",';
+								jsonText = jsonText + '"Apellido":"'+acc.LastName+'",';
+								jsonText = jsonText + '"Telefono":"'+acc.Phone+'",';
+								jsonText = jsonText + '"Sexo":"'+acc.Sexo__pc+'",';
+								jsonText = jsonText + '"Email":"'+acc.PersonEmail+'",';
+								jsonText = jsonText + '"FechaNacimiento":"'+acc.PersonBirthdate+'",';
+								jsonText = jsonText + '"Discapacitado":"'+acc.Discapacidad__pc+'", ';
+								if(String.isNotBlank(acc.Nacionalidad__pc)){
+									jsonText = jsonText + '"Nacionalidad":"'+acc.Nacionalidad__pc+'", ';
+								}
+								try{
+									Residente__c resi = [SELECT Id, Name, Identificacion__c, Nombre_del_Residente__c, Tipo_Identificacion__c, 
+														Comuna__c, N_Certificado__c, Fecha_Certificado__c 
+														FROM Residente__c 
+														WHERE Identificacion__c =: identificador.replace('k','K').toUpperCase()];
+									if(resi.Id != null){
+										esResidente = true;
+									}
+								}catch(Exception exR){
+									esResidente = false;
+								}
+								jsonText = jsonText + '"Residente":"'+esResidente+'"';
+							}else{
+								jsonText = jsonText + '"Empresa":true';
+							}
+						}catch(Exception ex){
 							try{
 								Residente__c resi = [SELECT Id, Name, Identificacion__c, Nombre_del_Residente__c, Tipo_Identificacion__c, 
-													Comuna__c, N_Certificado__c, Fecha_Certificado__c 
+													Comuna__c, N_Certificado__c, Fecha_Certificado__c
 													FROM Residente__c 
 													WHERE Identificacion__c =: identificador.replace('k','K').toUpperCase()];
 								if(resi.Id != null){
+									jsonText = jsonText + '"Nombre":"'+resi.Nombre_del_Residente__c+'",';
 									esResidente = true;
 								}
 							}catch(Exception exR){
 								esResidente = false;
 							}
 							jsonText = jsonText + '"Residente":"'+esResidente+'"';
-						}else{
-							jsonText = jsonText + '"Empresa":true';
 						}
-					}catch(Exception ex){
-						try{
-							Residente__c resi = [SELECT Id, Name, Identificacion__c, Nombre_del_Residente__c, Tipo_Identificacion__c, 
-												Comuna__c, N_Certificado__c, Fecha_Certificado__c
-												FROM Residente__c 
-												WHERE Identificacion__c =: identificador.replace('k','K').toUpperCase()];
-							if(resi.Id != null){
-								jsonText = jsonText + '"Nombre":"'+resi.Nombre_del_Residente__c+'",';
-								esResidente = true;
-							}
-						}catch(Exception exR){
-							esResidente = false;
-						}
-						jsonText = jsonText + '"Residente":"'+esResidente+'"';
+						jsonText = jsonText + '}}';
 					}
-					jsonText = jsonText + '}}';
 				}
 				when 'vehicle'{
 					String patente = ApexPages.currentPage().getParameters().get('pat');
@@ -1283,6 +1319,7 @@ public class NAV_Reservas  {
 					String pArrayResiF = ApexPages.currentPage().getParameters().get('Pr');
 					String pArrayEstuF = ApexPages.currentPage().getParameters().get('Pe');
 					String pArrayButaF = ApexPages.currentPage().getParameters().get('Pbut');
+					String pArrayNacionalidadF = ApexPages.currentPage().getParameters().get('PNac');
 					String[] pArrayDocu = new String[]{};
 					String[] pArrayNDoc = new String[]{};
 					String[] pArrayName = new String[]{};
@@ -1295,6 +1332,7 @@ public class NAV_Reservas  {
 					String[] pArrayResi = new String[]{};
 					String[] pArrayEstu = new String[]{};
 					String[] pArrayButa = new String[]{};
+					String[] pArrayNacionalidad = new String[]{};
 					if(pArrayDocuF.contains(',')){ pArrayDocu = pArrayDocuF.split(','); }else{ pArrayDocu.add(pArrayDocuF.trim()); }
 					if(pArrayNDocF.contains(',')){ pArrayNDoc = pArrayNDocF.split(','); }else{ pArrayNDoc.add(pArrayNDocF.trim()); }
 					if(pArrayNameF.contains(',')){ pArrayName = pArrayNameF.split(','); }else{ pArrayName.add(pArrayNameF.trim()); }
@@ -1307,6 +1345,9 @@ public class NAV_Reservas  {
 					if(pArrayResiF.contains(',')){ pArrayResi = pArrayResiF.split(','); }else{ pArrayResi.add(pArrayResiF.trim()); }
 					if(pArrayEstuF.contains(',')){ pArrayEstu = pArrayEstuF.split(','); }else{ pArrayEstu.add(pArrayEstuF.trim()); }
 					if(pArrayButaF.contains(',')){ pArrayButa = pArrayButaF.split(','); }else{ pArrayButa.add(pArrayButaF.trim()); }
+					if(String.isNotBlank(pArrayNacionalidadF)){
+						if(pArrayNacionalidadF.contains(',')){ pArrayNacionalidad = pArrayNacionalidadF.split(','); }else{ pArrayNacionalidad.add(pArrayNacionalidadF.trim()); }
+					}
 					List<Account> inCuentas = new List<Account>();
 					List<Account> upCuentas = new List<Account>();
 					List<String> identificaciones = new List<String>();
@@ -1369,6 +1410,13 @@ public class NAV_Reservas  {
 								}else if(pArraySexo[i] == 'Femenino'){
 									oAx.Sexo__pc = 'F';
 								}
+								// Asignar nacionalidad
+								if(pArrayNacionalidad.size() > i && String.isNotBlank(pArrayNacionalidad[i])){
+									oAx.Nacionalidad__pc = pArrayNacionalidad[i];
+								}else if(pArrayDocu[i] == 'RUT'){
+									// Si es RUT y no se especifica nacionalidad, asignar "Chileno(a)" por defecto
+									oAx.Nacionalidad__pc = 'Chileno(a)';
+								}
 								upCuentas.add(oAx);
 								Detalle_Reserva__c dResX;
 								dResX = [SELECT Id, Nombre_Pasajero__c, Doc_Identificacion_Pasajero__c, Tipo_de_identificacion__c, Estudiante__c,
@@ -1387,6 +1435,7 @@ public class NAV_Reservas  {
 								//bDetalleMap.put(dResX.Numero__c, dResX);
 							}else{
 								Account cuenta = new Account();
+								cuenta.RecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Cuenta personal').getRecordTypeId();
 								cuenta.FirstName = pArrayName[i];
 								cuenta.LastName = pArrayLNam[i];
 								cuenta.Identificacion__c = pArrayNDoc[i].replace('k','K').toUpperCase();
@@ -1405,10 +1454,27 @@ public class NAV_Reservas  {
 								if(pArrayTele[i] != 'null'){
 									cuenta.Phone = formatTelefono(pArrayTele[i]);
 								}
+								// Asignar nacionalidad
+								if(pArrayNacionalidad.size() > i && String.isNotBlank(pArrayNacionalidad[i])){
+									cuenta.Nacionalidad__pc = pArrayNacionalidad[i];
+								}else if(pArrayDocu[i] == 'RUT'){
+									// Si es RUT y no se especifica nacionalidad, asignar "Chileno(a)" por defecto
+									cuenta.Nacionalidad__pc = 'Chileno(a)';
+								}
 								try{
 									insert cuenta;
+									System.debug('Cuenta creada exitosamente: ' + cuenta.Id + ' - ' + cuenta.FirstName + ' ' + cuenta.LastName);
 								}catch(Exception exCuRe){
-									jsonText = '{ "mensaje": "No se pudo generar la cuenta", "estado": false, "indicador": 4, "tipo": "cuenta"}';
+									System.debug('Error al crear cuenta: ' + exCuRe.getMessage());
+									System.debug('StackTrace: ' + exCuRe.getStackTraceString());
+									jsonText = '{ "mensaje": "No se pudo generar la cuenta: ' + exCuRe.getMessage() + '", "estado": false, "indicador": 4, "tipo": "cuenta"}';
+									continue; // Saltar este pasajero y continuar con el siguiente
+								}
+								// Verificar que la cuenta se insertó correctamente
+								if(cuenta.Id == null){
+									System.debug('Error: La cuenta no tiene ID después del insert');
+									jsonText = '{ "mensaje": "No se pudo generar la cuenta: ID no asignado", "estado": false, "indicador": 4, "tipo": "cuenta"}';
+									continue;
 								}
 								inCuentas.add(cuenta);
 								Detalle_Reserva__c dResX;
@@ -1435,6 +1501,7 @@ public class NAV_Reservas  {
 							Date fechaNac = Date.newInstance(Integer.valueOf(fecNacFull[2]),Integer.valueOf(fecNacFull[1]),Integer.valueOf(fecNacFull[0]));
 							System.debug(fechaNac);
 							Account cuenta = new Account();
+							cuenta.RecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Cuenta personal').getRecordTypeId();
 							cuenta.FirstName = pArrayName[i];
 							cuenta.LastName = pArrayLNam[i];
 							cuenta.Identificacion__c = pArrayNDoc[i].replace('k','K').toUpperCase();
@@ -1453,10 +1520,27 @@ public class NAV_Reservas  {
 							if(pArrayTele[i] != 'null'){
 								cuenta.Phone = formatTelefono(pArrayTele[i]);
 							}
+							// Asignar nacionalidad
+							if(pArrayNacionalidad.size() > i && String.isNotBlank(pArrayNacionalidad[i])){
+								cuenta.Nacionalidad__pc = pArrayNacionalidad[i];
+							}else if(pArrayDocu[i] == 'RUT'){
+								// Si es RUT y no se especifica nacionalidad, asignar "Chileno(a)" por defecto
+								cuenta.Nacionalidad__pc = 'Chileno(a)';
+							}
 							try{
 								insert cuenta;
+								System.debug('Cuenta creada exitosamente: ' + cuenta.Id + ' - ' + cuenta.FirstName + ' ' + cuenta.LastName);
 							}catch(Exception exCuRe){
-								jsonText = '{ "mensaje": "No se pudo generar la cuenta", "estado": false, "indicador": 5, "tipo": "cuenta"}';
+								System.debug('Error al crear cuenta: ' + exCuRe.getMessage());
+								System.debug('StackTrace: ' + exCuRe.getStackTraceString());
+								jsonText = '{ "mensaje": "No se pudo generar la cuenta: ' + exCuRe.getMessage() + '", "estado": false, "indicador": 5, "tipo": "cuenta"}';
+								continue; // Saltar este pasajero y continuar con el siguiente
+							}
+							// Verificar que la cuenta se insertó correctamente
+							if(cuenta.Id == null){
+								System.debug('Error: La cuenta no tiene ID después del insert');
+								jsonText = '{ "mensaje": "No se pudo generar la cuenta: ID no asignado", "estado": false, "indicador": 5, "tipo": "cuenta"}';
+								continue;
 							}
 							inCuentas.add(cuenta);
 							Detalle_Reserva__c dResX;
@@ -2339,16 +2423,66 @@ public class NAV_Reservas  {
 	}
 	public String formatTelefono(String telefono){
 		String toReturn = '';
-		if(telefono != ''){
-			if(telefono.length() < 8){
-				telefono = '22'+telefono;
+		if(String.isNotBlank(telefono)){
+			telefono = telefono.trim();
+			// Si ya tiene formato internacional con +, preservarlo completamente
+			if(telefono.startsWith('+')){
+				toReturn = telefono;
 			}
-			if(telefono.trim().startsWith('56')){
-				toReturn = '+'+telefono.trim();
-			}else if(!telefono.trim().startsWith('+56')){
-				toReturn = '+56'+telefono.trim();
-			}else{
-				toReturn = telefono.trim();
+			// Si empieza con código de país chileno sin +, agregar +
+			else if(telefono.startsWith('56') && telefono.length() >= 9){
+				toReturn = '+' + telefono;
+			}
+			// Si es un número corto (menos de 8 dígitos), asumir que es chileno y agregar prefijo
+			else if(telefono.length() < 8){
+				telefono = '22' + telefono;
+				toReturn = '+56' + telefono;
+			}
+			// Si tiene 8 o más dígitos pero no empieza con código de país conocido
+			// Verificar si empieza con un código de país internacional conocido (1-3 dígitos)
+			// Si empieza con código de país internacional, agregar +
+			// De lo contrario, asumir que es un número local chileno
+			else if(telefono.length() >= 8 && !telefono.startsWith('56')){
+				Boolean esInternacional = false;
+				// Verificar códigos de 1 dígito (1, 7)
+				if((telefono.startsWith('1') || telefono.startsWith('7')) && telefono.length() > 1){
+					toReturn = '+' + telefono;
+					esInternacional = true;
+				}
+				// Verificar códigos de 2 dígitos (20-99, excepto 56)
+				else if(telefono.length() >= 2){
+					String primerosDos = telefono.substring(0, 2);
+					try{
+						Integer codigoDos = Integer.valueOf(primerosDos);
+						if(codigoDos >= 20 && codigoDos <= 99 && codigoDos != 56 && telefono.length() > 2){
+							toReturn = '+' + telefono;
+							esInternacional = true;
+						}
+					}catch(Exception e){
+						// Si no se puede convertir a número, continuar
+					}
+				}
+				// Verificar códigos de 3 dígitos (200-999)
+				if(!esInternacional && telefono.length() >= 3){
+					String primerosTres = telefono.substring(0, 3);
+					try{
+						Integer codigoTres = Integer.valueOf(primerosTres);
+						if(codigoTres >= 200 && codigoTres <= 999 && telefono.length() > 3){
+							toReturn = '+' + telefono;
+							esInternacional = true;
+						}
+					}catch(Exception e){
+						// Si no se puede convertir a número, continuar
+					}
+				}
+				// Si no se identificó como internacional, asumir chileno
+				if(!esInternacional){
+					toReturn = '+56' + telefono;
+				}
+			}
+			// En cualquier otro caso, preservar el valor original
+			else{
+				toReturn = telefono;
 			}
 		}		
 		return toReturn;
