@@ -32,6 +32,138 @@ No. Fecha                Autor                     Descripción
                 document.head.appendChild(script);
             })();
         </script>
+        <script>
+            // Traducciones de países al español para intl-tel-input
+            var paisesEnEspanol = {
+                "af": "Afganistán", "al": "Albania", "dz": "Argelia", "as": "Samoa Americana", "ad": "Andorra",
+                "ao": "Angola", "ai": "Anguila", "aq": "Antártida", "ag": "Antigua y Barbuda", "ar": "Argentina",
+                "am": "Armenia", "aw": "Aruba", "au": "Australia", "at": "Austria", "az": "Azerbaiyán",
+                "bs": "Bahamas", "bh": "Baréin", "bd": "Bangladesh", "bb": "Barbados", "by": "Bielorrusia",
+                "be": "Bélgica", "bz": "Belice", "bj": "Benín", "bm": "Bermudas", "bt": "Bután",
+                "bo": "Bolivia", "ba": "Bosnia y Herzegovina", "bw": "Botsuana", "br": "Brasil", "io": "Territorio Británico del Océano Índico",
+                "vg": "Islas Vírgenes Británicas", "bn": "Brunéi", "bg": "Bulgaria", "bf": "Burkina Faso", "bi": "Burundi",
+                "kh": "Camboya", "cm": "Camerún", "ca": "Canadá", "cv": "Cabo Verde", "ky": "Islas Caimán",
+                "cf": "República Centroafricana", "td": "Chad", "cl": "Chile", "cn": "China", "cx": "Isla de Navidad",
+                "cc": "Islas Cocos", "co": "Colombia", "km": "Comoras", "cg": "Congo", "cd": "República Democrática del Congo",
+                "ck": "Islas Cook", "cr": "Costa Rica", "ci": "Costa de Marfil", "hr": "Croacia", "cu": "Cuba",
+                "cw": "Curazao", "cy": "Chipre", "cz": "República Checa", "dk": "Dinamarca", "dj": "Yibuti",
+                "dm": "Dominica", "do": "República Dominicana", "ec": "Ecuador", "eg": "Egipto", "sv": "El Salvador",
+                "gq": "Guinea Ecuatorial", "er": "Eritrea", "ee": "Estonia", "sz": "Esuatini", "et": "Etiopía",
+                "fk": "Islas Malvinas", "fo": "Islas Feroe", "fj": "Fiyi", "fi": "Finlandia", "fr": "Francia",
+                "gf": "Guayana Francesa", "pf": "Polinesia Francesa", "ga": "Gabón", "gm": "Gambia", "ge": "Georgia",
+                "de": "Alemania", "gh": "Ghana", "gi": "Gibraltar", "gr": "Grecia", "gl": "Groenlandia",
+                "gd": "Granada", "gp": "Guadalupe", "gu": "Guam", "gt": "Guatemala", "gg": "Guernsey",
+                "gn": "Guinea", "gw": "Guinea-Bisáu", "gy": "Guyana", "ht": "Haití", "hn": "Honduras",
+                "hk": "Hong Kong", "hu": "Hungría", "is": "Islandia", "in": "India", "id": "Indonesia",
+                "ir": "Irán", "iq": "Irak", "ie": "Irlanda", "im": "Isla de Man", "il": "Israel",
+                "it": "Italia", "jm": "Jamaica", "jp": "Japón", "je": "Jersey", "jo": "Jordania",
+                "kz": "Kazajistán", "ke": "Kenia", "ki": "Kiribati", "xk": "Kosovo", "kw": "Kuwait",
+                "kg": "Kirguistán", "la": "Laos", "lv": "Letonia", "lb": "Líbano", "ls": "Lesoto",
+                "lr": "Liberia", "ly": "Libia", "li": "Liechtenstein", "lt": "Lituania", "lu": "Luxemburgo",
+                "mo": "Macao", "mg": "Madagascar", "mw": "Malaui", "my": "Malasia", "mv": "Maldivas",
+                "ml": "Mali", "mt": "Malta", "mh": "Islas Marshall", "mq": "Martinica", "mr": "Mauritania",
+                "mu": "Mauricio", "yt": "Mayotte", "mx": "México", "fm": "Micronesia", "md": "Moldavia",
+                "mc": "Mónaco", "mn": "Mongolia", "me": "Montenegro", "ms": "Montserrat", "ma": "Marruecos",
+                "mz": "Mozambique", "mm": "Myanmar", "na": "Namibia", "nr": "Nauru", "np": "Nepal",
+                "nl": "Países Bajos", "nc": "Nueva Caledonia", "nz": "Nueva Zelanda", "ni": "Nicaragua", "ne": "Níger",
+                "ng": "Nigeria", "nu": "Niue", "nf": "Isla Norfolk", "kp": "Corea del Norte", "mk": "Macedonia del Norte",
+                "mp": "Islas Marianas del Norte", "no": "Noruega", "om": "Omán", "pk": "Pakistán", "pw": "Palaos",
+                "ps": "Palestina", "pa": "Panamá", "pg": "Papúa Nueva Guinea", "py": "Paraguay", "pe": "Perú",
+                "ph": "Filipinas", "pl": "Polonia", "pt": "Portugal", "pr": "Puerto Rico", "qa": "Catar",
+                "re": "Reunión", "ro": "Rumania", "ru": "Rusia", "rw": "Ruanda", "ws": "Samoa",
+                "sm": "San Marino", "st": "Santo Tomé y Príncipe", "sa": "Arabia Saudí", "sn": "Senegal", "rs": "Serbia",
+                "sc": "Seychelles", "sl": "Sierra Leona", "sg": "Singapur", "sx": "Sint Maarten", "sk": "Eslovaquia",
+                "si": "Eslovenia", "sb": "Islas Salomón", "so": "Somalia", "za": "Sudáfrica", "kr": "Corea del Sur",
+                "ss": "Sudán del Sur", "es": "España", "lk": "Sri Lanka", "bl": "San Bartolomé", "sh": "Santa Elena",
+                "kn": "San Cristóbal y Nieves", "lc": "Santa Lucía", "mf": "San Martín", "pm": "San Pedro y Miquelón",
+                "vc": "San Vicente y las Granadinas", "sd": "Sudán", "sr": "Surinam", "sj": "Svalbard y Jan Mayen",
+                "se": "Suecia", "ch": "Suiza", "sy": "Siria", "tw": "Taiwán", "tj": "Tayikistán",
+                "tz": "Tanzania", "th": "Tailandia", "tl": "Timor Oriental", "tg": "Togo", "tk": "Tokelau",
+                "to": "Tonga", "tt": "Trinidad y Tobago", "tn": "Túnez", "tr": "Turquía", "tm": "Turkmenistán",
+                "tc": "Islas Turcas y Caicos", "tv": "Tuvalu", "vi": "Islas Vírgenes de los Estados Unidos", "ug": "Uganda",
+                "ua": "Ucrania", "ae": "Emiratos Árabes Unidos", "gb": "Reino Unido", "us": "Estados Unidos", "uy": "Uruguay",
+                "uz": "Uzbekistán", "vu": "Vanuatu", "va": "Ciudad del Vaticano", "ve": "Venezuela", "vn": "Vietnam",
+                "wf": "Wallis y Futuna", "eh": "Sahara Occidental", "ye": "Yemen", "zm": "Zambia", "zw": "Zimbabue",
+                "ax": "Islas Åland"
+            };
+            
+            // Variable global para controlar si ya se modificaron los datos de países
+            var paisesModificados = false;
+            
+            // Función para modificar los datos de países globalmente (solo una vez)
+            function modificarDatosPaisesGlobalmente() {
+                if(paisesModificados || typeof intlTelInput === 'undefined' || typeof intlTelInput.getCountryData === 'undefined'){
+                    return;
+                }
+                
+                var countryData = intlTelInput.getCountryData();
+                for(var i = 0; i < countryData.length; i++){
+                    var countryCode = countryData[i].iso2;
+                    if(paisesEnEspanol[countryCode]){
+                        countryData[i].name = paisesEnEspanol[countryCode];
+                    }
+                }
+                
+                // Reordenar alfabéticamente según nombres en español
+                countryData.sort(function(a, b) {
+                    var nameA = (paisesEnEspanol[a.iso2] || a.name || '').toLowerCase();
+                    var nameB = (paisesEnEspanol[b.iso2] || b.name || '').toLowerCase();
+                    // Manejar caracteres especiales del español (ñ, acentos)
+                    nameA = nameA.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    nameB = nameB.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    if (nameA < nameB) return -1;
+                    if (nameA > nameB) return 1;
+                    return 0;
+                });
+                
+                // Actualizar los datos de países globalmente
+                if(typeof intlTelInput.setCountryData !== 'undefined'){
+                    intlTelInput.setCountryData(countryData);
+                    paisesModificados = true;
+                }
+            }
+            
+            // Función auxiliar para aplicar traducciones a intl-tel-input
+            function aplicarTraduccionesIntlTelInput(telInput, iti) {
+                // Asegurar que los datos de países estén modificados globalmente
+                modificarDatosPaisesGlobalmente();
+                
+                // Función para actualizar solo los nombres de países (sin reordenar el DOM)
+                function actualizarNombresPaises() {
+                    setTimeout(function(){
+                        telInput.closest('.iti').find('.iti__country-name').each(function(){
+                            var countryItem = $(this).closest('.iti__country');
+                            var countryCode = countryItem.attr('data-country-code');
+                            if(countryCode && paisesEnEspanol[countryCode]){
+                                $(this).text(paisesEnEspanol[countryCode]);
+                            }
+                        });
+                    }, 50);
+                }
+                
+                // Modificar cuando se abra el dropdown
+                telInput.closest('.iti').find('.iti__selected-flag').on('click', function(){
+                    setTimeout(actualizarNombresPaises, 100);
+                });
+                
+                // También modificar cuando se escriba en el buscador
+                telInput.closest('.iti').on('input', '.iti__search-input', function(){
+                    setTimeout(actualizarNombresPaises, 50);
+                });
+                
+                // Usar MutationObserver para detectar cambios en el DOM del dropdown
+                var observer = new MutationObserver(function(mutations) {
+                    actualizarNombresPaises();
+                });
+                
+                setTimeout(function(){
+                    var dropdown = telInput.closest('.iti').find('.iti__country-list')[0];
+                    if(dropdown) {
+                        observer.observe(dropdown, { childList: true, subtree: true });
+                    }
+                }, 200);
+            }
+        </script>
         <style>
             /* Estilos para intl-tel-input */
             .iti {
@@ -2865,8 +2997,8 @@ No. Fecha                Autor                     Descripción
                             formPersona += '</div>';
                             formPersona += '</td>';
                             formPersona += '</tr>';
-                            // Campo de nacionalidad (solo visible cuando se selecciona Pasaporte)
-                            formPersona += '<tr id="nacionalidad_row_'+(i+1)+'" style="display:none;">';
+                            // Campo de nacionalidad (siempre visible, por defecto "Chileno(a)")
+                            formPersona += '<tr id="nacionalidad_row_'+(i+1)+'">';
                             formPersona += '<td colspan="2" style="padding-right: 10px !important;">';
                             formPersona += '<label class="slds-form-element__label" for="nacionalidad_'+(i+1)+'">Nacionalidad de Origen</label><br />';
                             formPersona += '<div class="slds-form-element">';
@@ -3063,83 +3195,78 @@ No. Fecha                Autor                     Descripción
                                 if(nacionalidadesList.length === 0){
                                     console.warn('No se cargaron nacionalidades para pasajero '+(i+1));
                                 }
+                                // Establecer "Chileno(a)" como valor por defecto si no hay valor previo
+                                if(!selectNacionalidad.val() || selectNacionalidad.val() === ''){
+                                    selectNacionalidad.val('Chileno(a)');
+                                }
                             }
                             
-                            // Verificar estado inicial y mostrar/ocultar campo de nacionalidad
-                            var pasaChecked = $('#pCheck_'+(i+1)+'_pasa').is(':checked');
-                            if(pasaChecked){
-                                $('#nacionalidad_row_'+(i+1)).show();
-                                $('#nacionalidad_'+(i+1)).attr('required', 'required');
-                            }else{
-                                $('#nacionalidad_row_'+(i+1)).hide();
-                                $('#nacionalidad_'+(i+1)).removeAttr('required');
-                            }
-                            
-                            // Eventos para mostrar/ocultar campo de nacionalidad según tipo de documento
-                            $('#pCheck_'+(i+1)+'_rut').on('change', function(){
-                                var indi = $(this).attr('id').replace('pCheck_','').replace('_rut','');
-                                $('#nacionalidad_row_'+indi).hide();
-                                $('#nacionalidad_'+indi).val('').removeAttr('required');
-                            });
-                            $('#pCheck_'+(i+1)+'_pasa').on('change', function(){
-                                var indi = $(this).attr('id').replace('pCheck_','').replace('_pasa','');
-                                $('#nacionalidad_row_'+indi).show();
-                                $('#nacionalidad_'+indi).attr('required', 'required');
-                            });
+                            // El campo de nacionalidad siempre está visible, no se oculta según tipo de documento
                             
                             // Inicializar intl-tel-input para el campo de teléfono
-                            var telInput = $('#telefono_'+(i+1));
-                            if(telInput.length > 0){
-                                // Función para inicializar intl-tel-input con múltiples reintentos
-                                var retryCount = 0;
-                                var maxRetries = 10;
-                                function initTelInput(){
-                                    if(typeof intlTelInput !== 'undefined'){
-                                        try{
-                                            // Verificar si ya está inicializado
-                                            if(telInput.data('iti')){
-                                                return;
+                            // Usar IIFE para crear un closure adecuado para cada pasajero
+                            (function(passengerIndex){
+                                var telInput = $('#telefono_'+passengerIndex);
+                                if(telInput.length > 0){
+                                    // Función para inicializar intl-tel-input con múltiples reintentos
+                                    var retryCount = 0;
+                                    var maxRetries = 10;
+                                    function initTelInput(){
+                                        if(typeof intlTelInput !== 'undefined'){
+                                            try{
+                                                // Verificar si ya está inicializado
+                                                if(telInput.data('iti')){
+                                                    return;
+                                                }
+                                                
+                                                // Modificar datos de países antes de la inicialización
+                                                modificarDatosPaisesGlobalmente();
+                                                
+                                                var iti = intlTelInput(telInput[0], {
+                                                    initialCountry: "cl",
+                                                    preferredCountries: ["cl", "ar", "pe", "co", "us"],
+                                                    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.0/build/js/utils.js",
+                                                    separateDialCode: false,
+                                                    nationalMode: false,
+                                                    autoPlaceholder: "aggressive",
+                                                    formatOnDisplay: true
+                                                });
+                                                
+                                                telInput.data('iti', iti);
+                                                
+                                                // Aplicar traducciones al español (solo para actualizar nombres en el DOM)
+                                                aplicarTraduccionesIntlTelInput(telInput, iti);
+                                                
+                                                // Autocompletar código de país
+                                                setupPhoneAutoComplete(telInput, iti);
+                                                // Agregar validación en tiempo real
+                                                addPhoneValidation(telInput, iti);
+                                                
+                                                console.log('intl-tel-input inicializado para telefono_'+passengerIndex);
+                                            }catch(e){
+                                                console.error('Error inicializando intl-tel-input para telefono_'+passengerIndex+':', e);
+                                                if(retryCount < maxRetries){
+                                                    retryCount++;
+                                                    setTimeout(initTelInput, 500);
+                                                }
                                             }
-                                            var iti = intlTelInput(telInput[0], {
-                                                initialCountry: "cl",
-                                                preferredCountries: ["cl", "ar", "pe", "co", "us"],
-                                                utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.0/build/js/utils.js",
-                                                separateDialCode: false,
-                                                nationalMode: false,
-                                                autoPlaceholder: "aggressive",
-                                                formatOnDisplay: true
-                                            });
-                                            
-                                            telInput.data('iti', iti);
-                                            
-                                            // Autocompletar código de país
-                                            setupPhoneAutoComplete(telInput, iti);
-                                            // Agregar validación en tiempo real
-                                            addPhoneValidation(telInput, iti);
-                                            
-                                            console.log('intl-tel-input inicializado para telefono_'+(i+1));
-                                        }catch(e){
-                                            console.error('Error inicializando intl-tel-input:', e);
+                                        }else{
+                                            // Si no está disponible, reintentar después de un momento
                                             if(retryCount < maxRetries){
                                                 retryCount++;
                                                 setTimeout(initTelInput, 500);
+                                            }else{
+                                                console.error('intlTelInput no está disponible después de ' + maxRetries + ' intentos para telefono_'+passengerIndex);
                                             }
                                         }
-                                    }else{
-                                        // Si no está disponible, reintentar después de un momento
-                                        if(retryCount < maxRetries){
-                                            retryCount++;
-                                            setTimeout(initTelInput, 500);
-                                        }else{
-                                            console.error('intlTelInput no está disponible después de ' + maxRetries + ' intentos');
-                                        }
                                     }
+                                    // Intentar inicializar después de que el DOM esté completamente listo
+                                    // Usar un delay incremental para evitar conflictos entre múltiples inicializaciones
+                                    setTimeout(function(){
+                                        initTelInput();
+                                    }, 100 + (passengerIndex * 50));
                                 }
-                                // Intentar inicializar después de que el DOM esté completamente listo
-                                setTimeout(function(){
-                                    initTelInput();
-                                }, 100);
-                            }
+                            })(i+1);
                             
                             $('#documento_'+(i+1)).on('blur',function(){
                                 if(!Fn.validaRut(this.value) && $('#pCheck_'+$(this).attr('indi')+'_rut').is(':checked')){
@@ -3253,15 +3380,13 @@ No. Fecha                Autor                     Descripción
                                         }else{
                                             console.log('Estudiante Undef: '+dataP.Persona.Estudiante);
                                         }
-                                        // Cargar nacionalidad si existe
+                                        // Cargar nacionalidad si existe (el campo siempre está visible ahora)
                                         if(typeof dataP.Persona.Nacionalidad != 'undefined' && dataP.Persona.Nacionalidad != null){
                                             $(Nac).val(dataP.Persona.Nacionalidad);
-                                            // Si tiene nacionalidad y es Pasaporte, mostrar el campo
-                                            if($('#pCheck_'+$(ruXX).attr('indi')+'_pasa').is(':checked')){
-                                                $('#nacionalidad_row_'+$(ruXX).attr('indi')).show();
-                                            }
                                             console.log('Nacionalidad: '+dataP.Persona.Nacionalidad);
                                         }else{
+                                            // Si no hay nacionalidad, establecer "Chileno(a)" por defecto
+                                            $(Nac).val('Chileno(a)');
                                             console.log('Nacionalidad Undef: '+dataP.Persona.Nacionalidad);
                                         }
                                     }
@@ -3363,18 +3488,13 @@ No. Fecha                Autor                     Descripción
                                 console.log('arreglo telefonos 2');
                                 console.log(pArrayTele);    
                             }
-                            // Capturar nacionalidad
-                            if($('#pCheck_'+x+'_pasa').is(':checked')){
-                                if($('#nacionalidad_'+x).val() == '' || $('#nacionalidad_'+x).val() == null){
-                                    alert("Debes seleccionar la nacionalidad de origen del pasajero");
-                                    terminaEspera();
-                                    return;
-                                }
-                                pArrayNacionalidad.push($('#nacionalidad_'+x).val());
-                            }else{
-                                // Si es RUT, asignar "Chileno(a)" por defecto
-                                pArrayNacionalidad.push('Chileno(a)');
+                            // Capturar nacionalidad (siempre visible, independientemente del tipo de documento)
+                            var nacionalidadVal = $('#nacionalidad_'+x).val();
+                            if(nacionalidadVal == '' || nacionalidadVal == null){
+                                // Si no hay valor seleccionado, usar "Chileno(a)" por defecto
+                                nacionalidadVal = 'Chileno(a)';
                             }
+                            pArrayNacionalidad.push(nacionalidadVal);
                             if($('#email_'+x).val() != ''){
                                 if(Fn.validaEmail($('#email_'+x).val())){
                                     pArrayEmai.push($('#email_'+x).val());
@@ -3898,6 +4018,8 @@ No. Fecha                Autor                     Descripción
                         table.append(tableTr);
                         raizP.append(table);
                         // Inicializar intl-tel-input para campos de teléfono de vehículos
+                        // Modificar datos de países antes de cualquier inicialización
+                        modificarDatosPaisesGlobalmente();
                         for(var i = 0; i< vehiculos; i++){
                             var telInputE = $('#e_telefono_'+(i+1));
                             if(telInputE.length > 0){
@@ -3911,6 +4033,8 @@ No. Fecha                Autor                     Descripción
                                     formatOnDisplay: true
                                 });
                                 telInputE.data('iti', itiE);
+                                // Aplicar traducciones al español
+                                aplicarTraduccionesIntlTelInput(telInputE, itiE);
                                 // Autocompletar código de país
                                 setupPhoneAutoComplete(telInputE, itiE);
                                 // Agregar validación en tiempo real
@@ -3928,6 +4052,8 @@ No. Fecha                Autor                     Descripción
                                     formatOnDisplay: true
                                 });
                                 telInputR.data('iti', itiR);
+                                // Aplicar traducciones al español
+                                aplicarTraduccionesIntlTelInput(telInputR, itiR);
                                 // Autocompletar código de país
                                 setupPhoneAutoComplete(telInputR, itiR);
                                 // Agregar validación en tiempo real
@@ -3935,6 +4061,8 @@ No. Fecha                Autor                     Descripción
                             }
                         }
                         // Inicializar intl-tel-input para campos de teléfono de carga directa
+                        // Modificar datos de países antes de cualquier inicialización
+                        modificarDatosPaisesGlobalmente();
                         var telInputCE = $('#ce_telefono');
                         if(telInputCE.length > 0){
                             var itiCE = intlTelInput(telInputCE[0], {
@@ -3947,6 +4075,8 @@ No. Fecha                Autor                     Descripción
                                 formatOnDisplay: true
                             });
                             telInputCE.data('iti', itiCE);
+                            // Aplicar traducciones al español
+                            aplicarTraduccionesIntlTelInput(telInputCE, itiCE);
                             // Autocompletar código de país
                             setupPhoneAutoComplete(telInputCE, itiCE);
                             // Agregar validación en tiempo real
@@ -3964,6 +4094,8 @@ No. Fecha                Autor                     Descripción
                                 formatOnDisplay: true
                             });
                             telInputCR.data('iti', itiCR);
+                            // Aplicar traducciones al español
+                            aplicarTraduccionesIntlTelInput(telInputCR, itiCR);
                             // Autocompletar código de país
                             setupPhoneAutoComplete(telInputCR, itiCR);
                             // Agregar validación en tiempo real
