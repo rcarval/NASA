@@ -1,0 +1,27 @@
+<apex:page standardController="Detalle_Reserva__c" extensions="NAV_Tarificar_Controller" action="{!valorizarRegistro}">
+    <apex:includeLightning />
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:slds />
+    <apex:form >
+    <apex:actionFunction name="redir" action="{!redirect}"></apex:actionFunction>
+    </apex:form>
+    <script>
+        setTimeout(redir, 5000);
+    </script>
+    <!-- redirección -->
+    <div class="slds-text-title_caps">
+
+    </div>
+    <div class="demo-only" style="height:30px"><!--6rem-->
+        <div class="slds-spinner_container">
+            <div role="status" class="slds-spinner slds-spinner_large slds-spinner_brand">
+                <span class="slds-assistive-text">Cargando...</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+                <p style="font-weight:bold;transform: translate(-32%, -50%) rotate(-90deg);width: 490px;text-align: center;">
+                    <apex:outputText >Valorizando, por favor espere...</apex:outputText>
+                </p>
+            </div>
+        </div>
+    </div>   
+</apex:page>

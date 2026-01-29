@@ -1,0 +1,9 @@
+<apex:page standardController="Reserva__c" extensions="NAV_ValidaReservaController" action="{!validaReserva}" standardstylesheets="false" showheader="false" sidebar="false" applyBodyTag="false" applyHtmlTag="false">
+    <apex:outputPanel >
+        <h1>Validando datos...</h1>
+    </apex:outputPanel>
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:form >
+        <apex:commandButton immediate="true" onclick="javascript:history.go(-1);" value="Volver" id="theButton"/>
+    </apex:form>
+</apex:page>

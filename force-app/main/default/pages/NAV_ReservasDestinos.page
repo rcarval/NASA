@@ -1,0 +1,11 @@
+<!--**********************************************************************************
+Desarrollado por: Nectia
+Autor: Esteban Flores (EFR)
+Proyecto: Naviera Austral
+Descripción: Visualforce para obtener datos para las reservas
+---------------------------------------------------------------------------------
+No. Fecha                Autor                     Descripción
+------ ---------- ---------------------------------------------------------------
+1.0 15-09-2021            EFR                   Creación de la Página.
+***********************************************************************************-->
+<apex:page controller="NAV_Reservas" contentType="application/x-JavaScript; charset=utf-8" showHeader="false" standardStylesheets="false" sidebar="false" action="{!getData}">{!jsonText}</apex:page>
