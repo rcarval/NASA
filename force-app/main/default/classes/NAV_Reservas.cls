@@ -9,7 +9,11 @@ Versión Fecha        Autor    Descripción
 1.0     15-09-2021   EFR      Creación de la Clase.
 ***********************************************************************************/
 public class NAV_Reservas  {
-    public Boolean valueIdaVuelta { get; set; }
+	public Boolean bloqueadoPorCajaAbierta { get; private set; }
+	public String mensajeBloqueoCaja { get; private set; }
+	public List<Caja__c> cajasAbiertasDetalle { get; private set; }
+
+	public Boolean valueIdaVuelta { get; set; }
 	public String numReserva { get; set; }
 	public Set<String> naves { get; set; }
 	public Set<String> origenes { get; set; }
@@ -78,9 +82,20 @@ public class NAV_Reservas  {
 	}
 	
 	public NAV_Reservas(){
+		cajasAbiertasDetalle = new List<Caja__c>();
 	}
 
 	public PageReference loadData(){
+		bloqueadoPorCajaAbierta = false;
+		Integer horasLimiteCajaAbierta = Integer.valueOf(Label.Horas_Limite_Caja_Abierta);
+		mensajeBloqueoCaja = 'No puede efectuar su venta ya que mantiene cajas abiertas por más de ' + horasLimiteCajaAbierta + ' hrs , favor proceder con su cuadratura y cierre correspondiente';
+		DateTime limiteCaja = DateTime.now().addHours(-horasLimiteCajaAbierta);
+		cajasAbiertasDetalle = [SELECT Id, Name, CreatedDate FROM Caja__c WHERE CreatedById = :UserInfo.getUserId() AND Estado_de_la_Caja__c = 'Abierta' AND CreatedDate < :limiteCaja ORDER BY CreatedDate ASC];
+		if (!cajasAbiertasDetalle.isEmpty()) {
+			bloqueadoPorCajaAbierta = true;
+			return null;
+		}
+		cajasAbiertasDetalle = new List<Caja__c>();
 		//numReserva = numero incremental por fecha hora
 		List<String> orden = new List<String>();
 		List<String> ordenM = new List<String>();

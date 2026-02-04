@@ -3887,6 +3887,21 @@ No. Fecha                Autor                     Descripción
         </script>
     </head>
     <body>
+        <!-- Mensaje de bloqueo por caja abierta más de N horas -->
+        <apex:outputPanel rendered="{!bloqueadoPorCajaAbierta}" layout="block">
+            <div style="margin: 2rem auto; max-width: 800px; padding: 1.5rem; background-color: #fef3cd; border: 1px solid #856404; border-radius: 4px;">
+                <p style="margin: 0 0 1rem 0; font-size: 1rem; color: #856404; font-weight: bold; text-align: center;">{!mensajeBloqueoCaja}</p>
+                <apex:dataTable value="{!cajasAbiertasDetalle}" var="caja" styleClass="slds-table slds-table_cell-buffer slds-table_bordered" columnClasses="slds-cell-wrap," style="width:100%; margin-top:1rem;">
+                    <apex:column headerValue="Nombre Caja">
+                        <apex:outputLink value="/{!caja.Id}" target="_blank">{!caja.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Fecha Creación">
+                        <apex:outputText value="{0,date,dd/MM/yyyy HH:mm}"><apex:param value="{!caja.CreatedDate}" /></apex:outputText>
+                    </apex:column>
+                </apex:dataTable>
+            </div>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!NOT(bloqueadoPorCajaAbierta)}" layout="block">
         <!-- START Overlay -->
         <div id="overlay" class="slds-spinner_container">
             <div id="textOverlay" class="slds-text-title_caps"><span class="textoMensaje">Cargando...</span></div>
@@ -7415,6 +7430,7 @@ No. Fecha                Autor                     Descripción
             <button type="button" class="slds-button slds-button_brand" id="siguiente">Siguiente &gt;</button>
         </div>
         <!-- END Footer -->
+        </apex:outputPanel>
     </body>
 </html>
 <apex:slds />
