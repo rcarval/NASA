@@ -6,7 +6,7 @@
         <name>AgregarAgregarAColeccionAColeccion</name>
         <label>AgregarAColeccion</label>
         <locationX>446</locationX>
-        <locationY>1274</locationY>
+        <locationY>2690</locationY>
         <assignmentItems>
             <assignToReference>ColeccionDeItemsSeleccionados</assignToReference>
             <operator>Add</operator>
@@ -29,7 +29,7 @@
         <name>AgregarDocumentoAAnular</name>
         <label>AgregarDocumentoAAnular</label>
         <locationX>1040</locationX>
-        <locationY>3770</locationY>
+        <locationY>5186</locationY>
         <assignmentItems>
             <assignToReference>DocumentosCrearNC</assignToReference>
             <operator>Add</operator>
@@ -53,7 +53,7 @@
         <name>AnadirNombre</name>
         <label>AñadirNombre</label>
         <locationX>908</locationX>
-        <locationY>4154</locationY>
+        <locationY>5570</locationY>
         <assignmentItems>
             <assignToReference>NombresDocumentos</assignToReference>
             <operator>Add</operator>
@@ -69,7 +69,7 @@
         <name>AsignacionAnularYColeccion</name>
         <label>AsignacionAnularYColeccion</label>
         <locationX>1216</locationX>
-        <locationY>1814</locationY>
+        <locationY>3230</locationY>
         <assignmentItems>
             <assignToReference>AnularYAgregarAColeccion.Item_Anulado__c</assignToReference>
             <operator>Assign</operator>
@@ -92,7 +92,7 @@
         <name>AsignarAnularDocumento</name>
         <label>AsignarAnularDocumento</label>
         <locationX>1436</locationX>
-        <locationY>3386</locationY>
+        <locationY>4802</locationY>
         <assignmentItems>
             <assignToReference>AnularDocumento</assignToReference>
             <operator>Assign</operator>
@@ -108,7 +108,7 @@
         <name>AsignarColeccionRegistros</name>
         <label>AsignarColeccionRegistros</label>
         <locationX>50</locationX>
-        <locationY>566</locationY>
+        <locationY>1874</locationY>
         <assignmentItems>
             <assignToReference>ItemsDeLaReserva</assignToReference>
             <operator>Assign</operator>
@@ -124,7 +124,7 @@
         <name>AsignarColeccionRegistros_0</name>
         <label>AsignarColeccionRegistros</label>
         <locationX>314</locationX>
-        <locationY>674</locationY>
+        <locationY>2090</locationY>
         <assignmentItems>
             <assignToReference>ItemsDeLaReserva</assignToReference>
             <operator>Assign</operator>
@@ -140,7 +140,7 @@
         <name>AssignSelectedValues</name>
         <label>AssignSelectedValues</label>
         <locationX>446</locationX>
-        <locationY>1166</locationY>
+        <locationY>2582</locationY>
         <assignmentItems>
             <assignToReference>SelectedServices</assignToReference>
             <operator>Add</operator>
@@ -159,6 +159,23 @@
             <targetReference>AgregarAgregarAColeccionAColeccion</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <description>marca la existencia de documento bloqueante</description>
+        <name>MarcaBloqueo</name>
+        <label>MarcaBloqueo</label>
+        <locationX>380</locationX>
+        <locationY>782</locationY>
+        <assignmentItems>
+            <assignToReference>TieneDocumentoBloqueante</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>RecorreFormasDePago</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>borrar</name>
         <choiceText>borrar</choiceText>
@@ -170,7 +187,7 @@
         <elementSubtype>FilterCollectionProcessor</elementSubtype>
         <label>FiltroDetalleDocumentos</label>
         <locationX>1348</locationX>
-        <locationY>3170</locationY>
+        <locationY>4586</locationY>
         <assignNextValueToReference>currentItem_FiltroDetalleDocumentos</assignNextValueToReference>
         <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
         <collectionReference>geDetallesDocumento</collectionReference>
@@ -192,7 +209,7 @@
         <elementSubtype>FilterCollectionProcessor</elementSubtype>
         <label>FiltroItemSeleccionado</label>
         <locationX>1128</locationX>
-        <locationY>1598</locationY>
+        <locationY>3014</locationY>
         <assignNextValueToReference>currentItem_FiltroItemSeleccionado</assignNextValueToReference>
         <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
         <collectionReference>ItemsDeLaReserva</collectionReference>
@@ -209,11 +226,37 @@
         </connector>
     </collectionProcessors>
     <decisions>
+        <description>decisión para bloquear anulacion</description>
+        <name>BloqueaAnulacion</name>
+        <label>BloqueaAnulacion?</label>
+        <locationX>292</locationX>
+        <locationY>1058</locationY>
+        <defaultConnector>
+            <targetReference>PantallaInicio</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Resultado predeterminado</defaultConnectorLabel>
+        <rules>
+            <name>ReBloqueaAnulacion</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>TieneDocumentoBloqueante</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Mensaje_Anulaci_n_Documento</targetReference>
+            </connector>
+            <label>ReBloqueaAnulacion</label>
+        </rules>
+    </decisions>
+    <decisions>
         <description>Se evalúa si la reserva estaba acreditada para emitir las notas de crédito a los documentos</description>
         <name>CrearNotasDeCredito</name>
         <label>CrearNotasDeCredito?</label>
         <locationX>952</locationX>
-        <locationY>2306</locationY>
+        <locationY>3722</locationY>
         <defaultConnectorLabel>Resultado predeterminado</defaultConnectorLabel>
         <rules>
             <name>CorrerFlujoNC</name>
@@ -235,7 +278,7 @@
         <name>EncontroItems</name>
         <label>EncontroItems?</label>
         <locationX>446</locationX>
-        <locationY>566</locationY>
+        <locationY>1982</locationY>
         <defaultConnector>
             <targetReference>PantallaNoHayItems</targetReference>
         </defaultConnector>
@@ -257,10 +300,69 @@
         </rules>
     </decisions>
     <decisions>
+        <description>Decisión para documentos bloqueantes</description>
+        <name>EsDocumentoBloqueante</name>
+        <label>EsDocumentoBloqueante?</label>
+        <locationX>512</locationX>
+        <locationY>674</locationY>
+        <defaultConnector>
+            <targetReference>RecorreFormasDePago</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Resultado predeterminado</defaultConnectorLabel>
+        <rules>
+            <name>ReEsDocumentoBloqueante</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>RecorreFormasDePago.Tipo_de_pago__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Documento de Anulación</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>RecorreFormasDePago.Tipo_de_pago__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Nota de crédito</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>MarcaBloqueo</targetReference>
+            </connector>
+            <label>ReEsDocumentoBloqueante</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>consulta si reserva se encuentra Acreditada</description>
+        <name>EstaAcreditada</name>
+        <label>EstaAcreditada?</label>
+        <locationX>446</locationX>
+        <locationY>242</locationY>
+        <defaultConnector>
+            <targetReference>PantallaInicio</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Resultado predeterminado</defaultConnectorLabel>
+        <rules>
+            <name>Resultado_de_EstaAcreditada</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>getReserva.Estado_de_Reserva__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Acreditada</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>ObtieneAcreditacion</targetReference>
+            </connector>
+            <label>Resultado de EstaAcreditada</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>EstadoDeLaReserva</name>
         <label>EstadoDeLaReserva</label>
         <locationX>446</locationX>
-        <locationY>350</locationY>
+        <locationY>1658</locationY>
         <defaultConnector>
             <targetReference>PantallaReservaYaAnulada</targetReference>
         </defaultConnector>
@@ -298,7 +400,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>ItemsReservaSinVC</targetReference>
+                <targetReference>getVCRecordType</targetReference>
             </connector>
             <label>Acreditada</label>
         </rules>
@@ -307,7 +409,7 @@
         <name>QuedanValores</name>
         <label>QuedanValores?</label>
         <locationX>446</locationX>
-        <locationY>1382</locationY>
+        <locationY>2798</locationY>
         <defaultConnector>
             <targetReference>BucleItemsReserva</targetReference>
         </defaultConnector>
@@ -331,7 +433,7 @@
         <name>SeAnulaElDocumento</name>
         <label>SeAnulaElDocumento?</label>
         <locationX>1172</locationX>
-        <locationY>3662</locationY>
+        <locationY>5078</locationY>
         <defaultConnector>
             <targetReference>RevisarDetalleDocumento</targetReference>
         </defaultConnector>
@@ -384,7 +486,7 @@
         <name>AnularYAgregarAColeccion</name>
         <label>AnularYAgregarAColeccion</label>
         <locationX>1128</locationX>
-        <locationY>1706</locationY>
+        <locationY>3122</locationY>
         <collectionReference>FiltroItemSeleccionado</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -399,7 +501,7 @@
         <name>BucleCrearNC</name>
         <label>BucleCrearNC</label>
         <locationX>820</locationX>
-        <locationY>4454</locationY>
+        <locationY>5870</locationY>
         <collectionReference>DocumentosCrearNC</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -413,7 +515,7 @@
         <name>BucleItemsReserva</name>
         <label>BucleItemsReserva</label>
         <locationX>952</locationX>
-        <locationY>1490</locationY>
+        <locationY>2906</locationY>
         <collectionReference>ColeccionDeItemsSeleccionados</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -427,7 +529,7 @@
         <name>ExistetemEnDetalle</name>
         <label>ExistetemEnDetalle</label>
         <locationX>1348</locationX>
-        <locationY>3278</locationY>
+        <locationY>4694</locationY>
         <collectionReference>FiltroDetalleDocumentos</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -442,7 +544,7 @@
         <name>NombrarDocumentos</name>
         <label>NombrarDocumentos</label>
         <locationX>820</locationX>
-        <locationY>4046</locationY>
+        <locationY>5462</locationY>
         <collectionReference>DocumentosCrearNC</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -453,11 +555,26 @@
         </noMoreValuesConnector>
     </loops>
     <loops>
+        <description>Recorre formas de pago obtenidas</description>
+        <name>RecorreFormasDePago</name>
+        <label>RecorreFormasDePago</label>
+        <locationX>292</locationX>
+        <locationY>566</locationY>
+        <collectionReference>ObtieneFormaPago</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>EsDocumentoBloqueante</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>BloqueaAnulacion</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
         <description>Se obtienen los detalles del documento</description>
         <name>RevisarDetalleDocumento</name>
         <label>RevisarDetalleDocumento</label>
         <locationX>820</locationX>
-        <locationY>2846</locationY>
+        <locationY>4262</locationY>
         <collectionReference>getDocumentosReserva</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -472,7 +589,7 @@
         <name>RevisarItemsAAnular</name>
         <label>RevisarItemsAAnular</label>
         <locationX>1172</locationX>
-        <locationY>3062</locationY>
+        <locationY>4478</locationY>
         <collectionReference>ItemsAAnular</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -506,7 +623,7 @@
         <name>geDetallesDocumento</name>
         <label>geDetallesDocumento</label>
         <locationX>1172</locationX>
-        <locationY>2954</locationY>
+        <locationY>4370</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>RevisarItemsAAnular</targetReference>
@@ -528,7 +645,7 @@
         <name>getAcreditacion</name>
         <label>getAcreditacion</label>
         <locationX>820</locationX>
-        <locationY>2414</locationY>
+        <locationY>3830</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>getNotaCreditoRTid</targetReference>
@@ -550,7 +667,7 @@
         <name>getDocumentosReserva</name>
         <label>getDocumentosReserva</label>
         <locationX>820</locationX>
-        <locationY>2738</locationY>
+        <locationY>4154</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>RevisarDetalleDocumento</targetReference>
@@ -586,7 +703,7 @@
         <name>getNotaCreditoRTid</name>
         <label>getNotaCreditoRTid</label>
         <locationX>820</locationX>
-        <locationY>2522</locationY>
+        <locationY>3938</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>getTicketAnulacionRTid</targetReference>
@@ -612,13 +729,14 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
+        <description>Obtiene reserva</description>
         <name>getReserva</name>
         <label>getReserva</label>
         <locationX>446</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>PantallaInicio</targetReference>
+            <targetReference>EstaAcreditada</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -637,7 +755,7 @@
         <name>getTicketAnulacionRTid</name>
         <label>getTicketAnulacionRTid</label>
         <locationX>820</locationX>
-        <locationY>2630</locationY>
+        <locationY>4046</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>getDocumentosReserva</targetReference>
@@ -663,11 +781,40 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
+        <description>Se obtiene el id del tipo de registro Venta Cruzada</description>
+        <name>getVCRecordType</name>
+        <label>getVCRecordType</label>
+        <locationX>446</locationX>
+        <locationY>1766</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>ItemsReservaSinVC</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>VentaCruzada</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>SobjectType</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Detalle_Reserva__c</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <description>Items Reserva de la Reserva</description>
         <name>ItemsReserva</name>
         <label>ItemsReserva</label>
         <locationX>50</locationX>
-        <locationY>458</locationY>
+        <locationY>1766</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>AsignarColeccionRegistros</targetReference>
@@ -696,7 +843,7 @@
         <name>ItemsReservaSinVC</name>
         <label>ItemsReservaSinVC</label>
         <locationX>446</locationX>
-        <locationY>458</locationY>
+        <locationY>1874</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>EncontroItems</targetReference>
@@ -710,59 +857,106 @@
             </value>
         </filters>
         <filters>
+            <field>RecordTypeId</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <elementReference>getVCRecordType.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
             <field>Item_Anulado__c</field>
             <operator>EqualTo</operator>
             <value>
                 <booleanValue>false</booleanValue>
             </value>
         </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Detalle_Reserva__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <description>Obtiene acreditada de reserva</description>
+        <name>ObtieneAcreditacion</name>
+        <label>ObtieneAcreditacion</label>
+        <locationX>292</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>ObtieneFormaPago</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
         <filters>
-            <field>VCMateria__c</field>
-            <operator>NotEqualTo</operator>
+            <field>Reserva__c</field>
+            <operator>EqualTo</operator>
             <value>
-                <stringValue>TMC Camión chico (1.500 a 6.000 kg)</stringValue>
+                <elementReference>getReserva.Id</elementReference>
             </value>
         </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Acreditacion__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <description>Obtiene la forma de pago de reserva acreditada</description>
+        <name>ObtieneFormaPago</name>
+        <label>ObtieneFormaPago</label>
+        <locationX>292</locationX>
+        <locationY>458</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>RecorreFormasDePago</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
         <filters>
-            <field>VCMateria__c</field>
-            <operator>NotEqualTo</operator>
+            <field>Acreditacion__c</field>
+            <operator>EqualTo</operator>
             <value>
-                <stringValue>TMC Camión simple (Más de 6.000 kg)</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>VCMateria__c</field>
-            <operator>NotEqualTo</operator>
-            <value>
-                <stringValue>TMC Camión Rampa menor</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>VCMateria__c</field>
-            <operator>NotEqualTo</operator>
-            <value>
-                <stringValue>TMC Camión con carro o rampa</stringValue>
+                <elementReference>ObtieneAcreditacion.Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Detalle_Reserva__c</object>
+        <object>Forma_de_pago__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
         <name>Actualizar_Item_Reserva</name>
         <label>Actualizar Item Reserva</label>
         <locationX>952</locationX>
-        <locationY>2090</locationY>
+        <locationY>3506</locationY>
         <connector>
             <targetReference>PantallaFinal</targetReference>
         </connector>
         <inputReference>ItemsAAnular</inputReference>
     </recordUpdates>
     <screens>
+        <name>Mensaje_Anulaci_n_Documento</name>
+        <label>Mensaje Anulación Documento</label>
+        <locationX>160</locationX>
+        <locationY>1166</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>TextoAnulacionReserva</name>
+            <fieldText>&lt;p&gt;❌ No se puede anular la reserva&lt;/p&gt;&lt;p&gt;&quot;La reserva fue acreditada con un Documento de Anulación o Nota de Crédito y de acuerdo a la política de cambios y devoluciones, solo se puede modificar una vez la fecha de viaje&quot;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>PantallaFinal</name>
         <label>PantallaFinal</label>
         <locationX>952</locationX>
-        <locationY>2198</locationY>
+        <locationY>3614</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -789,7 +983,7 @@
         <name>PantallaFinalNC</name>
         <label>PantallaFinalNC</label>
         <locationX>820</locationX>
-        <locationY>4754</locationY>
+        <locationY>6170</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -813,7 +1007,7 @@
         <name>PantallaInicialNC</name>
         <label>PantallaInicialNC</label>
         <locationX>820</locationX>
-        <locationY>4346</locationY>
+        <locationY>5762</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -841,7 +1035,7 @@
         <name>PantallaInicio</name>
         <label>PantallaInicio</label>
         <locationX>446</locationX>
-        <locationY>242</locationY>
+        <locationY>1550</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -869,7 +1063,7 @@
         <name>PantallaNoHayItems</name>
         <label>PantallaNoHayItems</label>
         <locationX>578</locationX>
-        <locationY>674</locationY>
+        <locationY>2090</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -893,7 +1087,7 @@
         <name>PantallaReservaYaAnulada</name>
         <label>PantallaReservaYaAnulada</label>
         <locationX>842</locationX>
-        <locationY>458</locationY>
+        <locationY>1766</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -917,7 +1111,7 @@
         <name>PantallaSeleccionItems</name>
         <label>PantallaSeleccionItems</label>
         <locationX>446</locationX>
-        <locationY>1058</locationY>
+        <locationY>2474</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -968,7 +1162,7 @@
         <name>CrearNotaDeCreditoConPagoCredito</name>
         <label>CrearNotaDeCreditoConPagoCredito</label>
         <locationX>908</locationX>
-        <locationY>4562</locationY>
+        <locationY>5978</locationY>
         <connector>
             <targetReference>BucleCrearNC</targetReference>
         </connector>
@@ -1247,6 +1441,17 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>variable para validar si es que existe documento bloqueando</description>
+        <name>TieneDocumentoBloqueante</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
     </variables>
     <variables>
         <name>TipoNotaDeCredito</name>

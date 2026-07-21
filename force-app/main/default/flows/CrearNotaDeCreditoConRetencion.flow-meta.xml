@@ -4,8 +4,8 @@
         <description>Se actualizan los datos del cliente en Bsale</description>
         <name>AccionActualizarDatosClienteBsale</name>
         <label>AccionActualizarDatosClienteBsale</label>
-        <locationX>710</locationX>
-        <locationY>1082</locationY>
+        <locationX>578</locationX>
+        <locationY>1214</locationY>
         <actionName>NAV_EnviarClienteBSale_Invocable</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -23,8 +23,8 @@
     <actionCalls>
         <name>EnviarNotaCreditoABsale</name>
         <label>EnviarNotaCreditoABsale</label>
-        <locationX>545</locationX>
-        <locationY>6302</locationY>
+        <locationX>380</locationX>
+        <locationY>6470</locationY>
         <actionName>NAV_EnviarDocumento_PB</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -39,102 +39,14 @@
         </inputParameters>
         <nameSegment>NAV_EnviarDocumento_PB</nameSegment>
     </actionCalls>
-    <actionCalls>
-        <name>EnviarNotaCreditoRefacturacionABsale</name>
-        <label>EnviarNotaCreditoRefacturacionABsale</label>
-        <locationX>281</locationX>
-        <locationY>6302</locationY>
-        <actionName>NAV_EnviarDocumento_PB</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>FIN</targetReference>
-        </connector>
-        <flowTransactionModel>Automatic</flowTransactionModel>
-        <inputParameters>
-            <name>inputParams</name>
-            <value>
-                <elementReference>NotaCreditoRefacturacionCreada.Id</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>NAV_EnviarDocumento_PB</nameSegment>
-    </actionCalls>
     <apiVersion>54.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
-    <assignments>
-        <name>ActualizarColeccionDDNCR</name>
-        <label>ActualizarColeccionDDNCR</label>
-        <locationX>622</locationX>
-        <locationY>4586</locationY>
-        <assignmentItems>
-            <assignToReference>BucleEditar.Id</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue></stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>BucleEditar.Documento__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>VariableNotaDeCredito.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>BucleEditar.Detalle_Documento_Principal__c</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>IdRefDetallePrincipal</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>NuevosDDNC</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>BucleEditar</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>BucleEditar</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>AsiganaValorDetallerDocumentoPrincipal</name>
-        <label>AsiganaValorDetallerDocumentoPrincipal</label>
-        <locationX>622</locationX>
-        <locationY>4478</locationY>
-        <assignmentItems>
-            <assignToReference>IdRefDetallePrincipal</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>BucleEditar.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>ActualizarColeccionDDNCR</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>AsignaColeccionRegistrosNC</name>
-        <label>AsignaColeccionRegistrosNC</label>
-        <locationX>1590</locationX>
-        <locationY>5102</locationY>
-        <assignmentItems>
-            <assignToReference>DetalleNCRegistros</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>DetalleNCRegistro</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>BucleCrearDetalleDocumentoNotaCredito</targetReference>
-        </connector>
-    </assignments>
     <assignments>
         <description>Se asignan los campos referentes a la retención en la Nota de Crédito</description>
         <name>AsignarCamposRetencion</name>
         <label>AsignarCamposRetencion</label>
-        <locationX>842</locationX>
-        <locationY>2738</locationY>
+        <locationX>578</locationX>
+        <locationY>3062</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.FechaSolicitudDevolucion__c</assignToReference>
             <operator>Assign</operator>
@@ -178,8 +90,8 @@
         <description>Se asignan los datos del cliente a las variables de la pantalla anterior</description>
         <name>AsignarDatosClientePantalla</name>
         <label>AsignarDatosClientePantalla</label>
-        <locationX>710</locationX>
-        <locationY>866</locationY>
+        <locationX>578</locationX>
+        <locationY>974</locationY>
         <assignmentItems>
             <assignToReference>GiroCliente</assignToReference>
             <operator>Assign</operator>
@@ -229,8 +141,8 @@
     <assignments>
         <name>AsignarDestinatario</name>
         <label>AsignarDatosClientes</label>
-        <locationX>842</locationX>
-        <locationY>1274</locationY>
+        <locationX>710</locationX>
+        <locationY>1430</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.RUT_Cliente__c</assignToReference>
             <operator>Assign</operator>
@@ -302,8 +214,8 @@
         <description>Se asigna el valor del monto original del detalle de documento</description>
         <name>AsignarMontoOriginalYRetencion</name>
         <label>AsignarMontoOriginalYRetencion</label>
-        <locationX>1590</locationX>
-        <locationY>4994</locationY>
+        <locationX>1150</locationX>
+        <locationY>5462</locationY>
         <assignmentItems>
             <assignToReference>MontoOriginalDetalleDocumento</assignToReference>
             <operator>Add</operator>
@@ -311,58 +223,16 @@
                 <elementReference>BucleCrearDetalleDocumentoNotaCredito.Total_Bruto__c</elementReference>
             </value>
         </assignmentItems>
-        <assignmentItems>
-            <assignToReference>DetalleNCRegistro.Cantidad__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <numberValue>1.0</numberValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>DetalleNCRegistro.Descripcion__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>BucleCrearDetalleDocumentoNotaCredito.Descripcion__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>DetalleNCRegistro.Detalle_Documento_Principal__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>BucleCrearDetalleDocumentoNotaCredito.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>DetalleNCRegistro.Documento__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>NotaCreditoCreada.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>DetalleNCRegistro.Tax_Id__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>BucleCrearDetalleDocumentoNotaCredito.Tax_Id__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>DetalleNCRegistro.Valor_Unitario_Neto__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>montoDetalleDocumento</elementReference>
-            </value>
-        </assignmentItems>
         <connector>
-            <targetReference>AsignaColeccionRegistrosNC</targetReference>
+            <targetReference>CrearDetalleDocumentoNotaCredito</targetReference>
         </connector>
     </assignments>
     <assignments>
         <description>Se asigna el motivo de devolucióna  al Nota de Crédito</description>
         <name>AsignarMotivoDevolucionANotaCredito</name>
         <label>AsignarMotivoDevolucionANotaCredito</label>
-        <locationX>842</locationX>
-        <locationY>3614</locationY>
+        <locationX>710</locationX>
+        <locationY>4046</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Motivo_Devolucion__c</assignToReference>
             <operator>Assign</operator>
@@ -371,15 +241,15 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>EsRefacturacion</targetReference>
+            <targetReference>ObtenerDRAnulados</targetReference>
         </connector>
     </assignments>
     <assignments>
         <description>Se asigna el motivo de la devolución de la NC a la variable</description>
         <name>AsignarMotivoDevolucionAVariable</name>
         <label>AsignarMotivoDevolucionAVariable</label>
-        <locationX>710</locationX>
-        <locationY>3422</locationY>
+        <locationX>578</locationX>
+        <locationY>3830</locationY>
         <assignmentItems>
             <assignToReference>MotivoDevolucion</assignToReference>
             <operator>Assign</operator>
@@ -395,8 +265,8 @@
         <description>Se asigna el motivo de devolucióna  al Nota de Crédito</description>
         <name>AsignarMotivoNoAplicaRetencionANotaCredito</name>
         <label>AsignarMotivoNoAplicaRetencionANotaCredito</label>
-        <locationX>1106</locationX>
-        <locationY>2414</locationY>
+        <locationX>842</locationX>
+        <locationY>2702</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.MotivoNoRetencion__c</assignToReference>
             <operator>Assign</operator>
@@ -411,8 +281,8 @@
     <assignments>
         <name>AsignarTipoDeNotaDeCredito</name>
         <label>AsignarTipoDeNotaDeCredito</label>
-        <locationX>314</locationX>
-        <locationY>2198</locationY>
+        <locationX>50</locationX>
+        <locationY>2462</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Tipo_de_Nota_de_Credito__c</assignToReference>
             <operator>Assign</operator>
@@ -439,40 +309,10 @@
         </connector>
     </assignments>
     <assignments>
-        <name>AsignarTipoDeNotaDeCreditoRefacturacion</name>
-        <label>AsignarTipoDeNotaDeCreditoRefacturacion</label>
-        <locationX>50</locationX>
-        <locationY>2198</locationY>
-        <assignmentItems>
-            <assignToReference>VariableNotaDeCredito.Tipo_de_Nota_de_Credito__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>TipoNotaCreditoSeleccionada</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>VariableNotaDeCredito.Tipo_de_Devolucion__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>Retornar Productos</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>VariableNotaDeCredito.Fecha_Vencimiento__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>$Flow.CurrentDate</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>DebeEscribirMotivoDevolucion</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>AsignarTipoDevolucion</name>
         <label>AsignarTipoDevolucion</label>
-        <locationX>1040</locationX>
-        <locationY>2198</locationY>
+        <locationX>776</locationX>
+        <locationY>2462</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Tipo_de_Nota_de_Credito__c</assignToReference>
             <operator>Assign</operator>
@@ -501,8 +341,8 @@
     <assignments>
         <name>AsignarTipoDevolucionAjustarPrecios</name>
         <label>AsignarTipoDevolucionAjustarPrecios</label>
-        <locationX>710</locationX>
-        <locationY>2414</locationY>
+        <locationX>446</locationX>
+        <locationY>2702</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Tipo_de_Nota_de_Credito__c</assignToReference>
             <operator>Assign</operator>
@@ -531,8 +371,8 @@
     <assignments>
         <name>AsignarValoresANotaDeCredito1</name>
         <label>AsignarValoresANotaDeCredito1</label>
-        <locationX>1106</locationX>
-        <locationY>458</locationY>
+        <locationX>974</locationX>
+        <locationY>518</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Acreditacion__c</assignToReference>
             <operator>Assign</operator>
@@ -617,13 +457,6 @@
                 <elementReference>ObtenerDocumentoReferencia.Contacto_Reserva__r.Id</elementReference>
             </value>
         </assignmentItems>
-        <assignmentItems>
-            <assignToReference>VariableNotaDeCredito.Empresa_Puelche__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>ObtenerDocumentoReferencia.Empresa_Puelche__c</elementReference>
-            </value>
-        </assignmentItems>
         <connector>
             <targetReference>FaltanDatosDelCliente</targetReference>
         </connector>
@@ -631,8 +464,8 @@
     <assignments>
         <name>AsignarValoresANotaDeCredito1_0</name>
         <label>AsignarValoresANotaDeCredito1</label>
-        <locationX>842</locationX>
-        <locationY>458</locationY>
+        <locationX>710</locationX>
+        <locationY>518</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Acreditacion__c</assignToReference>
             <operator>Assign</operator>
@@ -724,13 +557,6 @@
                 <elementReference>ObtenerDocumentoReferencia.Contacto_Reserva__r.Id</elementReference>
             </value>
         </assignmentItems>
-        <assignmentItems>
-            <assignToReference>VariableNotaDeCredito.Empresa_Puelche__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>ObtenerDocumentoReferencia.Empresa_Puelche__c</elementReference>
-            </value>
-        </assignmentItems>
         <connector>
             <targetReference>FaltanDatosDelCliente</targetReference>
         </connector>
@@ -739,8 +565,8 @@
         <description>Se asigna el valor del tipo de nota de crédito seleccionada en la pantalla a la variable</description>
         <name>AsignarValorTipoNC</name>
         <label>AsignarValorTipoNC</label>
-        <locationX>798</locationX>
-        <locationY>1898</locationY>
+        <locationX>578</locationX>
+        <locationY>2126</locationY>
         <assignmentItems>
             <assignToReference>TipoNotaCreditoSeleccionada</assignToReference>
             <operator>Assign</operator>
@@ -777,8 +603,8 @@
         <description>Se cambia el valor de la variable a True para identificar que si se creó el Documento de anulación</description>
         <name>CambiarVariableATrue</name>
         <label>CambiarVariableATrue</label>
-        <locationX>1590</locationX>
-        <locationY>4694</locationY>
+        <locationX>1150</locationX>
+        <locationY>5126</locationY>
         <assignmentItems>
             <assignToReference>SeCreoDocAnulacion</assignToReference>
             <operator>Assign</operator>
@@ -791,63 +617,10 @@
         </connector>
     </assignments>
     <assignments>
-        <description>Se cambia el valor de la variable a True para identificar que si se creó el Documento de anulación</description>
-        <name>CambiarVariableATrueRefacturacion</name>
-        <label>CambiarVariableATrueCreacionNC</label>
-        <locationX>534</locationX>
-        <locationY>4262</locationY>
-        <assignmentItems>
-            <assignToReference>SeCreoDocAnulacion</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>BucleEditar</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>CrearVariableDDNCRefacturacion</name>
-        <label>CrearVariableDDNCRefacturacion</label>
-        <locationX>534</locationX>
-        <locationY>3938</locationY>
-        <assignmentItems>
-            <assignToReference>ColeccionDDNCRefacturacion</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>getDetallesDocumento</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>CrearNotaDeCreditoRefacturacion</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>LimpiaVariablesRegistroDTeNC</name>
-        <label>LimpiaVariablesRegistroDTeNC</label>
-        <locationX>1502</locationX>
-        <locationY>5402</locationY>
-        <assignmentItems>
-            <assignToReference>DetalleNCRegistro</assignToReference>
-            <operator>Assign</operator>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>DetalleNCRegistros</assignToReference>
-            <operator>RemoveAll</operator>
-            <value>
-                <elementReference>DetalleNCRegistros</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>CreacionDetallesDocumentoNotaCredito</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>PersonaNaturalFalse</name>
         <label>PersonaNaturalFalse</label>
-        <locationX>710</locationX>
-        <locationY>1490</locationY>
+        <locationX>578</locationX>
+        <locationY>1670</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Persona_Natural__c</assignToReference>
             <operator>Assign</operator>
@@ -862,8 +635,8 @@
     <assignments>
         <name>PersonaNaturalTrue</name>
         <label>PersonaNaturalTrue</label>
-        <locationX>974</locationX>
-        <locationY>1490</locationY>
+        <locationX>842</locationX>
+        <locationY>1670</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Persona_Natural__c</assignToReference>
             <operator>Assign</operator>
@@ -910,8 +683,8 @@
     <decisions>
         <name>AplicaRetencion</name>
         <label>Aplica Retención?</label>
-        <locationX>1040</locationX>
-        <locationY>2306</locationY>
+        <locationX>776</locationX>
+        <locationY>2582</locationY>
         <defaultConnectorLabel>Resultado predeterminado</defaultConnectorLabel>
         <rules>
             <name>AplicaPATH</name>
@@ -947,24 +720,9 @@
     <decisions>
         <name>AsignarTipoDeDevolucion</name>
         <label>AsignarTipoDeDevolucion</label>
-        <locationX>842</locationX>
-        <locationY>2090</locationY>
+        <locationX>710</locationX>
+        <locationY>2342</locationY>
         <defaultConnectorLabel>Default</defaultConnectorLabel>
-        <rules>
-            <name>Refacturacion</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>TipoNotaCreditoSeleccionada</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>3</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>AsignarTipoDeNotaDeCreditoRefacturacion</targetReference>
-            </connector>
-            <label>Refacturacion</label>
-        </rules>
         <rules>
             <name>FormaDePagoNuevaVenta</name>
             <conditionLogic>and</conditionLogic>
@@ -1000,27 +758,12 @@
         <description>Se evalua si debe elegir el tipo de nota de crédito o si ya lo eligió anteriormente</description>
         <name>DebeElegirTipoNotaDeCredito</name>
         <label>DebeElegirTipoNotaDeCredito?</label>
-        <locationX>842</locationX>
-        <locationY>1682</locationY>
+        <locationX>710</locationX>
+        <locationY>1886</locationY>
         <defaultConnector>
             <targetReference>PantallaSegundaNotaCredito</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>NoDebeElegirTipoNC</defaultConnectorLabel>
-        <rules>
-            <name>RefacturacionPATH</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>BooleanoRefacturacion</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>AsignarTipoDeDevolucion</targetReference>
-            </connector>
-            <label>Refacturacion</label>
-        </rules>
         <rules>
             <name>ElegirTipoNC</name>
             <conditionLogic>or</conditionLogic>
@@ -1048,8 +791,8 @@
         <description>Se evalua si debe escribir el motivo de la nota de crédito o si ya lo escribió anteriormente</description>
         <name>DebeEscribirMotivoDevolucion</name>
         <label>DebeEscribirMotivoDevolucion?</label>
-        <locationX>842</locationX>
-        <locationY>3206</locationY>
+        <locationX>710</locationX>
+        <locationY>3590</locationY>
         <defaultConnector>
             <targetReference>AsignarMotivoDevolucionANotaCredito</targetReference>
         </defaultConnector>
@@ -1078,35 +821,10 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Es_Refacturacion</name>
-        <label>Es Refacturación?</label>
-        <locationX>413</locationX>
-        <locationY>6194</locationY>
-        <defaultConnector>
-            <targetReference>EnviarNotaCreditoABsale</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
-        <rules>
-            <name>S</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>BooleanoRefacturacion</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>EnviarNotaCreditoRefacturacionABsale</targetReference>
-            </connector>
-            <label>Sí</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>EsPersonaNatural</name>
         <label>EsPersonaNatural?</label>
-        <locationX>842</locationX>
-        <locationY>1382</locationY>
+        <locationX>710</locationX>
+        <locationY>1550</locationY>
         <defaultConnector>
             <targetReference>PersonaNaturalTrue</targetReference>
         </defaultConnector>
@@ -1128,35 +846,10 @@
         </rules>
     </decisions>
     <decisions>
-        <name>EsRefacturacion</name>
-        <label>EsRefacturacion?</label>
-        <locationX>842</locationX>
-        <locationY>3722</locationY>
-        <defaultConnector>
-            <targetReference>ObtenerDRAnulados</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
-        <rules>
-            <name>SiRefacturacion</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>BooleanoRefacturacion</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>getDetallesDocumento</targetReference>
-            </connector>
-            <label>Si</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>EstaEseItemEnElDocumento</name>
         <label>EstaEseItemEnElDocumento?</label>
-        <locationX>1370</locationX>
-        <locationY>4154</locationY>
+        <locationX>930</locationX>
+        <locationY>4526</locationY>
         <defaultConnector>
             <targetReference>EstamparFechaDocumentoAnulado</targetReference>
         </defaultConnector>
@@ -1181,8 +874,8 @@
         <description>Se evlua si faltas datos del cliente para emitir la NC</description>
         <name>FaltanDatosDelCliente</name>
         <label>FaltanDatosDelCliente?</label>
-        <locationX>842</locationX>
-        <locationY>650</locationY>
+        <locationX>710</locationX>
+        <locationY>734</locationY>
         <defaultConnector>
             <targetReference>AsignarDestinatario</targetReference>
         </defaultConnector>
@@ -1277,8 +970,8 @@
         <description>Decisión que evalúa si ya se creó el Documento de anulación en el flujo</description>
         <name>IFSeCreoDocAnulacion</name>
         <label>SeCreoDocAnulacion?</label>
-        <locationX>1502</locationX>
-        <locationY>4370</locationY>
+        <locationX>1062</locationX>
+        <locationY>4766</locationY>
         <defaultConnector>
             <targetReference>CrearNotaDeCredito</targetReference>
         </defaultConnector>
@@ -1303,8 +996,8 @@
         <description>Revisa que se haya creado un documento de anulación revisando la variable</description>
         <name>LaNCTieneDDs</name>
         <label>ExisteElDocAnulacion?</label>
-        <locationX>842</locationX>
-        <locationY>5762</locationY>
+        <locationX>710</locationX>
+        <locationY>5990</locationY>
         <defaultConnector>
             <targetReference>PantallaNoFueCreada</targetReference>
         </defaultConnector>
@@ -1329,8 +1022,8 @@
         <description>Evalúa si la retención es del 100%</description>
         <name>RetencionEs100</name>
         <label>RetencionEs100?</label>
-        <locationX>710</locationX>
-        <locationY>2630</locationY>
+        <locationX>446</locationX>
+        <locationY>2942</locationY>
         <defaultConnector>
             <targetReference>AsignarCamposRetencion</targetReference>
         </defaultConnector>
@@ -1354,15 +1047,15 @@
     <decisions>
         <name>SeMandaABsale</name>
         <label>SeMandaABsale?</label>
-        <locationX>611</locationX>
-        <locationY>6086</locationY>
+        <locationX>512</locationX>
+        <locationY>6350</locationY>
         <defaultConnector>
             <targetReference>ListoParaSAP</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
             <name>CaminoSiBsale</name>
-            <conditionLogic>or</conditionLogic>
+            <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>NotaCreditoCreada.RecordType.DeveloperName</leftValueReference>
                 <operator>EqualTo</operator>
@@ -1370,15 +1063,8 @@
                     <stringValue>Nota_de_Credito</stringValue>
                 </rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>NotaCreditoRefacturacionCreada.RecordType.DeveloperName</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Nota_de_Credito</stringValue>
-                </rightValue>
-            </conditions>
             <connector>
-                <targetReference>Es_Refacturacion</targetReference>
+                <targetReference>EnviarNotaCreditoABsale</targetReference>
             </connector>
             <label>Si</label>
         </rules>
@@ -1386,8 +1072,8 @@
     <decisions>
         <name>TiposDeRegistros</name>
         <label>TiposDeRegistros</label>
-        <locationX>842</locationX>
-        <locationY>242</locationY>
+        <locationX>710</locationX>
+        <locationY>278</locationY>
         <defaultConnector>
             <targetReference>ObtenerTRNC</targetReference>
         </defaultConnector>
@@ -1423,8 +1109,6 @@
             <label>No Tributario</label>
         </rules>
     </decisions>
-    <description>se incorpora check puelche. 
-Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado desde V24)</description>
     <dynamicChoiceSets>
         <name>TipoDevolucion</name>
         <dataType>Picklist</dataType>
@@ -1496,36 +1180,22 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <loops>
         <name>BucleCrearDetalleDocumentoNotaCredito</name>
         <label>BucleCrearDetalleDocumentoNotaCredito</label>
-        <locationX>1502</locationX>
-        <locationY>4886</locationY>
+        <locationX>1062</locationX>
+        <locationY>5342</locationY>
         <collectionReference>DetallesDocumentoDelDocumento</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
             <targetReference>AsignarMontoOriginalYRetencion</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
-            <targetReference>CrearDetalleDocumentoNotaCredito</targetReference>
-        </noMoreValuesConnector>
-    </loops>
-    <loops>
-        <name>BucleEditar</name>
-        <label>BucleEditarDetallesDoumentoNCRefacturacion</label>
-        <locationX>534</locationX>
-        <locationY>4370</locationY>
-        <collectionReference>getDetallesDocumento</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>AsiganaValorDetallerDocumentoPrincipal</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>CrearDDNCRefacturacion</targetReference>
+            <targetReference>CreacionDetallesDocumentoNotaCredito</targetReference>
         </noMoreValuesConnector>
     </loops>
     <loops>
         <name>CreacionDetallesDocumentoNotaCredito</name>
         <label>CreaciónDetallesDocumentoNotaCredito</label>
-        <locationX>1150</locationX>
-        <locationY>3938</locationY>
+        <locationX>710</locationX>
+        <locationY>4286</locationY>
         <collectionReference>ObtenerDRAnulados</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -1555,50 +1225,67 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     </processMetadataValues>
     <processType>Flow</processType>
     <recordCreates>
-        <name>CrearDDNCRefacturacion</name>
-        <label>CrearDDNCRefacturacion</label>
-        <locationX>534</locationX>
-        <locationY>4778</locationY>
-        <connector>
-            <targetReference>LaNCTieneDDs</targetReference>
-        </connector>
-        <inputReference>NuevosDDNC</inputReference>
-    </recordCreates>
-    <recordCreates>
         <name>CrearDetalleDocumentoNotaCredito</name>
         <label>CrearDetalleDocumentoNotaCredito</label>
-        <locationX>1502</locationX>
-        <locationY>5294</locationY>
+        <locationX>1150</locationX>
+        <locationY>5582</locationY>
         <connector>
-            <targetReference>LimpiaVariablesRegistroDTeNC</targetReference>
+            <targetReference>BucleCrearDetalleDocumentoNotaCredito</targetReference>
         </connector>
-        <inputReference>DetalleNCRegistros</inputReference>
+        <inputAssignments>
+            <field>Cantidad__c</field>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Descripcion__c</field>
+            <value>
+                <elementReference>BucleCrearDetalleDocumentoNotaCredito.Descripcion__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Detalle_Documento_Principal__c</field>
+            <value>
+                <elementReference>BucleCrearDetalleDocumentoNotaCredito.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Documento__c</field>
+            <value>
+                <elementReference>NotaCreditoCreada.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Tax_Id__c</field>
+            <value>
+                <elementReference>BucleCrearDetalleDocumentoNotaCredito.Tax_Id__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Valor_Unitario_Neto__c</field>
+            <value>
+                <elementReference>montoDetalleDocumento</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Detalle_Documentos__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordCreates>
         <name>CrearNotaDeCredito</name>
         <label>CrearNotaDeCredito</label>
-        <locationX>1590</locationX>
-        <locationY>4478</locationY>
+        <locationX>1150</locationX>
+        <locationY>4886</locationY>
         <connector>
             <targetReference>NotaCreditoCreada</targetReference>
-        </connector>
-        <inputReference>VariableNotaDeCredito</inputReference>
-    </recordCreates>
-    <recordCreates>
-        <name>CrearNotaDeCreditoRefacturacion</name>
-        <label>CrearNotaDeCreditoRefacturacion</label>
-        <locationX>534</locationX>
-        <locationY>4046</locationY>
-        <connector>
-            <targetReference>NotaCreditoRefacturacionCreada</targetReference>
         </connector>
         <inputReference>VariableNotaDeCredito</inputReference>
     </recordCreates>
     <recordLookups>
         <name>DetallesDocumentoDelDocumento</name>
         <label>DetallesDocumentoDelDocumento</label>
-        <locationX>1370</locationX>
-        <locationY>4046</locationY>
+        <locationX>930</locationX>
+        <locationY>4406</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>EstaEseItemEnElDocumento</targetReference>
@@ -1625,8 +1312,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <recordLookups>
         <name>GetCamposResumenNotaCreditoCreada</name>
         <label>GetCamposResumenNotaCreditoCreada</label>
-        <locationX>611</locationX>
-        <locationY>5870</locationY>
+        <locationX>512</locationX>
+        <locationY>6110</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>ActualizarMontoRetenido</targetReference>
@@ -1644,33 +1331,11 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <description>se obtienen los detalle de documentos del documento principal</description>
-        <name>getDetallesDocumento</name>
-        <label>getDetallesDocumento</label>
-        <locationX>534</locationX>
-        <locationY>3830</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>CrearVariableDDNCRefacturacion</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Documento__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Detalle_Documentos__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <description>Se obtienen los parámetros para saber qué retención aplicar</description>
         <name>getParametrosRetencion</name>
         <label>getParametrosRetencion</label>
-        <locationX>710</locationX>
-        <locationY>2522</locationY>
+        <locationX>446</locationX>
+        <locationY>2822</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>RetencionEs100</targetReference>
@@ -1692,8 +1357,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <recordLookups>
         <name>NotaCreditoCreada</name>
         <label>NotaCreditoCreada</label>
-        <locationX>1590</locationX>
-        <locationY>4586</locationY>
+        <locationX>1150</locationX>
+        <locationY>5006</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>CambiarVariableATrue</targetReference>
@@ -1711,31 +1376,10 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>NotaCreditoRefacturacionCreada</name>
-        <label>NotaCreditoRefacturacionCreada</label>
-        <locationX>534</locationX>
-        <locationY>4154</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>CambiarVariableATrueRefacturacion</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>VariableNotaDeCredito.Id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Documento__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>ObtenerDocumentoReferencia</name>
         <label>ObtenerDocumentoReferencia</label>
-        <locationX>842</locationX>
-        <locationY>134</locationY>
+        <locationX>710</locationX>
+        <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>TiposDeRegistros</targetReference>
@@ -1755,8 +1399,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <recordLookups>
         <name>ObtenerDRAnulados</name>
         <label>ObtenerDRAnulados</label>
-        <locationX>1150</locationX>
-        <locationY>3830</locationY>
+        <locationX>710</locationX>
+        <locationY>4166</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>CreacionDetallesDocumentoNotaCredito</targetReference>
@@ -1790,8 +1434,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <recordLookups>
         <name>ObtenerTRAnulacionTicket</name>
         <label>ObtenerTRAnulacionTicket</label>
-        <locationX>842</locationX>
-        <locationY>350</locationY>
+        <locationX>710</locationX>
+        <locationY>398</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>AsignarValoresANotaDeCredito1_0</targetReference>
@@ -1811,8 +1455,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <recordLookups>
         <name>ObtenerTRNC</name>
         <label>ObtenerTRNC</label>
-        <locationX>1106</locationX>
-        <locationY>350</locationY>
+        <locationX>974</locationX>
+        <locationY>398</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>AsignarValoresANotaDeCredito1</targetReference>
@@ -1833,8 +1477,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <description>Se actualiza la cuenta del cliente con los datos nuevos en Salesforce</description>
         <name>ActualizarCuentaCliente</name>
         <label>ActualizarCuentaCliente</label>
-        <locationX>710</locationX>
-        <locationY>974</locationY>
+        <locationX>578</locationX>
+        <locationY>1094</locationY>
         <connector>
             <targetReference>AccionActualizarDatosClienteBsale</targetReference>
         </connector>
@@ -1875,8 +1519,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <recordUpdates>
         <name>ActualizarMontoRetenido</name>
         <label>ActualizarMontoRetenido</label>
-        <locationX>611</locationX>
-        <locationY>5978</locationY>
+        <locationX>512</locationX>
+        <locationY>6230</locationY>
         <connector>
             <targetReference>SeMandaABsale</targetReference>
         </connector>
@@ -1906,8 +1550,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <description>Se estampa la fecha del documento anulado al item de reserva</description>
         <name>EstamparFechaDocumentoAnulado</name>
         <label>EstamparFechaDocumentoAnulado</label>
-        <locationX>1502</locationX>
-        <locationY>4262</locationY>
+        <locationX>1062</locationX>
+        <locationY>4646</locationY>
         <connector>
             <targetReference>IFSeCreoDocAnulacion</targetReference>
         </connector>
@@ -1931,8 +1575,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <description>Se actualiza el campo &quot;Listo para SAP&quot; en el documento cuando es no tributario</description>
         <name>ListoParaSAP</name>
         <label>ListoParaSAP</label>
-        <locationX>809</locationX>
-        <locationY>6194</locationY>
+        <locationX>644</locationX>
+        <locationY>6470</locationY>
         <connector>
             <targetReference>FIN</targetReference>
         </connector>
@@ -1955,8 +1599,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <screens>
         <name>EsNotaDeCredito</name>
         <label>EsNotaDeCredito</label>
-        <locationX>578</locationX>
-        <locationY>350</locationY>
+        <locationX>446</locationX>
+        <locationY>398</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1979,14 +1623,14 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <screens>
         <name>FIN</name>
         <label>FIN</label>
-        <locationX>611</locationX>
-        <locationY>6578</locationY>
+        <locationX>512</locationX>
+        <locationY>6686</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
             <name>TextoFIN</name>
-            <fieldText>&lt;p&gt;Nota de Crédito con nombre &quot;{!GetCamposResumenNotaCreditoCreada.Name}&quot; creada en el sistema.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Nota de Crédito con nombre &quot;{!NotaCreditoCreada.Name}&quot; creada en el sistema.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -2003,8 +1647,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <screens>
         <name>PantallaMotivoDevolucion</name>
         <label>PantallaMotivoDevolucion</label>
-        <locationX>710</locationX>
-        <locationY>3314</locationY>
+        <locationX>578</locationX>
+        <locationY>3710</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2027,9 +1671,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <fields>
             <name>TextoMotivoDevolucion</name>
             <dataType>String</dataType>
-            <fieldText>¿Cuál es el motivo de la Nota de crédito?</fieldText>
+            <fieldText>¿Cuál es el motivo de la devolución?</fieldText>
             <fieldType>InputField</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
                 <verticalAlignment>
@@ -2046,8 +1689,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <screens>
         <name>PantallaNoFueCreada</name>
         <label>PantallaNoFueCreada</label>
-        <locationX>1073</locationX>
-        <locationY>5870</locationY>
+        <locationX>908</locationX>
+        <locationY>6110</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -2071,8 +1714,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <description>Se muestran los campos sin información para rellenarlos</description>
         <name>PantallaRellenarDatos</name>
         <label>PantallaRellenarDatos</label>
-        <locationX>710</locationX>
-        <locationY>758</locationY>
+        <locationX>578</locationX>
+        <locationY>854</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -2100,7 +1743,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
             </defaultValue>
             <fieldText>Giro</fieldText>
             <fieldType>InputField</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
                 <verticalAlignment>
@@ -2133,7 +1775,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
             </defaultValue>
             <fieldText>Correo</fieldText>
             <fieldType>InputField</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
                 <verticalAlignment>
@@ -2166,7 +1807,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
             </defaultValue>
             <fieldText>Ciudad</fieldText>
             <fieldType>InputField</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
                 <verticalAlignment>
@@ -2199,7 +1839,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
             </defaultValue>
             <fieldText>Comuna</fieldText>
             <fieldType>InputField</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
                 <verticalAlignment>
@@ -2232,7 +1871,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
             </defaultValue>
             <fieldText>Dirección</fieldText>
             <fieldType>InputField</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
                 <verticalAlignment>
@@ -2263,8 +1901,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <screens>
         <name>PantallaRetencion100</name>
         <label>PantallaRetencion100</label>
-        <locationX>578</locationX>
-        <locationY>2738</locationY>
+        <locationX>314</locationX>
+        <locationY>3062</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -2287,8 +1925,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <screens>
         <name>PantallaSegundaNotaCredito</name>
         <label>PantallaSegundaNotaCredito</label>
-        <locationX>1062</locationX>
-        <locationY>1790</locationY>
+        <locationX>842</locationX>
+        <locationY>2006</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -2315,8 +1953,8 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
     <screens>
         <name>PantallaTipoNotaDeCredito</name>
         <label>PantallaTipoNotaDeCredito</label>
-        <locationX>798</locationX>
-        <locationY>1790</locationY>
+        <locationX>578</locationX>
+        <locationY>2006</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -2349,7 +1987,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
                     <dataType>String</dataType>
                     <fieldText>Selecciona el Tipo de Nota de Crédito</fieldText>
                     <fieldType>RadioButtons</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -2378,7 +2015,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
                     <dataType>String</dataType>
                     <fieldText>¿Aplica Retención?</fieldText>
                     <fieldType>RadioButtons</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -2415,7 +2051,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
                     <dataType>DateTime</dataType>
                     <fieldText>Fecha/Hora de la solicitud de devolución</fieldText>
                     <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -2441,7 +2076,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
                     <dataType>String</dataType>
                     <fieldText>Escriba el motivo por el que no aplica la retención</fieldText>
                     <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -2485,7 +2119,7 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>716</locationX>
+        <locationX>584</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>ObtenerDocumentoReferencia</targetReference>
@@ -2504,16 +2138,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         </value>
     </variables>
     <variables>
-        <name>BooleanoRefacturacion</name>
-        <dataType>Boolean</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <booleanValue>false</booleanValue>
-        </value>
-    </variables>
-    <variables>
         <name>CiudadCliente</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -2522,14 +2146,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <value>
             <elementReference>ObtenerDocumentoReferencia.Ciudad_Cliente__c</elementReference>
         </value>
-    </variables>
-    <variables>
-        <name>ColeccionDDNCRefacturacion</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <objectType>Detalle_Documentos__c</objectType>
     </variables>
     <variables>
         <name>ComunaCliente</name>
@@ -2550,22 +2166,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <value>
             <elementReference>ObtenerDocumentoReferencia.Correo_Cliente__c</elementReference>
         </value>
-    </variables>
-    <variables>
-        <name>DetalleNCRegistro</name>
-        <dataType>SObject</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <objectType>Detalle_Documentos__c</objectType>
-    </variables>
-    <variables>
-        <name>DetalleNCRegistros</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <objectType>Detalle_Documentos__c</objectType>
     </variables>
     <variables>
         <name>DireccionCliente</name>
@@ -2598,13 +2198,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         </value>
     </variables>
     <variables>
-        <name>IdRefDetallePrincipal</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
         <description>MOnto original del detalle de documento</description>
         <name>MontoOriginalDetalleDocumento</name>
         <dataType>Currency</dataType>
@@ -2622,14 +2215,6 @@ Se incorpora envío automático a bSale de NC Tipo 3 por Refacturación (creado 
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>true</isOutput>
-    </variables>
-    <variables>
-        <name>NuevosDDNC</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <objectType>Detalle_Documentos__c</objectType>
     </variables>
     <variables>
         <description>Porcentaje de la retención de la Nota de Crédito</description>

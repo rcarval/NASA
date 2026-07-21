@@ -25,7 +25,7 @@
         <name>EnviarNotaCreditoABsale</name>
         <label>EnviarNotaCreditoABsale</label>
         <locationX>512</locationX>
-        <locationY>5786</locationY>
+        <locationY>5978</locationY>
         <actionName>NAV_EnviarDocumento_PB</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -48,7 +48,7 @@
         <name>AsignarCamposRetencion</name>
         <label>AsignarCamposRetencion</label>
         <locationX>578</locationX>
-        <locationY>2738</locationY>
+        <locationY>2930</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.FechaSolicitudDevolucion__c</assignToReference>
             <operator>Assign</operator>
@@ -217,7 +217,7 @@
         <name>AsignarMontoOriginalYRetencion</name>
         <label>AsignarMontoOriginalYRetencion</label>
         <locationX>1282</locationX>
-        <locationY>4886</locationY>
+        <locationY>5078</locationY>
         <assignmentItems>
             <assignToReference>MontoOriginalDetalleDocumento</assignToReference>
             <operator>Add</operator>
@@ -234,7 +234,7 @@
         <name>AsignarMotivoDevolucionANotaCredito</name>
         <label>AsignarMotivoDevolucionANotaCredito</label>
         <locationX>842</locationX>
-        <locationY>3614</locationY>
+        <locationY>3806</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Motivo_Devolucion__c</assignToReference>
             <operator>Assign</operator>
@@ -251,7 +251,7 @@
         <name>AsignarMotivoDevolucionAVariable</name>
         <label>AsignarMotivoDevolucionAVariable</label>
         <locationX>710</locationX>
-        <locationY>3422</locationY>
+        <locationY>3614</locationY>
         <assignmentItems>
             <assignToReference>MotivoDevolucion</assignToReference>
             <operator>Assign</operator>
@@ -268,7 +268,7 @@
         <name>AsignarMotivoNoAplicaRetencionANotaCredito</name>
         <label>AsignarMotivoNoAplicaRetencionANotaCredito</label>
         <locationX>842</locationX>
-        <locationY>2414</locationY>
+        <locationY>2606</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.MotivoNoRetencion__c</assignToReference>
             <operator>Assign</operator>
@@ -284,7 +284,7 @@
         <name>AsignarTipodeDevolucionCredito</name>
         <label>AsignarTipodeDevolucionCredito</label>
         <locationX>1370</locationX>
-        <locationY>2198</locationY>
+        <locationY>2390</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Fecha_Vencimiento__c</assignToReference>
             <operator>Assign</operator>
@@ -314,7 +314,7 @@
         <name>AsignarTipoDeNotaDeCredito</name>
         <label>AsignarTipoDeNotaDeCredito</label>
         <locationX>50</locationX>
-        <locationY>2198</locationY>
+        <locationY>2390</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Tipo_de_Nota_de_Credito__c</assignToReference>
             <operator>Assign</operator>
@@ -344,7 +344,7 @@
         <name>AsignarTipoDevolucion</name>
         <label>AsignarTipoDevolucion</label>
         <locationX>776</locationX>
-        <locationY>2198</locationY>
+        <locationY>2390</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Tipo_de_Nota_de_Credito__c</assignToReference>
             <operator>Assign</operator>
@@ -374,7 +374,7 @@
         <name>AsignarTipoDevolucionAjustarPrecios</name>
         <label>AsignarTipoDevolucionAjustarPrecios</label>
         <locationX>446</locationX>
-        <locationY>2414</locationY>
+        <locationY>2606</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Tipo_de_Nota_de_Credito__c</assignToReference>
             <operator>Assign</operator>
@@ -638,7 +638,7 @@
     <assignments>
         <name>AsignarValorNCPagoCredito</name>
         <label>AsignarValorNCPagoCredito</label>
-        <locationX>842</locationX>
+        <locationX>908</locationX>
         <locationY>1898</locationY>
         <assignmentItems>
             <assignToReference>PagoCredito</assignToReference>
@@ -655,8 +655,8 @@
         <description>Se asigna el valor del tipo de nota de crédito seleccionada en la pantalla a la variable</description>
         <name>AsignarValorTipoNC</name>
         <label>AsignarValorTipoNC</label>
-        <locationX>578</locationX>
-        <locationY>1898</locationY>
+        <locationX>380</locationX>
+        <locationY>2006</locationY>
         <assignmentItems>
             <assignToReference>TipoNotaCreditoSeleccionada</assignToReference>
             <operator>Assign</operator>
@@ -694,7 +694,7 @@
         <name>CambiarVariableATrue</name>
         <label>CambiarVariableATrue</label>
         <locationX>1282</locationX>
-        <locationY>4586</locationY>
+        <locationY>4778</locationY>
         <assignmentItems>
             <assignToReference>SeCreoDocAnulacion</assignToReference>
             <operator>Assign</operator>
@@ -711,7 +711,7 @@
         <name>Copia_1_de_AsignarMotivoNoAplicaRetencionANotaCredito</name>
         <label>Copia 1 de AsignarMotivoNoAplicaRetencionANotaCredito</label>
         <locationX>1370</locationX>
-        <locationY>2414</locationY>
+        <locationY>2606</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.MotivoNoRetencion__c</assignToReference>
             <operator>Assign</operator>
@@ -727,7 +727,7 @@
         <name>Copia_1_de_AsignarTipoDevolucion</name>
         <label>Copia 1 de AsignarTipoDevolucion</label>
         <locationX>1370</locationX>
-        <locationY>2306</locationY>
+        <locationY>2498</locationY>
         <assignmentItems>
             <assignToReference>VariableNotaDeCredito.Tipo_de_Nota_de_Credito__c</assignToReference>
             <operator>Assign</operator>
@@ -757,7 +757,7 @@
         <description>Se asigna el valor del tipo de nota de crédito seleccionada en la pantalla a la variable</description>
         <name>Copia_1_de_AsignarValorTipoNC</name>
         <label>Copia 1 de AsignarValorTipoNC</label>
-        <locationX>842</locationX>
+        <locationX>908</locationX>
         <locationY>1790</locationY>
         <assignmentItems>
             <assignToReference>TipoNotaCreditoSeleccionada</assignToReference>
@@ -789,6 +789,44 @@
         </assignmentItems>
         <connector>
             <targetReference>AsignarValorNCPagoCredito</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Se asigna el valor del tipo de nota de crédito seleccionada en la pantalla a la variable</description>
+        <name>Copia_2_de_AsignarValorTipoNC</name>
+        <label>Copia 2 de AsignarValorTipoNC</label>
+        <locationX>644</locationX>
+        <locationY>2006</locationY>
+        <assignmentItems>
+            <assignToReference>TipoNotaCreditoSeleccionada</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Copia_1_de_OpcionTiposNotaDeCredito</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>SeleccionOpcionAplicaRetencion</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Copia_1_de_OpcionesAplicaNoAplica</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>VariableMotivoNoAplicaRetencion</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Copia_1_de_MotivoNoAplicaRetencion</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>VariableFechaHoraSolicitudDevolucion</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Copia_1_de_FechaHoraSolicitudDevolucion</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>AsignarTipoDeDevolucion</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -859,7 +897,7 @@
         <name>AplicaRetencion</name>
         <label>Aplica Retención?</label>
         <locationX>776</locationX>
-        <locationY>2306</locationY>
+        <locationY>2498</locationY>
         <defaultConnectorLabel>Resultado predeterminado</defaultConnectorLabel>
         <rules>
             <name>AplicaPATH</name>
@@ -896,7 +934,7 @@
         <name>AsignarTipoDeDevolucion</name>
         <label>AsignarTipoDeDevolucion</label>
         <locationX>842</locationX>
-        <locationY>2090</locationY>
+        <locationY>2282</locationY>
         <defaultConnectorLabel>Default</defaultConnectorLabel>
         <rules>
             <name>FormaDePagoNuevaVenta</name>
@@ -979,7 +1017,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>PantallaTipoNotaDeCredito</targetReference>
+                <targetReference>ValidaTipoPerfil</targetReference>
             </connector>
             <label>ElegirTipoNC</label>
         </rules>
@@ -1004,7 +1042,7 @@
         <name>DebeEscribirMotivoDevolucion</name>
         <label>DebeEscribirMotivoDevolucion?</label>
         <locationX>842</locationX>
-        <locationY>3206</locationY>
+        <locationY>3398</locationY>
         <defaultConnector>
             <targetReference>AsignarMotivoDevolucionANotaCredito</targetReference>
         </defaultConnector>
@@ -1061,7 +1099,7 @@
         <name>EstaEseItemEnElDocumento</name>
         <label>EstaEseItemEnElDocumento?</label>
         <locationX>1062</locationX>
-        <locationY>4046</locationY>
+        <locationY>4238</locationY>
         <defaultConnector>
             <targetReference>EstamparFechaDocumentoAnulado</targetReference>
         </defaultConnector>
@@ -1183,7 +1221,7 @@
         <name>IFSeCreoDocAnulacion</name>
         <label>SeCreoDocAnulacion?</label>
         <locationX>1194</locationX>
-        <locationY>4262</locationY>
+        <locationY>4454</locationY>
         <defaultConnector>
             <targetReference>CrearNotaDeCredito</targetReference>
         </defaultConnector>
@@ -1209,7 +1247,7 @@
         <name>LaNCTieneDDs</name>
         <label>ExisteElDocAnulacion?</label>
         <locationX>842</locationX>
-        <locationY>5354</locationY>
+        <locationY>5546</locationY>
         <defaultConnector>
             <targetReference>PantallaNoFueCreada</targetReference>
         </defaultConnector>
@@ -1235,7 +1273,7 @@
         <name>RetencionEs100</name>
         <label>RetencionEs100?</label>
         <locationX>446</locationX>
-        <locationY>2630</locationY>
+        <locationY>2822</locationY>
         <defaultConnector>
             <targetReference>AsignarCamposRetencion</targetReference>
         </defaultConnector>
@@ -1260,7 +1298,7 @@
         <name>SeMandaABsale</name>
         <label>SeMandaABsale?</label>
         <locationX>644</locationX>
-        <locationY>5678</locationY>
+        <locationY>5870</locationY>
         <defaultConnector>
             <targetReference>ListoParaSAP</targetReference>
         </defaultConnector>
@@ -1319,6 +1357,39 @@
                 <targetReference>ObtenerTRAnulacionTicket</targetReference>
             </connector>
             <label>No Tributario</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>valdacion de perfil del usuario</description>
+        <name>ValidaTipoPerfil</name>
+        <label>ValidaTipoPerfil</label>
+        <locationX>512</locationX>
+        <locationY>1790</locationY>
+        <defaultConnector>
+            <targetReference>Copia_1_de_PantallaTipoNotaDeCredito</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Resultado predeterminado</defaultConnectorLabel>
+        <rules>
+            <name>ResultadoValidaTipoPerfil</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Profile.Name</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>CS Ejecutivo Post Venta</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Profile.Name</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue> post venta</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>PantallaTipoNotaDeCredito</targetReference>
+            </connector>
+            <label>ResultadoValidaTipoPerfil</label>
         </rules>
     </decisions>
     <description>agrega puelche</description>
@@ -1394,7 +1465,7 @@
         <name>BucleCrearDetalleDocumentoNotaCredito</name>
         <label>BucleCrearDetalleDocumentoNotaCredito</label>
         <locationX>1194</locationX>
-        <locationY>4778</locationY>
+        <locationY>4970</locationY>
         <collectionReference>DetallesDocumentoDelDocumento</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -1408,7 +1479,7 @@
         <name>CreacionDetallesDocumentoNotaCredito</name>
         <label>CreaciónDetallesDocumentoNotaCredito</label>
         <locationX>842</locationX>
-        <locationY>3830</locationY>
+        <locationY>4022</locationY>
         <collectionReference>ObtenerDRAnulados</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -1441,7 +1512,7 @@
         <name>CrearDetalleDocumentoNotaCredito</name>
         <label>CrearDetalleDocumentoNotaCredito</label>
         <locationX>1282</locationX>
-        <locationY>4994</locationY>
+        <locationY>5186</locationY>
         <connector>
             <targetReference>BucleCrearDetalleDocumentoNotaCredito</targetReference>
         </connector>
@@ -1488,7 +1559,7 @@
         <name>CrearNotaDeCredito</name>
         <label>CrearNotaDeCredito</label>
         <locationX>1282</locationX>
-        <locationY>4370</locationY>
+        <locationY>4562</locationY>
         <connector>
             <targetReference>NotaCreditoCreada</targetReference>
         </connector>
@@ -1498,7 +1569,7 @@
         <name>DetallesDocumentoDelDocumento</name>
         <label>DetallesDocumentoDelDocumento</label>
         <locationX>1062</locationX>
-        <locationY>3938</locationY>
+        <locationY>4130</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>EstaEseItemEnElDocumento</targetReference>
@@ -1526,7 +1597,7 @@
         <name>GetCamposResumenNotaCreditoCreada</name>
         <label>GetCamposResumenNotaCreditoCreada</label>
         <locationX>644</locationX>
-        <locationY>5462</locationY>
+        <locationY>5654</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>ActualizarMontoRetenido</targetReference>
@@ -1548,7 +1619,7 @@
         <name>getParametrosRetencion</name>
         <label>getParametrosRetencion</label>
         <locationX>446</locationX>
-        <locationY>2522</locationY>
+        <locationY>2714</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>RetencionEs100</targetReference>
@@ -1571,7 +1642,7 @@
         <name>NotaCreditoCreada</name>
         <label>NotaCreditoCreada</label>
         <locationX>1282</locationX>
-        <locationY>4478</locationY>
+        <locationY>4670</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>CambiarVariableATrue</targetReference>
@@ -1613,7 +1684,7 @@
         <name>ObtenerDRAnulados</name>
         <label>ObtenerDRAnulados</label>
         <locationX>842</locationX>
-        <locationY>3722</locationY>
+        <locationY>3914</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>CreacionDetallesDocumentoNotaCredito</targetReference>
@@ -1733,7 +1804,7 @@
         <name>ActualizarMontoRetenido</name>
         <label>ActualizarMontoRetenido</label>
         <locationX>644</locationX>
-        <locationY>5570</locationY>
+        <locationY>5762</locationY>
         <connector>
             <targetReference>SeMandaABsale</targetReference>
         </connector>
@@ -1764,7 +1835,7 @@
         <name>EstamparFechaDocumentoAnulado</name>
         <label>EstamparFechaDocumentoAnulado</label>
         <locationX>1194</locationX>
-        <locationY>4154</locationY>
+        <locationY>4346</locationY>
         <connector>
             <targetReference>IFSeCreoDocAnulacion</targetReference>
         </connector>
@@ -1789,7 +1860,7 @@
         <name>ListoParaSAP</name>
         <label>ListoParaSAP</label>
         <locationX>776</locationX>
-        <locationY>5786</locationY>
+        <locationY>5978</locationY>
         <connector>
             <targetReference>FIN</targetReference>
         </connector>
@@ -1809,6 +1880,177 @@
         </inputAssignments>
         <object>Documento__c</object>
     </recordUpdates>
+    <screens>
+        <name>Copia_1_de_PantallaTipoNotaDeCredito</name>
+        <label>Copia 1 de PantallaTipoNotaDeCredito</label>
+        <locationX>644</locationX>
+        <locationY>1898</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Copia_2_de_AsignarValorTipoNC</targetReference>
+        </connector>
+        <fields>
+            <name>Copia_1_de_NombreDocumentoTipo</name>
+            <fieldText>&lt;p&gt;Nota de Crédito para el Documento: &lt;strong style=&quot;font-size: 14px; background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;{!ObtenerDocumentoReferencia.RecordType.Name} &lt;/strong&gt;&lt;strong style=&quot;font-size: 14px;&quot;&gt;{!ObtenerDocumentoReferencia.Name}&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>Copia_1_de_PantallaTipoNotaDeCredito_Section1</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Copia_1_de_PantallaTipoNotaDeCredito_Section1_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>Copia_1_de_OpcionTiposNotaDeCredito</name>
+                    <choiceReferences>OpcionFormaDePagoNuevaVenta</choiceReferences>
+                    <dataType>String</dataType>
+                    <fieldText>Selecciona el Tipo de Nota de Crédito</fieldText>
+                    <fieldType>RadioButtons</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>4</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <fields>
+                <name>Copia_1_de_PantallaTipoNotaDeCredito_Section1_Column2</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>Copia_1_de_OpcionesAplicaNoAplica</name>
+                    <choiceReferences>OpcionSiAplicaRetencion</choiceReferences>
+                    <choiceReferences>OpcionNoAplicaRetencion</choiceReferences>
+                    <dataType>String</dataType>
+                    <fieldText>¿Aplica Retención?</fieldText>
+                    <fieldType>RadioButtons</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>OpcionTiposNotaDeCredito</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>0</stringValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>4</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <fields>
+                <name>Copia_1_de_PantallaTipoNotaDeCredito_Section1_Column3</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>Copia_1_de_FechaHoraSolicitudDevolucion</name>
+                    <dataType>DateTime</dataType>
+                    <fieldText>Fecha/Hora de la solicitud de devolución</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>OpcionesAplicaNoAplica</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <elementReference>OpcionSiAplicaRetencion</elementReference>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>Copia_1_de_MotivoNoAplicaRetencion</name>
+                    <dataType>String</dataType>
+                    <fieldText>Escriba el motivo por el que no aplica la retención</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>OpcionesAplicaNoAplica</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <elementReference>OpcionNoAplicaRetencion</elementReference>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>4</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
     <screens>
         <name>EsNotaDeCredito</name>
         <label>EsNotaDeCredito</label>
@@ -1837,7 +2079,7 @@
         <name>FIN</name>
         <label>FIN</label>
         <locationX>644</locationX>
-        <locationY>5978</locationY>
+        <locationY>6170</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1861,7 +2103,7 @@
         <name>PantallaMotivoDevolucion</name>
         <label>PantallaMotivoDevolucion</label>
         <locationX>710</locationX>
-        <locationY>3314</locationY>
+        <locationY>3506</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -1904,7 +2146,7 @@
         <name>PantallaNoFueCreada</name>
         <label>PantallaNoFueCreada</label>
         <locationX>1040</locationX>
-        <locationY>5462</locationY>
+        <locationY>5654</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -2121,7 +2363,7 @@
         <name>PantallaRetencion100</name>
         <label>PantallaRetencion100</label>
         <locationX>314</locationX>
-        <locationY>2738</locationY>
+        <locationY>2930</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -2144,7 +2386,7 @@
     <screens>
         <name>PantallaSegundaNotaCredito</name>
         <label>PantallaSegundaNotaCredito</label>
-        <locationX>1106</locationX>
+        <locationX>1172</locationX>
         <locationY>1790</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -2172,8 +2414,8 @@
     <screens>
         <name>PantallaTipoNotaDeCredito</name>
         <label>PantallaTipoNotaDeCredito</label>
-        <locationX>578</locationX>
-        <locationY>1790</locationY>
+        <locationX>380</locationX>
+        <locationY>1898</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>

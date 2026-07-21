@@ -19,6 +19,7 @@ Versión Fecha        Autor    Descripción
 10.0    26-11-2024   FFC      se agregan campos GetStatus_SAP__c, Contador_envio_SAP__c, capturan envio y estado de envio
 11.0    09-12-2024   FFC      Modificacion XML REF1 y 2 
 12.0    11-04-2025   RCG      Modificación Facturación Manual
+16.0    09-01-2026   CD       Modificación ref1 ref3. 
 
 ***********************************************************************************/
 public class NAV_SAPWS {
@@ -132,9 +133,9 @@ public class NAV_SAPWS {
                 TipoRegNombre = doc.RecordType.name;
             }
             List<Detalle_Reserva__c> detalles = [SELECT Id, RecordTypeId FROM Detalle_Reserva__c WHERE Reserva__c =: iReserva];
-            List<Forma_de_pago__c> fPagos = [SELECT Monto__c, Tipo_de_pago__c,Documento_Anulacion_Venta_NT__r.reserva__c, Nota_de_Credito__r.reserva__c,
-                                 Documento_Anulacion_Venta_NT__r.SUBTOTAL_BRUTO__c,Nota_de_Credito__r.SUBTOTAL_BRUTO__c, Nota_de_Credito__c, Documento_Anulacion_Venta_NT__c,
-                                 RUT_de_quien_transfiere__c,Fecha_de_transferencia__c,  X4_ultimos_digitos_tarjeta__c,Codigo_autorizacion__c,Orden_de_compra__c
+            List<Forma_de_pago__c> fPagos = [SELECT Monto__c, Tipo_de_pago__c,Documento_Anulacion_Venta_NT__r.reserva__c, Nota_de_Credito__r.reserva__c,Numero_serie__c,Payment_Type__c,
+                                 Documento_Anulacion_Venta_NT__r.SUBTOTAL_BRUTO__c,Nota_de_Credito__r.SUBTOTAL_BRUTO__c, Nota_de_Credito__c, Documento_Anulacion_Venta_NT__c,Nota_de_Credito__r.N_Documento__c,
+                                 RUT_de_quien_transfiere__c,Fecha_de_transferencia__c,  X4_ultimos_digitos_tarjeta__c,Codigo_autorizacion__c,Orden_de_compra__c,RUT_del_titular_del_cheque__c,Documento_Anulacion_Venta_NT__r.Correlativo_Unico__c
                                  FROM Forma_de_pago__c
                                  WHERE Acreditacion__c =: iAcreditacion];
             datosReserva.cabecera.caja = caja;
@@ -208,7 +209,7 @@ public class NAV_SAPWS {
                 }else if(tipoNota == '1'){ //Forma de Pago Nueva Venta
                     datosReserva.cabecera.condicionPago = '2';
                 }else{
-                    if(fPagos[0].Tipo_de_pago__c == 'Crédito'){
+                    if(fPagos[0].Tipo_de_pago__c!=null && fPagos[0].Tipo_de_pago__c == 'Crédito'){
                         datosReserva.cabecera.condicionPago = '2';
                     }else{
                        datosReserva.cabecera.condicionPago = '1'; 
@@ -275,7 +276,6 @@ public class NAV_SAPWS {
                     }else{
                        docuInside.tipoNC = '1'; 
                     }
-                     
                 }
                 else{
                     
@@ -321,6 +321,7 @@ public class NAV_SAPWS {
                 datosReserva.documento.add(docuInside);
             }
             for(Forma_de_Pago__c fP : fPagos){
+                 tipoPago= fP.Tipo_de_pago__c;
                 NAV_SAPClass.acreditacionItem acreditacionItem = new NAV_SAPClass.acreditacionItem();
                 String viaPago = '';
                 try{
@@ -333,7 +334,17 @@ public class NAV_SAPWS {
                     System.debug('Reserva anterior 1: ' + codRes);
                     acreditacionItem.formaPago = viaPago;
                     acreditacionItem.numeroPago = 'R-'+codRes[1];
+                    acreditacionItem.tipoFormPago = fP.Tipo_de_pago__c;
                     acreditacionItem.montoPago = String.valueOf(fP.Monto__c);
+                    if(tipoPago == 'Nota de crédito'){
+                        acreditacionItem.CLAVE_REF1 = String.valueOf(fP.Nota_de_Credito__r.N_Documento__c);
+                    }else{
+                        String correlativo = fP.Documento_Anulacion_Venta_NT__r.Correlativo_Unico__c;
+                        System.debug('Linea 342 correlativo: ' + correlativo);
+                        System.debug('Linea 343 correlativo.substring(2): ' + correlativo.substring(2));
+                        acreditacionItem.CLAVE_REF1 = correlativo.substring(2); 
+                         System.debug('Linea 345 CLAVE_REF1: ' + acreditacionItem.CLAVE_REF1);
+                    }    
                     datosReserva.acreditacion.add(acreditacionItem);
                 }else {
                     String[] codRes = reserva.Codigo_Reserva__c.split('-');
@@ -341,25 +352,23 @@ public class NAV_SAPWS {
                     acreditacionItem.numeroPago = codRes[1];
                     acreditacionItem.montoPago = String.valueOf(fP.Monto__c);
                     acreditacionItem.tipoFormPago = fP.Tipo_de_pago__c;
-
-                    if(acreditacionItem.tipoFormPago == 'Transferencia'){
+                    if(acreditacionItem.tipoFormPago == 'Cheque'){
+                        acreditacionItem.CLAVE_REF1 = fP.Numero_serie__c;
+                        acreditacionItem.CLAVE_REF3 = fP.RUT_del_titular_del_cheque__c;
+                    }else if(acreditacionItem.tipoFormPago == 'Pago Web'){
+                        acreditacionItem.CLAVE_REF1 = fP.Codigo_autorizacion__c;
+                        if(fP.Payment_Type__c =='VP'||fP.Payment_Type__c =='VD'){
+                            acreditacionItem.formaPago = '4';
+                        }else{
+                            acreditacionItem.formaPago = '3';
+                        }
+                    }else if(acreditacionItem.tipoFormPago == 'Tarjeta crédito'){
+                        acreditacionItem.CLAVE_REF1 = fP.Codigo_autorizacion__c;
+                    }else if(acreditacionItem.tipoFormPago == 'Tarjeta débito'){
+                        acreditacionItem.CLAVE_REF1 = fP.Codigo_autorizacion__c;
+                    }else if(acreditacionItem.tipoFormPago == 'Transferencia'){
                         acreditacionItem.CLAVE_REF1 = fP.RUT_de_quien_transfiere__c;
-                        Datetime fechaOriginal = fP.Fecha_de_transferencia__c;
-                        String fechaFormateada = fechaOriginal.format('dd/MM/yyyy'); 
-                        acreditacionItem.CLAVE_REF2 = fechaFormateada;
                     }
-                 /*   if(acreditacionItem.tipoFormPago == 'Tarjeta crédito'){
-                        acreditacionItem.CLAVE_REF1 = fP.X4_ultimos_digitos_tarjeta__c;
-                        acreditacionItem.CLAVE_REF2 = fP.Codigo_autorizacion__c;
-                    }
-                    if(acreditacionItem.tipoFormPago == 'Tarjeta débito'){
-                        acreditacionItem.CLAVE_REF1 = fP.X4_ultimos_digitos_tarjeta__c;
-                        acreditacionItem.CLAVE_REF2 = fP.Codigo_autorizacion__c;
-                    }
-                    if(acreditacionItem.tipoFormPago == 'Pago Web'){
-                        acreditacionItem.CLAVE_REF1 = fP.Orden_de_compra__c;
-                        acreditacionItem.CLAVE_REF2 = fP.Codigo_autorizacion__c;
-                    }*/
                     datosReserva.acreditacion.add(acreditacionItem);
                 }
                 //System.debug('Reserva anterior: ' + reservaAnterior);
@@ -447,10 +456,12 @@ public class NAV_SAPWS {
             xml +='               <FORMAPAGO>'+obj.formaPago+'</FORMAPAGO>';
             xml +='               <NUMEROPAGO>'+obj.numeroPago+'</NUMEROPAGO>';
             xml +='               <MONTOPAGO>'+obj.montoPago+'</MONTOPAGO>';
-            if(obj.tipoFormPago=='Transferencia'){
-                xml +='               <CLAVE_REF1>'+obj.CLAVE_REF1+'</CLAVE_REF1>';
-                xml +='               <CLAVE_REF2>'+obj.CLAVE_REF2+'</CLAVE_REF2>';  
-            }
+            if(obj.tipoFormPago != 'Crédito' && obj.tipoFormPago != 'Efectivo'){
+                xml += '              <CLAVE_REF1>' + obj.CLAVE_REF1 + '</CLAVE_REF1>';
+                if(obj.tipoFormPago == 'Cheque'){
+                xml += '              <CLAVE_REF3>' + obj.CLAVE_REF3 + '</CLAVE_REF3>';
+           		 }
+            } 
             xml +='            </item>';
         }
         xml +='         </ACREDITACION>';

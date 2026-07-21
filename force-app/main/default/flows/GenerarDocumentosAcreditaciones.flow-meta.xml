@@ -1241,7 +1241,7 @@
             <conditionLogic>( 1 OR 3 ) AND 2</conditionLogic>
             <conditions>
                 <leftValueReference>getReserva.Total_pasajeros__c</leftValueReference>
-                <operator>GreaterThanOrEqualTo</operator>
+                <operator>GreaterThan</operator>
                 <rightValue>
                     <numberValue>0.0</numberValue>
                 </rightValue>
@@ -1429,7 +1429,7 @@
             <conditionLogic>(1 OR 3) AND 2</conditionLogic>
             <conditions>
                 <leftValueReference>getReserva.Total_pasajeros__c</leftValueReference>
-                <operator>GreaterThanOrEqualTo</operator>
+                <operator>GreaterThan</operator>
                 <rightValue>
                     <numberValue>0.0</numberValue>
                 </rightValue>
@@ -5241,7 +5241,7 @@
         </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Obsolete</status>
+    <status>Active</status>
     <subflows>
         <name>UpdateRTReservaItemReserva</name>
         <label>UpdateRTReservaItemReserva</label>

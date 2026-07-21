@@ -350,42 +350,37 @@ public with sharing class NAV_InformeCierreCajaVFController {
             }
             for(Documento__c dPago : lDocumentos){
                 switch on dPago.RecordType.Name {
-                    when 'Anulación Venta (No Tributario)' {
-                        cAnulacion += 1;
-                        mAnulacion += dPago.SUBTOTAL_BRUTO__c;
+                    when 'Anulación Venta (No Tributario)'{
+                        cAnulacion = cAnulacion + 1;
+                        mAnulacion = mAnulacion + dPago.SUBTOTAL_BRUTO__c;
                     }
-                    when 'Boleta' {
-                        cBoletas += 1;
-                        mBoletas += dPago.SUBTOTAL_BRUTO__c;
+                    when 'Boleta'{
+                        cBoletas = cBoletas + 1;
+                        mBoletas = mBoletas + dPago.SUBTOTAL_BRUTO__c;
                     }
-                    when 'Documento Venta (No Tributario)' {
-                        cTicket += 1;
-                        mTicket += dPago.SUBTOTAL_BRUTO__c;
+                    when 'Documento Venta (No Tributario)'{
+                        cTicket = cTicket + 1;
+                        mTicket = mTicket + dPago.SUBTOTAL_BRUTO__c;
                     }
-                    when ' Factura Afecta' {
-                        cAfecto += 1;
-                        mAfecto += dPago.SUBTOTAL_BRUTO__c;
+                    when ' Factura Afecta'{
+                        cAfecto = cAfecto + 1;
+                        mAfecto = mAfecto + dPago.SUBTOTAL_BRUTO__c;
                     }
-                    when 'Factura Exenta' {
-                        cExento += 1;
-                        mExento += dPago.SUBTOTAL_BRUTO__c;
+                    when 'Factura Exenta'{
+                        cExento = cExento + 1;
+                        mExento = mExento + dPago.SUBTOTAL_BRUTO__c;
                     }
-                    when 'Factura Mixta' {
-                        cMixtas += 1;
-                        mMixtas += dPago.SUBTOTAL_BRUTO__c;
+                    when 'Factura Mixta'{
+                        cMixtas = cMixtas + 1;
+                        mMixtas = mMixtas + dPago.SUBTOTAL_BRUTO__c;
                     }
-                    when 'Nota de Crédito' {
-                        cNC += 1;
-                        mNC += dPago.SUBTOTAL_BRUTO__c;
+                    when 'Nota de Crédito'{
+                        cNC = cNC + 1;
+                        mNC = mNC + dPago.SUBTOTAL_BRUTO__c;
                     }
                 }
-                
                 ConteoTotalDOCNAV += 1;
-                // Excluir del monto total si es Anulación o Nota de Crédito
-                if (dPago.RecordType.Name != 'Anulación Venta (No Tributario)' &&
-                    dPago.RecordType.Name != 'Nota de Crédito') {
-                        MontoTotalDOCNAV += dPago.SUBTOTAL_BRUTO__c;
-                    }
+                MontoTotalDOCNAV += dPago.SUBTOTAL_BRUTO__c;
             }
 
             for(Forma_de_Pago__c fPagoPue : lFormasDePagoPUE){
@@ -478,13 +473,8 @@ public with sharing class NAV_InformeCierreCajaVFController {
                     }
                 }
                 ConteoTotalDOCPue += 1;
-                // Excluir del monto total si es Anulación o Nota de Crédito
-                if (dPagoPue.RecordType.Name != 'Anulación Venta (No Tributario)' &&
-                    dPagoPue.RecordType.Name != 'Nota de Crédito') {
-                        MontoTotalDOCPue+= dPagoPue.SUBTOTAL_BRUTO__c;
-                    }
-          
-            }
+                MontoTotalDOCPue+= dPagoPue.SUBTOTAL_BRUTO__c;
+            	}
             
         }catch(Exception ex){
             showTable = false;

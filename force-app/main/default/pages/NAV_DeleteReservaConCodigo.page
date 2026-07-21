@@ -1,0 +1,8 @@
+<apex:page controller="NAV_Reservas" 
+           contentType="application/json; charset=utf-8"
+           showHeader="false"
+           sidebar="false"
+           standardStylesheets="false"
+           action="{!DeleteReservaConCodigoVF}">
+    {!jsonText}
+</apex:page>

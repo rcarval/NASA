@@ -81,11 +81,9 @@ public class NAV_SAPCompletoWS {
                 tipoRegistro = doc.RecordTypeId;
             }
             List<Detalle_Reserva__c> detalles = [SELECT Id, RecordTypeId FROM Detalle_Reserva__c WHERE Reserva__c =: iReserva];
-            List<Forma_de_pago__c> fPagos = [SELECT Monto__c, Tipo_de_pago__c,Documento_Anulacion_Venta_NT__r.reserva__c, Nota_de_Credito__r.reserva__c,
-                                 Documento_Anulacion_Venta_NT__r.SUBTOTAL_BRUTO__c,Nota_de_Credito__r.SUBTOTAL_BRUTO__c, Nota_de_Credito__c, Documento_Anulacion_Venta_NT__c,
-                                 RUT_de_quien_transfiere__c,Fecha_de_transferencia__c,	X4_ultimos_digitos_tarjeta__c,Codigo_autorizacion__c,Orden_de_compra__c
-                                 FROM Forma_de_pago__c
-                                 WHERE Acreditacion__c =: iAcreditacion];
+            List<Forma_de_pago__c> fPagos = [SELECT Monto__c, Tipo_de_pago__c
+                                             FROM Forma_de_pago__c
+                                             WHERE Acreditacion__c =: iAcreditacion];
             datosReserva.cabecera.caja = caja;
             datosReserva.cabecera.agencia = reserva.CreatedBy.Oficina_de_Ventas_SAP__c;
             datosReserva.cabecera.vendedor = reserva.CreatedBy.Name.substring(0,5);
@@ -200,6 +198,58 @@ public class NAV_SAPCompletoWS {
                 Decimal totalValor = 0, totalDocumento = 0;
                 for(Detalle_Documentos__c det : dDocumentos){
                     servicios = NAV_SAPWS.servicioInterno(servicios, det, servicioSAP);
+                    /*
+                    NAV_SAPClass.servicioItem servicioItem = new NAV_SAPClass.servicioItem();
+                    ServicioInternoSAP__mdt sSap = new ServicioInternoSAP__mdt();
+                    if(det.Descripcion__c.toUpperCase().contains('PASAJERO')){
+                        sSap = servicioSAP.get('PASAJERO');
+                        servicioItem.tipoServicio = sSap.Tipo_Servicio_SAP__c;
+                        servicioItem.codigoServicio = sSap.Codigo_Servicio_SAP__c;
+                        servicioItem.desServicio = sSap.Descripcion_Servicio_SAP__c;
+                    }else if(det.Descripcion__c.toUpperCase().contains('PALLET')){
+                        sSap = servicioSAP.get('PALLET');
+                        servicioItem.tipoServicio = sSap.Tipo_Servicio_SAP__c;
+                        servicioItem.codigoServicio = sSap.Codigo_Servicio_SAP__c;
+                        servicioItem.desServicio = sSap.Descripcion_Servicio_SAP__c;
+                    }else if(det.Descripcion__c.toUpperCase().contains('BICICLETA')){
+                        sSap = servicioSAP.get('BICICLETA');
+                        servicioItem.tipoServicio = sSap.Tipo_Servicio_SAP__c;
+                        servicioItem.codigoServicio = sSap.Codigo_Servicio_SAP__c;
+                        servicioItem.desServicio = sSap.Descripcion_Servicio_SAP__c;
+                    }else if(det.Descripcion__c.toUpperCase().contains('VEHICULO')){
+                        sSap = servicioSAP.get('VEHICULO');
+                        servicioItem.tipoServicio = sSap.Tipo_Servicio_SAP__c;
+                        servicioItem.codigoServicio = sSap.Codigo_Servicio_SAP__c;
+                        servicioItem.desServicio = sSap.Descripcion_Servicio_SAP__c;
+                    }else{
+                        sSap = servicioSAP.get('PASAJERO');
+                        servicioItem.tipoServicio = sSap.Tipo_Servicio_SAP__c;
+                        servicioItem.codigoServicio = sSap.Codigo_Servicio_SAP__c;
+                        servicioItem.desServicio = sSap.Descripcion_Servicio_SAP__c;
+                    }
+                    servicioItem.cantidad = String.valueOf(det.Cantidad__c);
+                    //Solo nota de credito
+                    if(doc.RecordTypeId == notaCredito){
+                        DocumentoTributario__mdt dTReferencia = [SELECT Codigo_SAP__c FROM DocumentoTributario__mdt WHERE MasterLabel =:doc.Documento_Principal__r.Tipo_de_Documento__c];
+                        servicioItem.tipoDoctorReferencia = dTReferencia.Codigo_SAP__c;//doc.Tipo_de_Documento__c;
+                        servicioItem.doctoReferencia = String.valueOf(doc.Documento_Principal__r.N_Documento__c);
+                    }else if(doc.RecordTypeId == anulacionNoTributaria){
+                        DocumentoTributario__mdt dTReferencia = [SELECT Codigo_SAP__c FROM DocumentoTributario__mdt WHERE MasterLabel =:doc.Documento_Principal__r.Tipo_de_Documento__c];
+                        servicioItem.tipoDoctorReferencia = dTReferencia.Codigo_SAP__c;//doc.Tipo_de_Documento__c;    
+                        String[] codigoUnico = doc.Documento_Principal__r.Correlativo_Unico__c.splitByCharacterType();
+                        servicioItem.doctoReferencia = String.valueOf(codigoUnico[1]);
+                    }else{
+                        servicioItem.tipoDoctorReferencia = '';//doc.Tipo_de_Documento__c;
+                        servicioItem.doctoReferencia = '';
+                    }
+                    if(det.Tax_Id__c == '[9]'){
+                        servicioItem.montoAfecto = '0';
+                        servicioItem.montoExento = String.valueOf(Math.round(det.Total_Neto__c));
+                    }else{
+                        servicioItem.montoAfecto = String.valueOf(Math.round(det.Total_Neto__c));
+                        servicioItem.montoExento = '0';
+                    }
+                    */
                     totalValor = totalValor + Math.round(det.Total_Neto__c);
                     totalDocumento = det.Documento__r.SUBTOTAL_BRUTO__c;
                 }
@@ -223,8 +273,6 @@ public class NAV_SAPCompletoWS {
                 datosReserva.acreditacion.add(acreditacionItem);
             }
             String xmlString = NAV_SAPWS.xmlData(datosReserva);
-            System.debug('blanker NAV_SAPCompletoWS NAV_SAPWS.callService xmlString '+ xmlString);
-            System.debug('blanker NAV_SAPCompletoWS NAV_SAPWS.callService iAcreditacion '+ iAcreditacion);
             NAV_SAPWS.callService(xmlString, iAcreditacion, false);
         }else{
             acreditacion.Mensaje_SAP__c = 'ERROR: Esta acreditación no posee Destinatario de Documentos.';

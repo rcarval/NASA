@@ -1,10 +1,3 @@
-/**
- * @description       : Clase para tareas programadas que Elimina, Capacidad de tramo detalle reserva
- * @author            : Christopher Diaz
- * @group             : Seidor
- * @last modified on  : 23-05-2024
- * @project           : Naviera
-**/
 global class NAV_DeleteRegistrosCapTramosDet implements Database.Batchable<sObject>{
     
     global Database.QueryLocator start(Database.BatchableContext BC) {

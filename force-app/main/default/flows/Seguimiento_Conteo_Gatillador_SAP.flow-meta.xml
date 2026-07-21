@@ -3,7 +3,6 @@
     <apiVersion>55.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <description>Pega cantidad de Documentos y Documentos listos para SAP a medida que cambian esos valores.</description>
-    <environments>Default</environments>
     <formulas>
         <name>ValoresCantDocumentos</name>
         <dataType>String</dataType>

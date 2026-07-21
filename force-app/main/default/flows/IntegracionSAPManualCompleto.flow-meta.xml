@@ -4,13 +4,10 @@
         <description>Envio a SAP</description>
         <name>Envio_a_SAP</name>
         <label>Envio a SAP</label>
-        <locationX>640</locationX>
+        <locationX>665</locationX>
         <locationY>454</locationY>
         <actionName>NAV_SAPCompletoWS</actionName>
         <actionType>apex</actionType>
-        <connector>
-            <targetReference>CambiaEstadoEnviandoSAP</targetReference>
-        </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>inputParams</name>
@@ -69,19 +66,6 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordUpdates>
-        <name>CambiaEstadoEnviandoSAP</name>
-        <label>CambiaEstadoEnviandoSAP</label>
-        <locationX>877</locationX>
-        <locationY>450</locationY>
-        <inputAssignments>
-            <field>Enviando_SAP__c</field>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </inputAssignments>
-        <inputReference>$Record</inputReference>
-    </recordUpdates>
-    <recordUpdates>
         <description>Desactivar reenvio</description>
         <name>Desactivar_Reenvio</name>
         <label>Desactivar Reenvio</label>
@@ -90,12 +74,6 @@
         <connector>
             <targetReference>DocumentosIgualados</targetReference>
         </connector>
-        <inputAssignments>
-            <field>Enviando_SAP__c</field>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </inputAssignments>
         <inputAssignments>
             <field>Reenviar_Completo__c</field>
             <value>
@@ -130,13 +108,6 @@
                 <booleanValue>true</booleanValue>
             </value>
         </filters>
-        <filters>
-            <field>Enviando_SAP__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </filters>
         <object>Acreditacion__c</object>
         <recordTriggerType>Update</recordTriggerType>
         <scheduledPaths>
@@ -147,5 +118,5 @@
         </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
 </Flow>

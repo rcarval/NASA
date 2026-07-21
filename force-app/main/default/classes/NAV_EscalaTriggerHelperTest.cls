@@ -664,13 +664,10 @@ public class NAV_EscalaTriggerHelperTest {
         List<Escalas_Itinerario__c> escalasItinerarioLst = [SELECT Id, Itinerario__c,
                                                             Name
                                                             FROM Escalas_Itinerario__c];
-        if(escalasItinerarioLst !=null){
-            for(Escalas_Itinerario__c eItinerario : escalasItinerarioLst){
-                eItinerario.Hacer_Escala__c = false;
-            }
-			update escalasItinerarioLst;
-        }
-
+		for(Escalas_Itinerario__c eItinerario : escalasItinerarioLst){
+			eItinerario.Hacer_Escala__c = false;
+		}
+		update escalasItinerarioLst;
         Test.startTest();
 		for(Escalas_Itinerario__c eItinerario : escalasItinerarioLst){
 			eItinerario.Hacer_Escala__c = true;

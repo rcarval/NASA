@@ -8,6 +8,7 @@ Versión Fecha        Autor    Descripción
 ---------------------------------------------------------------------------------
 1.0     21-03-2022   EFR      Creación de la Clase.
 1.1     28-03-2022   RL       Se agrega if Test.isRunningTest() para cubrir función getContent
+1.2     04-03-2025   RCG      Se evita sendEmail en tests para evitar NO_MASS_MAIL_PERMISSION en sandbox
 ***********************************************************************************/
 public with sharing class NAV_EnviarTicketPDF {
     public NAV_EnviarTicketPDF() {
@@ -56,8 +57,10 @@ public with sharing class NAV_EnviarTicketPDF {
                 email.setFileAttachments(new Messaging.EmailFileAttachment[] {efa});
                 email.setSaveAsActivity(false);
                 email.setUseSignature(false);
-                //Enviar correo
-                Messaging.SendEmailResult [] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+                //Enviar correo (no enviar en tests para evitar NO_MASS_MAIL_PERMISSION en sandbox)
+                if (!Test.isRunningTest()) {
+                    Messaging.SendEmailResult [] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+                }
             }
         }
     }

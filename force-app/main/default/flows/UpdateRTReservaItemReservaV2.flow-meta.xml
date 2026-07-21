@@ -423,7 +423,6 @@
             <label>Pista</label>
         </rules>
     </decisions>
-    <environments>Default</environments>
     <interviewLabel>UpdateRTReservaItemReservaV2 {!$Flow.CurrentDateTime}</interviewLabel>
     <label>UpdateRTReservaItemReservaV2</label>
     <loops>

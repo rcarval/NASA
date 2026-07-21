@@ -9,8 +9,23 @@ Versión Fecha        Autor    Descripción
 1.0     15-09-2021   EFR      Creación de la Clase.
 ***********************************************************************************/
 public class NAV_Reservas  {
-    public Boolean valueIdaVuelta { get; set; }
+	public Boolean bloqueadoPorCajaAbierta { get; private set; }
+	public String mensajeBloqueoCaja { get; private set; }
+	public List<CajaConMotivo> cajasAbiertasDetalle { get; private set; }
+
+	public class CajaConMotivo {
+		public Caja__c caja { get; set; }
+		public String motivo { get; set; }
+		public CajaConMotivo(Caja__c caja, String motivo) {
+			this.caja = caja;
+			this.motivo = motivo;
+		}
+	}
+
+	public Boolean valueIdaVuelta { get; set; }
 	public String numReserva { get; set; }
+    public String codigoIngresado { get; set; }
+    public String mensajeCodigo { get; set; }
 	public Set<String> naves { get; set; }
 	public Set<String> origenes { get; set; }
 	public Set<String> destinos { get; set; }
@@ -54,9 +69,7 @@ public class NAV_Reservas  {
 	public String[] cmLargos { get; set; }
 	public Set<capacidadNave> capacidades { get; set; }
 	public String jsonText { get; set; }
-
     public Boolean puedeVerAtras { get; set; }
-    
 	public class capacidadNave{
 		public String id { get; set; }
 		public String idReal { get; set; }
@@ -82,10 +95,32 @@ public class NAV_Reservas  {
 	
 	public NAV_Reservas(){
         String perfil = [SELECT Name FROM Profile WHERE Id = :UserInfo.getProfileId()].Name;
-        puedeVerAtras = (perfil == 'Administrador del sistema' || perfil == 'CS Reportes'); 
+        puedeVerAtras = (perfil == 'Administrador del sistema' || perfil == 'CS Venta Abordo'); 
+		cajasAbiertasDetalle = new List<CajaConMotivo>();
 	}
 
 	public PageReference loadData(){
+		bloqueadoPorCajaAbierta = false;
+		Integer horasLimiteCajaAbierta = Integer.valueOf(Label.Horas_Limite_Caja_Abierta);
+		mensajeBloqueoCaja = 'No puede efectuar su venta ya que mantiene cajas abiertas y/o falta de envío de respaldos por más de ' + horasLimiteCajaAbierta + ' hrs , favor proceder con su cuadratura y cierre correspondiente';
+		DateTime limiteCaja = DateTime.now().addHours(-horasLimiteCajaAbierta);
+		List<Caja__c> cajasRaw = [SELECT Id, Name, CreatedDate, Bloqueo_proceso_venta__c, Estado_de_la_Caja__c FROM Caja__c WHERE CreatedById = :UserInfo.getUserId() AND ((Estado_de_la_Caja__c = 'Abierta' AND CreatedDate < :limiteCaja) OR Bloqueo_proceso_venta__c = true) ORDER BY CreatedDate ASC];
+		cajasAbiertasDetalle = new List<CajaConMotivo>();
+		for (Caja__c c : cajasRaw) {
+			String motivo;
+			if (c.Estado_de_la_Caja__c == 'Abierta' && c.CreatedDate < limiteCaja) {
+				motivo = 'Mantiene cajas abiertas por más de ' + horasLimiteCajaAbierta + ' hrs';
+			} else if (c.Bloqueo_proceso_venta__c == true) {
+				motivo = 'Bloqueado por área de recaudaciones';
+			} else {
+				motivo = '';
+			}
+			cajasAbiertasDetalle.add(new CajaConMotivo(c, motivo));
+		}
+		if (!cajasAbiertasDetalle.isEmpty()) {
+			bloqueadoPorCajaAbierta = true;
+			return null;
+		}
 		//numReserva = numero incremental por fecha hora
 		List<String> orden = new List<String>();
 		List<String> ordenM = new List<String>();
@@ -133,6 +168,7 @@ public class NAV_Reservas  {
 		naves.addAll(navesO);
 		return null;
 	}
+    
 	public PageReference getData(){
 		try{
 			String[] dias = new String[]{'','Lun','Mar','Mié','Jue','Vie','Sáb','Dom'};
@@ -179,53 +215,89 @@ public class NAV_Reservas  {
 					jsonText = jsonText + ']}';
 				}
 				when 'people'{
-					String identificador = ApexPages.currentPage().getParameters().get('id');
-					Boolean esResidente = false;
-					jsonText = '{ "Persona": {';
-					try{
-						Account acc = [SELECT Id, LastName, FirstName, PersonBirthdate, Phone, Sexo__pc, PersonEmail,
-										Identificacion__c, Tipo_de_identificacion__c, Discapacidad__pc, IsPersonAccount
-									FROM Account
-									WHERE Identificacion__c =: identificador.replace('k','K').toUpperCase()];
-						if(acc.IsPersonAccount){
-							jsonText = jsonText + '"Nombre":"'+acc.FirstName+'",';
-							jsonText = jsonText + '"Apellido":"'+acc.LastName+'",';
-							jsonText = jsonText + '"Telefono":"'+acc.Phone+'",';
-							jsonText = jsonText + '"Sexo":"'+acc.Sexo__pc+'",';
-							jsonText = jsonText + '"Email":"'+acc.PersonEmail+'",';
-							jsonText = jsonText + '"FechaNacimiento":"'+acc.PersonBirthdate+'",';
-							jsonText = jsonText + '"Discapacitado":"'+acc.Discapacidad__pc+'", ';
+					String action = ApexPages.currentPage().getParameters().get('action');
+					if(action == 'nationalities'){
+						// Devolver lista de nacionalidades desde el picklist de Account
+						jsonText = '{ "nacionalidades": [';
+						List<String> pickListValuesList = new List<String>();
+						List<String> otroList = new List<String>();
+						Schema.DescribeFieldResult fieldResult = Account.Nacionalidad__pc.getDescribe();
+						List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+						for(Schema.PicklistEntry pickListVal : ple){
+							String label = pickListVal.getLabel();
+							if(label != '--' && label != null && label != ''){
+								if(label == 'Otro'){
+									otroList.add(label);
+								}else{
+									pickListValuesList.add(label);
+								}
+							}
+						}
+						// Ordenar alfabéticamente de A a Z
+						pickListValuesList.sort();
+						// Agregar "Otro" al final
+						pickListValuesList.addAll(otroList);
+						String jArray = '';
+						for(String nac : pickListValuesList){
+							jArray = jArray + '"'+nac+'",';
+						}
+						if(jArray.right(1) == ','){
+							jsonText = jsonText + jArray.substring(0,jArray.length() -1);
+						}
+						jsonText = jsonText + ']}';
+					}else{
+						// Comportamiento original para obtener datos de persona
+						String identificador = ApexPages.currentPage().getParameters().get('id');
+						Boolean esResidente = false;
+						jsonText = '{ "Persona": {';
+						try{
+							Account acc = [SELECT Id, LastName, FirstName, PersonBirthdate, Phone, Sexo__pc, PersonEmail,
+											Identificacion__c, Tipo_de_identificacion__c, Discapacidad__pc, IsPersonAccount, Nacionalidad__pc
+										FROM Account
+										WHERE Identificacion__c =: identificador.replace('k','K').toUpperCase()];
+							if(acc.IsPersonAccount){
+								jsonText = jsonText + '"Nombre":"'+acc.FirstName+'",';
+								jsonText = jsonText + '"Apellido":"'+acc.LastName+'",';
+								jsonText = jsonText + '"Telefono":"'+acc.Phone+'",';
+								jsonText = jsonText + '"Sexo":"'+acc.Sexo__pc+'",';
+								jsonText = jsonText + '"Email":"'+acc.PersonEmail+'",';
+								jsonText = jsonText + '"FechaNacimiento":"'+acc.PersonBirthdate+'",';
+								jsonText = jsonText + '"Discapacitado":"'+acc.Discapacidad__pc+'", ';
+								if(String.isNotBlank(acc.Nacionalidad__pc)){
+									jsonText = jsonText + '"Nacionalidad":"'+acc.Nacionalidad__pc+'", ';
+								}
+								try{
+									Residente__c resi = [SELECT Id, Name, Identificacion__c, Nombre_del_Residente__c, Tipo_Identificacion__c, 
+														Comuna__c, N_Certificado__c, Fecha_Certificado__c 
+														FROM Residente__c 
+														WHERE Identificacion__c =: identificador.replace('k','K').toUpperCase()];
+									if(resi.Id != null){
+										esResidente = true;
+									}
+								}catch(Exception exR){
+									esResidente = false;
+								}
+								jsonText = jsonText + '"Residente":"'+esResidente+'"';
+							}else{
+								jsonText = jsonText + '"Empresa":true';
+							}
+						}catch(Exception ex){
 							try{
 								Residente__c resi = [SELECT Id, Name, Identificacion__c, Nombre_del_Residente__c, Tipo_Identificacion__c, 
-													Comuna__c, N_Certificado__c, Fecha_Certificado__c 
+													Comuna__c, N_Certificado__c, Fecha_Certificado__c
 													FROM Residente__c 
 													WHERE Identificacion__c =: identificador.replace('k','K').toUpperCase()];
 								if(resi.Id != null){
+									jsonText = jsonText + '"Nombre":"'+resi.Nombre_del_Residente__c+'",';
 									esResidente = true;
 								}
 							}catch(Exception exR){
 								esResidente = false;
 							}
 							jsonText = jsonText + '"Residente":"'+esResidente+'"';
-						}else{
-							jsonText = jsonText + '"Empresa":true';
 						}
-					}catch(Exception ex){
-						try{
-							Residente__c resi = [SELECT Id, Name, Identificacion__c, Nombre_del_Residente__c, Tipo_Identificacion__c, 
-												Comuna__c, N_Certificado__c, Fecha_Certificado__c
-												FROM Residente__c 
-												WHERE Identificacion__c =: identificador.replace('k','K').toUpperCase()];
-							if(resi.Id != null){
-								jsonText = jsonText + '"Nombre":"'+resi.Nombre_del_Residente__c+'",';
-								esResidente = true;
-							}
-						}catch(Exception exR){
-							esResidente = false;
-						}
-						jsonText = jsonText + '"Residente":"'+esResidente+'"';
+						jsonText = jsonText + '}}';
 					}
-					jsonText = jsonText + '}}';
 				}
 				when 'vehicle'{
 					String patente = ApexPages.currentPage().getParameters().get('pat');
@@ -1283,6 +1355,7 @@ public class NAV_Reservas  {
 					String pArrayResiF = ApexPages.currentPage().getParameters().get('Pr');
 					String pArrayEstuF = ApexPages.currentPage().getParameters().get('Pe');
 					String pArrayButaF = ApexPages.currentPage().getParameters().get('Pbut');
+					String pArrayNacionalidadF = ApexPages.currentPage().getParameters().get('PNac');
 					String[] pArrayDocu = new String[]{};
 					String[] pArrayNDoc = new String[]{};
 					String[] pArrayName = new String[]{};
@@ -1295,6 +1368,7 @@ public class NAV_Reservas  {
 					String[] pArrayResi = new String[]{};
 					String[] pArrayEstu = new String[]{};
 					String[] pArrayButa = new String[]{};
+					String[] pArrayNacionalidad = new String[]{};
 					if(pArrayDocuF.contains(',')){ pArrayDocu = pArrayDocuF.split(','); }else{ pArrayDocu.add(pArrayDocuF.trim()); }
 					if(pArrayNDocF.contains(',')){ pArrayNDoc = pArrayNDocF.split(','); }else{ pArrayNDoc.add(pArrayNDocF.trim()); }
 					if(pArrayNameF.contains(',')){ pArrayName = pArrayNameF.split(','); }else{ pArrayName.add(pArrayNameF.trim()); }
@@ -1307,6 +1381,9 @@ public class NAV_Reservas  {
 					if(pArrayResiF.contains(',')){ pArrayResi = pArrayResiF.split(','); }else{ pArrayResi.add(pArrayResiF.trim()); }
 					if(pArrayEstuF.contains(',')){ pArrayEstu = pArrayEstuF.split(','); }else{ pArrayEstu.add(pArrayEstuF.trim()); }
 					if(pArrayButaF.contains(',')){ pArrayButa = pArrayButaF.split(','); }else{ pArrayButa.add(pArrayButaF.trim()); }
+					if(String.isNotBlank(pArrayNacionalidadF)){
+						if(pArrayNacionalidadF.contains(',')){ pArrayNacionalidad = pArrayNacionalidadF.split(','); }else{ pArrayNacionalidad.add(pArrayNacionalidadF.trim()); }
+					}
 					List<Account> inCuentas = new List<Account>();
 					List<Account> upCuentas = new List<Account>();
 					List<String> identificaciones = new List<String>();
@@ -1369,6 +1446,13 @@ public class NAV_Reservas  {
 								}else if(pArraySexo[i] == 'Femenino'){
 									oAx.Sexo__pc = 'F';
 								}
+								// Asignar nacionalidad
+								if(pArrayNacionalidad.size() > i && String.isNotBlank(pArrayNacionalidad[i])){
+									oAx.Nacionalidad__pc = pArrayNacionalidad[i];
+								}else if(pArrayDocu[i] == 'RUT'){
+									// Si es RUT y no se especifica nacionalidad, asignar "Chileno(a)" por defecto
+									oAx.Nacionalidad__pc = 'Chileno(a)';
+								}
 								upCuentas.add(oAx);
 								Detalle_Reserva__c dResX;
 								dResX = [SELECT Id, Nombre_Pasajero__c, Doc_Identificacion_Pasajero__c, Tipo_de_identificacion__c, Estudiante__c,
@@ -1387,6 +1471,7 @@ public class NAV_Reservas  {
 								//bDetalleMap.put(dResX.Numero__c, dResX);
 							}else{
 								Account cuenta = new Account();
+								cuenta.RecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Cuenta personal').getRecordTypeId();
 								cuenta.FirstName = pArrayName[i];
 								cuenta.LastName = pArrayLNam[i];
 								cuenta.Identificacion__c = pArrayNDoc[i].replace('k','K').toUpperCase();
@@ -1405,10 +1490,27 @@ public class NAV_Reservas  {
 								if(pArrayTele[i] != 'null'){
 									cuenta.Phone = formatTelefono(pArrayTele[i]);
 								}
+								// Asignar nacionalidad
+								if(pArrayNacionalidad.size() > i && String.isNotBlank(pArrayNacionalidad[i])){
+									cuenta.Nacionalidad__pc = pArrayNacionalidad[i];
+								}else if(pArrayDocu[i] == 'RUT'){
+									// Si es RUT y no se especifica nacionalidad, asignar "Chileno(a)" por defecto
+									cuenta.Nacionalidad__pc = 'Chileno(a)';
+								}
 								try{
 									insert cuenta;
+									System.debug('Cuenta creada exitosamente: ' + cuenta.Id + ' - ' + cuenta.FirstName + ' ' + cuenta.LastName);
 								}catch(Exception exCuRe){
-									jsonText = '{ "mensaje": "No se pudo generar la cuenta", "estado": false, "indicador": 4, "tipo": "cuenta"}';
+									System.debug('Error al crear cuenta: ' + exCuRe.getMessage());
+									System.debug('StackTrace: ' + exCuRe.getStackTraceString());
+									jsonText = '{ "mensaje": "No se pudo generar la cuenta: ' + exCuRe.getMessage() + '", "estado": false, "indicador": 4, "tipo": "cuenta"}';
+									continue; // Saltar este pasajero y continuar con el siguiente
+								}
+								// Verificar que la cuenta se insertó correctamente
+								if(cuenta.Id == null){
+									System.debug('Error: La cuenta no tiene ID después del insert');
+									jsonText = '{ "mensaje": "No se pudo generar la cuenta: ID no asignado", "estado": false, "indicador": 4, "tipo": "cuenta"}';
+									continue;
 								}
 								inCuentas.add(cuenta);
 								Detalle_Reserva__c dResX;
@@ -1435,6 +1537,7 @@ public class NAV_Reservas  {
 							Date fechaNac = Date.newInstance(Integer.valueOf(fecNacFull[2]),Integer.valueOf(fecNacFull[1]),Integer.valueOf(fecNacFull[0]));
 							System.debug(fechaNac);
 							Account cuenta = new Account();
+							cuenta.RecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Cuenta personal').getRecordTypeId();
 							cuenta.FirstName = pArrayName[i];
 							cuenta.LastName = pArrayLNam[i];
 							cuenta.Identificacion__c = pArrayNDoc[i].replace('k','K').toUpperCase();
@@ -1453,10 +1556,27 @@ public class NAV_Reservas  {
 							if(pArrayTele[i] != 'null'){
 								cuenta.Phone = formatTelefono(pArrayTele[i]);
 							}
+							// Asignar nacionalidad
+							if(pArrayNacionalidad.size() > i && String.isNotBlank(pArrayNacionalidad[i])){
+								cuenta.Nacionalidad__pc = pArrayNacionalidad[i];
+							}else if(pArrayDocu[i] == 'RUT'){
+								// Si es RUT y no se especifica nacionalidad, asignar "Chileno(a)" por defecto
+								cuenta.Nacionalidad__pc = 'Chileno(a)';
+							}
 							try{
 								insert cuenta;
+								System.debug('Cuenta creada exitosamente: ' + cuenta.Id + ' - ' + cuenta.FirstName + ' ' + cuenta.LastName);
 							}catch(Exception exCuRe){
-								jsonText = '{ "mensaje": "No se pudo generar la cuenta", "estado": false, "indicador": 5, "tipo": "cuenta"}';
+								System.debug('Error al crear cuenta: ' + exCuRe.getMessage());
+								System.debug('StackTrace: ' + exCuRe.getStackTraceString());
+								jsonText = '{ "mensaje": "No se pudo generar la cuenta: ' + exCuRe.getMessage() + '", "estado": false, "indicador": 5, "tipo": "cuenta"}';
+								continue; // Saltar este pasajero y continuar con el siguiente
+							}
+							// Verificar que la cuenta se insertó correctamente
+							if(cuenta.Id == null){
+								System.debug('Error: La cuenta no tiene ID después del insert');
+								jsonText = '{ "mensaje": "No se pudo generar la cuenta: ID no asignado", "estado": false, "indicador": 5, "tipo": "cuenta"}';
+								continue;
 							}
 							inCuentas.add(cuenta);
 							Detalle_Reserva__c dResX;
@@ -2339,16 +2459,66 @@ public class NAV_Reservas  {
 	}
 	public String formatTelefono(String telefono){
 		String toReturn = '';
-		if(telefono != ''){
-			if(telefono.length() < 8){
-				telefono = '22'+telefono;
+		if(String.isNotBlank(telefono)){
+			telefono = telefono.trim();
+			// Si ya tiene formato internacional con +, preservarlo completamente
+			if(telefono.startsWith('+')){
+				toReturn = telefono;
 			}
-			if(telefono.trim().startsWith('56')){
-				toReturn = '+'+telefono.trim();
-			}else if(!telefono.trim().startsWith('+56')){
-				toReturn = '+56'+telefono.trim();
-			}else{
-				toReturn = telefono.trim();
+			// Si empieza con código de país chileno sin +, agregar +
+			else if(telefono.startsWith('56') && telefono.length() >= 9){
+				toReturn = '+' + telefono;
+			}
+			// Si es un número corto (menos de 8 dígitos), asumir que es chileno y agregar prefijo
+			else if(telefono.length() < 8){
+				telefono = '22' + telefono;
+				toReturn = '+56' + telefono;
+			}
+			// Si tiene 8 o más dígitos pero no empieza con código de país conocido
+			// Verificar si empieza con un código de país internacional conocido (1-3 dígitos)
+			// Si empieza con código de país internacional, agregar +
+			// De lo contrario, asumir que es un número local chileno
+			else if(telefono.length() >= 8 && !telefono.startsWith('56')){
+				Boolean esInternacional = false;
+				// Verificar códigos de 1 dígito (1, 7)
+				if((telefono.startsWith('1') || telefono.startsWith('7')) && telefono.length() > 1){
+					toReturn = '+' + telefono;
+					esInternacional = true;
+				}
+				// Verificar códigos de 2 dígitos (20-99, excepto 56)
+				else if(telefono.length() >= 2){
+					String primerosDos = telefono.substring(0, 2);
+					try{
+						Integer codigoDos = Integer.valueOf(primerosDos);
+						if(codigoDos >= 20 && codigoDos <= 99 && codigoDos != 56 && telefono.length() > 2){
+							toReturn = '+' + telefono;
+							esInternacional = true;
+						}
+					}catch(Exception e){
+						// Si no se puede convertir a número, continuar
+					}
+				}
+				// Verificar códigos de 3 dígitos (200-999)
+				if(!esInternacional && telefono.length() >= 3){
+					String primerosTres = telefono.substring(0, 3);
+					try{
+						Integer codigoTres = Integer.valueOf(primerosTres);
+						if(codigoTres >= 200 && codigoTres <= 999 && telefono.length() > 3){
+							toReturn = '+' + telefono;
+							esInternacional = true;
+						}
+					}catch(Exception e){
+						// Si no se puede convertir a número, continuar
+					}
+				}
+				// Si no se identificó como internacional, asumir chileno
+				if(!esInternacional){
+					toReturn = '+56' + telefono;
+				}
+			}
+			// En cualquier otro caso, preservar el valor original
+			else{
+				toReturn = telefono;
 			}
 		}		
 		return toReturn;
@@ -2394,4 +2564,174 @@ public class NAV_Reservas  {
 		//codeValue = codeValue + cap.Id;
         return codeValue;
     }
+     public void guardarReservaConCodigoVF() { 
+        String uuid = ApexPages.currentPage().getParameters().get('uuid'); 
+        String codigoIngresado = ApexPages.currentPage().getParameters().get('codigo'); 
+        System.debug('llegaaaamooos'); System.debug('UUID recibido: ' + uuid); 
+        System.debug('Código ingresado: ' + codigoIngresado); 
+        jsonText = guardarReservaConCodigoOriginal(uuid, codigoIngresado); 
+    }
+    public static String guardarReservaConCodigoOriginal(String uuid, String codigoIngresado) { 
+        Map<String, Object> respuesta = new Map<String, Object>(); 
+        try { 
+            
+            if(String.isBlank(uuid)) { 
+                respuesta.put('status', 'ERROR'); 
+                respuesta.put('message', 'No se encontró el identificador de la reserva.'); 
+				respuesta.put('Tipomessage', 'error');
+                return JSON.serialize(respuesta); 
+            }
+
+            // Buscar reserva
+            List<Reserva__c> reservas = [
+                SELECT Id, Codigo_Promocional__c, Total_reserva__c,Valor_Descuento_Promocional__c,Ruta__c
+                FROM Reserva__c 
+                WHERE UUID__c = :uuid 
+                LIMIT 1
+            ]; 
+            
+            if (reservas.isEmpty()) { 
+                respuesta.put('status', 'ERROR'); 
+                respuesta.put('message', 'No se encontró una reserva asociada a este identificador.'); 
+				respuesta.put('Tipomessage', 'error');
+                return JSON.serialize(respuesta); 
+            }
+            
+            Reserva__c reserva = reservas[0]; 
+            Date hoy = Date.today();
+            // Buscar código
+            List<Codigo_Promocional__c> codigos = [
+                SELECT Id, Name, Cantidad_Disponible__c, Cantidad_Utilizada__c, Estado__c,
+                        Fecha_de_Inicio__c, Fecha_de_Termino__c,Ruta__c,
+                        Valor_Descuento__c,Ruta__r.Name
+                FROM Codigo_Promocional__c 
+                WHERE Name = :codigoIngresado 
+                LIMIT 1
+            ];
+            
+            if (codigos.isEmpty()) { 
+                respuesta.put('status', 'ERROR'); 
+                respuesta.put('message', '⚠️ El código ingresado no existe o contiene errores. Revisa y vuelve a intentarlo.'); 
+				respuesta.put('Tipomessage', 'error');
+                return JSON.serialize(respuesta); 
+            }
+            
+            Codigo_Promocional__c codigoPromo = codigos[0];
+			if (codigoPromo.Id == reserva.Codigo_Promocional__c) {
+                respuesta.put('status', 'ERROR');
+                respuesta.put('message', '⚠️ Este código ya ha sido aplicado en esta reserva.');
+				respuesta.put('Tipomessage', 'información');
+                return JSON.serialize(respuesta);
+            }
+            
+            if (codigoPromo.Estado__c != 'Activo') {
+                respuesta.put('status', 'ERROR');
+                respuesta.put('message', '⏰ Este código ha expirado y ya no puede ser utilizado.');
+				respuesta.put('Tipomessage', 'información');
+                return JSON.serialize(respuesta);
+            }
+			if (codigoPromo.Fecha_de_Inicio__c != null && hoy < codigoPromo.Fecha_de_Inicio__c) {
+                respuesta.put('status', 'ERROR');
+                respuesta.put('message', '⏳ Este código aún no está disponible.');
+				respuesta.put('Tipomessage', 'información');
+                return JSON.serialize(respuesta);
+			}
+			if (codigoPromo.Fecha_de_Termino__c != null && hoy > codigoPromo.Fecha_de_Termino__c) {
+					respuesta.put('status', 'ERROR');
+					respuesta.put('message', '⏰ Este código ha expirado y ya no puede ser utilizado.');
+					respuesta.put('Tipomessage', 'error');
+					return JSON.serialize(respuesta);
+            }
+            if (codigoPromo.Cantidad_Disponible__c != null && 
+			    codigoPromo.Cantidad_Utilizada__c >= codigoPromo.Cantidad_Disponible__c) {
+					respuesta.put('status', 'ERROR');
+					respuesta.put('message', '🚫 Límite de uso alcanzado para este código. No se puede volver a aplicar.');
+					respuesta.put('Tipomessage', 'error');
+					return JSON.serialize(respuesta);
+            }
+			System.debug('afuera de ruta :' + codigoPromo.Ruta__r.Name  + ' ' +reserva.Ruta__c );
+			if (codigoPromo.Ruta__c != null) {
+				system.debug(' Linea 2493 codigoPromo.Ruta__r.Name :' + codigoPromo.Ruta__r.Name );
+				system.debug('Linea 2494 reserva.Ruta__c :' + reserva.Ruta__c );
+				String extRuta= '';
+				if(reserva.Ruta__c != null && reserva.Ruta__c.contains('SUBV')) {
+					extRuta = codigoPromo.Ruta__r.Name + ' (SUBV)';
+				} else {
+					extRuta = codigoPromo.Ruta__r.Name + ' (COM)';
+				}
+				system.debug('Linea 2502 extRuta :' + extRuta );
+				if (extRuta != reserva.Ruta__c) {
+					respuesta.put('status', 'ERROR');
+					respuesta.put('message', '🚫 Este código no aplica para esta ruta o tipo de producto.');
+					respuesta.put('Tipomessage', 'error');
+					return JSON.serialize(respuesta);
+				}
+			}
+            // Actualizar reserva
+            reserva.Codigo_Promocional__c = codigoPromo.Id;
+            update reserva;
+
+            Reserva__c reservasPromo= [
+                SELECT Id, Codigo_Promocional__c, Total_reserva__c,Valor_Descuento_Promocional__c, Valor_Descuento_Pesos_Promocional__c
+                FROM Reserva__c 
+                WHERE UUID__c = :uuid 
+            ]; 
+            
+            
+            // *** NUEVO: devolver porcentaje + total con descuento ***
+            String porcentaje='';
+			if(reservasPromo.Valor_Descuento_Promocional__c == 0|| reservasPromo.Valor_Descuento_Promocional__c ==null){
+				porcentaje = '$'+ reservasPromo.Valor_Descuento_Pesos_Promocional__c;
+			}else{
+				porcentaje = reservasPromo.Valor_Descuento_Promocional__c+ '%';
+			}
+			
+            Decimal totalConDescuento = reservasPromo.Total_reserva__c;
+            
+            respuesta.put('status', 'OK');
+            respuesta.put('message', '✅ Código aplicado correctamente. Se ha actualizado el total con el descuento correspondiente.');
+            respuesta.put('Tipomessage', 'éxito');
+			respuesta.put('descuento', porcentaje);
+            respuesta.put('totalConDescuento', totalConDescuento);
+            
+            return JSON.serialize(respuesta);
+        } catch (Exception e) { 
+            respuesta.put('status', 'ERROR'); 
+            respuesta.put('message', '❗Error al validar el código. Intente nuevamente o contacte soporte: ' + e.getMessage()); 
+            respuesta.put('Tipomessage', 'error');
+			return JSON.serialize(respuesta); 
+        } 
+    }
+
+    public void DeleteReservaConCodigoVF() { 
+        String uuid = ApexPages.currentPage().getParameters().get('uuid'); 
+        System.debug('Código ingresado: ' + codigoIngresado); 
+        jsonText = DeleteReservaConCodigoOriginal(uuid); 
+    }
+    
+    public static String DeleteReservaConCodigoOriginal(String uuid) { 
+            Map<String, Object> respuesta = new Map<String, Object>(); 
+        try {
+                    System.debug('llegaaaamooos DeleteReservaConCodigoOriginal'); System.debug('UUID recibido: ' + uuid); 
+            Reserva__c res = [
+                SELECT Id, Codigo_Promocional__c
+                FROM Reserva__c
+                WHERE UUID__c = :uuid
+				AND Codigo_Promocional__c != null
+                LIMIT 1
+            ];
+            System.debug('llegaaaamooos DeleteReservaConCodigoOriginal'); System.debug('UUID recibido:res ' + res);
+            res.Codigo_Promocional__c = null;
+            update res;
+             respuesta.put('status', 'OK'); 
+             respuesta.put('message', 'Código eliminado correctamente.'); 
+             System.debug('llegaaaamooos respuesta'); System.debug('UUID recibido:respuesta ' + respuesta);
+             return JSON.serialize(respuesta); 
+        } catch (Exception e) {
+			respuesta.put('status', 'ERROR'); 
+			respuesta.put('message', 'Reserva sin codigo de promocion asociado.'); 
+			respuesta.put('Tipomessage', 'error');
+			return JSON.serialize(respuesta); 
+        }
+    } 
 }

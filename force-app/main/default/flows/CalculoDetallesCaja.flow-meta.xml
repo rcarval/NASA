@@ -5,8 +5,8 @@
     <assignments>
         <name>SumarAnulacionTicketNoTributario</name>
         <label>SumarAnulacionTicketNoTributario</label>
-        <locationX>1986</locationX>
-        <locationY>1164</locationY>
+        <locationX>2684</locationX>
+        <locationY>1008</locationY>
         <assignmentItems>
             <assignToReference>TotalAnulacionTicketNoTributario</assignToReference>
             <operator>Add</operator>
@@ -21,8 +21,8 @@
     <assignments>
         <name>SumarBoleta</name>
         <label>SumarBoleta</label>
-        <locationX>666</locationX>
-        <locationY>1164</locationY>
+        <locationX>1364</locationX>
+        <locationY>1008</locationY>
         <assignmentItems>
             <assignToReference>TotalBoleta</assignToReference>
             <operator>Add</operator>
@@ -35,26 +35,10 @@
         </connector>
     </assignments>
     <assignments>
-        <name>SumarDocumentoFicticio</name>
-        <label>SumarDocumentoFicticio</label>
-        <locationX>578</locationX>
-        <locationY>840</locationY>
-        <assignmentItems>
-            <assignToReference>ObtenerTodosLosDocumentosDeLaCaja</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>DocumentoFicticio</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>CalcularDocumentos</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>SumarFacturaAfecta</name>
         <label>SumarFacturaAfecta</label>
-        <locationX>930</locationX>
-        <locationY>1164</locationY>
+        <locationX>1628</locationX>
+        <locationY>1008</locationY>
         <assignmentItems>
             <assignToReference>TotalFacturaAfecta</assignToReference>
             <operator>Add</operator>
@@ -69,8 +53,8 @@
     <assignments>
         <name>SumarFacturaExenta</name>
         <label>SumarFacturaExenta</label>
-        <locationX>1194</locationX>
-        <locationY>1164</locationY>
+        <locationX>1892</locationX>
+        <locationY>1008</locationY>
         <assignmentItems>
             <assignToReference>TotalFacturaExenta</assignToReference>
             <operator>Add</operator>
@@ -85,8 +69,8 @@
     <assignments>
         <name>SumarFacturaMixta</name>
         <label>SumarFacturaMixta</label>
-        <locationX>1458</locationX>
-        <locationY>1164</locationY>
+        <locationX>2156</locationX>
+        <locationY>1008</locationY>
         <assignmentItems>
             <assignToReference>TotalFacturaMixta</assignToReference>
             <operator>Add</operator>
@@ -101,8 +85,8 @@
     <assignments>
         <name>SumarNotaCredito</name>
         <label>SumarNotaCredito</label>
-        <locationX>1722</locationX>
-        <locationY>1164</locationY>
+        <locationX>2420</locationX>
+        <locationY>1008</locationY>
         <assignmentItems>
             <assignToReference>TotalNotaCredito</assignToReference>
             <operator>Add</operator>
@@ -117,8 +101,8 @@
     <assignments>
         <name>SumarTicketsSinDocumentos</name>
         <label>SumarTicketsSinDocumentos</label>
-        <locationX>2250</locationX>
-        <locationY>1164</locationY>
+        <locationX>2948</locationX>
+        <locationY>1008</locationY>
         <assignmentItems>
             <assignToReference>TotalTicketsSinDocumentos</assignToReference>
             <operator>Add</operator>
@@ -133,8 +117,8 @@
     <assignments>
         <name>SumarValorDD</name>
         <label>SumarValorDD</label>
-        <locationX>710</locationX>
-        <locationY>648</locationY>
+        <locationX>1408</locationX>
+        <locationY>600</locationY>
         <assignmentItems>
             <assignToReference>DocumentoFicticio.SUBTOTAL_BRUTO__c</assignToReference>
             <operator>Assign</operator>
@@ -150,14 +134,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>SumarDocumentoFicticio</targetReference>
+            <targetReference>CalcularDocumentos</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>SumarValorDDConIVA</name>
         <label>SumarValorDDConIVA</label>
-        <locationX>446</locationX>
-        <locationY>648</locationY>
+        <locationX>1144</locationX>
+        <locationY>600</locationY>
         <assignmentItems>
             <assignToReference>DocumentoFicticio.SUBTOTAL_BRUTO__c</assignToReference>
             <operator>Assign</operator>
@@ -173,14 +157,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>SumarDocumentoFicticio</targetReference>
+            <targetReference>CalcularDocumentos</targetReference>
         </connector>
     </assignments>
     <decisions>
         <name>SeAgregaIVA</name>
         <label>SeAgregaIVA?</label>
-        <locationX>578</locationX>
-        <locationY>540</locationY>
+        <locationX>1276</locationX>
+        <locationY>492</locationY>
         <defaultConnector>
             <targetReference>SumarValorDD</targetReference>
         </defaultConnector>
@@ -204,8 +188,8 @@
     <decisions>
         <name>SepararPorTipoDeDocumento</name>
         <label>SepararPorTipoDeDocumento</label>
-        <locationX>1590</locationX>
-        <locationY>1056</locationY>
+        <locationX>2288</locationX>
+        <locationY>900</locationY>
         <defaultConnector>
             <targetReference>CalcularDocumentos</targetReference>
         </defaultConnector>
@@ -328,8 +312,8 @@
     <loops>
         <name>CalcularDocumentos</name>
         <label>CalcularDocumentos</label>
-        <locationX>578</locationX>
-        <locationY>948</locationY>
+        <locationX>1276</locationX>
+        <locationY>792</locationY>
         <collectionReference>ObtenerTodosLosDocumentosDeLaCaja</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -348,7 +332,7 @@
     <processMetadataValues>
         <name>CanvasMode</name>
         <value>
-            <stringValue>FREE_FORM_CANVAS</stringValue>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -361,8 +345,8 @@
     <recordLookups>
         <name>DocumentoPrincipal</name>
         <label>DocumentoPrincipal</label>
-        <locationX>578</locationX>
-        <locationY>324</locationY>
+        <locationX>1276</locationX>
+        <locationY>276</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>ObtenerTodosLosDocumentosDeLaCaja</targetReference>
@@ -382,8 +366,8 @@
     <recordLookups>
         <name>ObtenerTodosLosDocumentosDeLaCaja</name>
         <label>ObtenerTodosLosDocumentosDeLaCaja</label>
-        <locationX>578</locationX>
-        <locationY>432</locationY>
+        <locationX>1276</locationX>
+        <locationY>384</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>SeAgregaIVA</targetReference>
@@ -403,8 +387,8 @@
     <recordUpdates>
         <name>ActualizarMontosCaja</name>
         <label>ActualizarMontosCaja</label>
-        <locationX>578</locationX>
-        <locationY>1440</locationY>
+        <locationX>1276</locationX>
+        <locationY>1284</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -458,8 +442,8 @@
         <object>Caja__c</object>
     </recordUpdates>
     <start>
-        <locationX>650</locationX>
-        <locationY>48</locationY>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
         <object>Detalle_Documentos__c</object>
         <recordTriggerType>Create</recordTriggerType>
         <scheduledPaths>
@@ -470,7 +454,7 @@
         </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Obsolete</status>
+    <status>Active</status>
     <variables>
         <name>DocumentoFicticio</name>
         <dataType>SObject</dataType>

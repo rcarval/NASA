@@ -3,7 +3,7 @@ public class NAV_SAPWSTest {
     @TestSetup
     static void setup(){
 		Puerto__c puerto1 = new Puerto__c(
-			Name = 'DUMMY MONTT', // Nombre de Puerto
+			Name = 'DUMMY MONTT', // Nombre de Puerto.
             Muelle_SAP__c = 'PMONTT'
 		);
 		insert puerto1;
@@ -56,245 +56,221 @@ public class NAV_SAPWSTest {
         );
         insert origenDestino;
 
-		Parametro_Tasa_Embarque__c pte = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto1.Id,						  // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = true,                            // Residente
-		  Vigencia_desde__c = Date.valueOf('2021-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2022-03-31'), // Vigencia hasta
-		  Valor__c = 9.000,                               // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = true,                   // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                      // Porcentaje Impuesto
-		);
-		insert pte;
+        List<Parametro_Tasa_Embarque__c> pte = new List<Parametro_Tasa_Embarque__c>{
+            new Parametro_Tasa_Embarque__c(
+                Puerto__c = puerto1.Id,
+                Concepto__c = 'Tasa Pasajero',
+                Aplicar__c = 'Al Embarque y Desembarque',
+                Residente__c = true,
+                Vigencia_desde__c = Date.valueOf('2021-04-01'),
+                Vigencia_hasta__c = Date.valueOf('2022-03-31'),
+                Valor__c = 9.000,
+                Ruta_Comercial__c = true,
+                Ruta_Subvencionada__c = true,
+                Impuesto__c = 'Valor Exento',
+                Porcentaje_Impuesto__c = 0
+            ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto1.Id,
+                    Concepto__c = 'Tasa Pasajero',
+                    Aplicar__c = 'Al Embarque',
+                    Residente__c = false,
+                    Vigencia_desde__c = Date.valueOf('2021-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2022-03-31'),
+                    Valor__c = 18.000,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = true,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto1.Id,
+                    Concepto__c = 'Tasa Vehículos',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = false,
+                    Vigencia_desde__c = Date.valueOf('2021-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2022-03-31'),
+                    Valor__c = 28.000,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = true,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto1.Id,
+                    Concepto__c = 'Tasa Vehículos',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = true,
+                    Vigencia_desde__c = Date.valueOf('2021-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2022-03-31'),
+                    Valor__c = 14.000,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = true,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto1.Id,
+                    Concepto__c = 'Tasa Pasajero',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = true,
+                    Vigencia_desde__c = Date.valueOf('2022-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2023-03-31'),
+                    Valor__c = 9.200,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = false,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto1.Id,
+                    Concepto__c = 'Tasa Pasajero',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = false,
+                    Vigencia_desde__c = Date.valueOf('2022-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2023-03-31'),
+                    Valor__c = 18.400,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = false,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto1.Id,
+                    Concepto__c = 'Tasa Pasajero',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = true,
+                    Vigencia_desde__c = Date.valueOf('2020-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2023-03-31'),
+                    Valor__c = 8.900,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = false,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto1.Id,
+                    Concepto__c = 'Tasa Pasajero',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = false,
+                    Vigencia_desde__c = Date.valueOf('2020-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2021-03-31'),
+                    Valor__c = 17.800,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = false,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                )
+                };
+                    insert pte;
 
-		pte = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto1.Id,                         // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque',                     // Aplicar
-		  Residente__c = false,                           // Residente
-		  Vigencia_desde__c = Date.valueOf('2021-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2022-03-31'), // Vigencia hasta
-		  Valor__c = 18.000,                              // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = true,                   // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pte;
-
-		pte = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto1.Id,                         // Puerto
-		  Concepto__c = 'Tasa Vehículos',                 // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = false,                           // Residente
-		  Vigencia_desde__c = Date.valueOf('2021-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2022-03-31'), // Vigencia hasta
-		  Valor__c = 28.000,                              // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = true,                   // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pte;
-
-		pte = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto1.Id,                         // Puerto
-		  Concepto__c = 'Tasa Vehículos',                 // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = true,                            // Residente
-		  Vigencia_desde__c = Date.valueOf('2021-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2022-03-31'), // Vigencia hasta
-		  Valor__c = 14.000,                              // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = true,                   // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pte;
-
-		pte = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto1.Id,                         // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = true,                            // Residente
-		  Vigencia_desde__c = Date.valueOf('2022-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2023-03-31'), // Vigencia hasta
-		  Valor__c = 9.200,                               // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = false,                  // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pte;
-
-		pte = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto1.Id,                         // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = false,                           // Residente
-		  Vigencia_desde__c = Date.valueOf('2022-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2023-03-31'), // Vigencia hasta
-		  Valor__c = 18.400,                              // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = false,                  // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pte;
-
-		pte = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto1.Id,                         // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = true,                            // Residente
-		  Vigencia_desde__c = Date.valueOf('2020-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2023-03-31'), // Vigencia hasta
-		  Valor__c = 8.900,                               // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = false,                  // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pte;
-
-		pte = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto1.Id,						  // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = false,                           // Residente
-		  Vigencia_desde__c = Date.valueOf('2020-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2021-03-31'), // Vigencia hasta
-		  Valor__c = 17.800,                              // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = false,                  // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pte;
-
-		Parametro_Tasa_Embarque__c pteDesembarque = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto2.Id,						  // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = true,                            // Residente
-		  Vigencia_desde__c = Date.valueOf('2021-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2022-03-31'), // Vigencia hasta
-		  Valor__c = 9.000,                               // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = true,                   // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                      // Porcentaje Impuesto
-		);
-		insert pteDesembarque;
-
-		pteDesembarque = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto2.Id,                         // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = false,                           // Residente
-		  Vigencia_desde__c = Date.valueOf('2021-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2022-03-31'), // Vigencia hasta
-		  Valor__c = 18.000,                              // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = true,                   // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pteDesembarque;
-
-		pteDesembarque = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto2.Id,                         // Puerto
-		  Concepto__c = 'Tasa Vehículos',                 // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = false,                           // Residente
-		  Vigencia_desde__c = Date.valueOf('2021-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2022-03-31'), // Vigencia hasta
-		  Valor__c = 28.000,                              // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = true,                   // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pteDesembarque;
-
-		pteDesembarque = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto2.Id,                         // Puerto
-		  Concepto__c = 'Tasa Vehículos',                 // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = true,                            // Residente
-		  Vigencia_desde__c = Date.valueOf('2021-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2022-03-31'), // Vigencia hasta
-		  Valor__c = 14.000,                              // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = true,                   // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pteDesembarque;
-
-		pteDesembarque = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto2.Id,                         // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = true,                            // Residente
-		  Vigencia_desde__c = Date.valueOf('2022-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2023-03-31'), // Vigencia hasta
-		  Valor__c = 9.200,                               // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = false,                  // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pteDesembarque;
-
-		pteDesembarque = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto2.Id,                         // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = false,                           // Residente
-		  Vigencia_desde__c = Date.valueOf('2022-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2023-03-31'), // Vigencia hasta
-		  Valor__c = 18.400,                              // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = false,                  // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pteDesembarque;
-
-		pteDesembarque = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto2.Id,                         // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = true,                            // Residente
-		  Vigencia_desde__c = Date.valueOf('2020-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2023-03-31'), // Vigencia hasta
-		  Valor__c = 8.900,                               // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = false,                  // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-		);
-		insert pteDesembarque;
-
-		pteDesembarque = new Parametro_Tasa_Embarque__c(
-		  Puerto__c = puerto2.Id,						  // Puerto
-		  Concepto__c = 'Tasa Pasajero',                  // Concepto
-		  Aplicar__c = 'Al Embarque y Desembarque',                     // Aplicar
-		  Residente__c = false,                           // Residente
-		  Vigencia_desde__c = Date.valueOf('2020-04-01'), // Vigencia desde
-		  Vigencia_hasta__c = Date.valueOf('2021-03-31'), // Vigencia hasta
-		  Valor__c = 17.800,                              // Valor
-		  Ruta_Comercial__c = true,                       // Ruta Comercial
-		  Ruta_Subvencionada__c = false,                  // Ruta Subvencionada
-		  Impuesto__c = 'Valor Exento',                   // Impuesto
-		  Porcentaje_Impuesto__c = 0                     // Porcentaje Impuesto
-        );
-		insert pteDesembarque;
+        List<Parametro_Tasa_Embarque__c> pteDesembarque = new List<Parametro_Tasa_Embarque__c>{
+            new Parametro_Tasa_Embarque__c(
+                Puerto__c = puerto2.Id,
+                Concepto__c = 'Tasa Pasajero',
+                Aplicar__c = 'Al Embarque y Desembarque',
+                Residente__c = true,
+                Vigencia_desde__c = Date.valueOf('2021-04-01'),
+                Vigencia_hasta__c = Date.valueOf('2022-03-31'),
+                Valor__c = 9.000,
+                Ruta_Comercial__c = true,
+                Ruta_Subvencionada__c = true,
+                Impuesto__c = 'Valor Exento',
+                Porcentaje_Impuesto__c = 0
+            ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto2.Id,
+                    Concepto__c = 'Tasa Pasajero',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = false,
+                    Vigencia_desde__c = Date.valueOf('2021-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2022-03-31'),
+                    Valor__c = 18.000,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = true,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto2.Id,
+                    Concepto__c = 'Tasa Vehículos',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = false,
+                    Vigencia_desde__c = Date.valueOf('2021-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2022-03-31'),
+                    Valor__c = 28.000,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = true,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto2.Id,
+                    Concepto__c = 'Tasa Vehículos',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = true,
+                    Vigencia_desde__c = Date.valueOf('2021-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2022-03-31'),
+                    Valor__c = 14.000,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = true,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto2.Id,
+                    Concepto__c = 'Tasa Pasajero',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = true,
+                    Vigencia_desde__c = Date.valueOf('2022-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2023-03-31'),
+                    Valor__c = 9.200,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = false,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto2.Id,
+                    Concepto__c = 'Tasa Pasajero',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = false,
+                    Vigencia_desde__c = Date.valueOf('2022-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2023-03-31'),
+                    Valor__c = 18.400,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = false,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto2.Id,
+                    Concepto__c = 'Tasa Pasajero',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = true,
+                    Vigencia_desde__c = Date.valueOf('2020-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2023-03-31'),
+                    Valor__c = 8.900,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = false,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametro_Tasa_Embarque__c(
+                    Puerto__c = puerto2.Id,
+                    Concepto__c = 'Tasa Pasajero',
+                    Aplicar__c = 'Al Embarque y Desembarque',
+                    Residente__c = false,
+                    Vigencia_desde__c = Date.valueOf('2020-04-01'),
+                    Vigencia_hasta__c = Date.valueOf('2021-03-31'),
+                    Valor__c = 17.800,
+                    Ruta_Comercial__c = true,
+                    Ruta_Subvencionada__c = false,
+                    Impuesto__c = 'Valor Exento',
+                    Porcentaje_Impuesto__c = 0
+                )
+                };
+                    insert pteDesembarque;
 
 		Account cuenta1 = new Account(
 		  RecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Cuenta personal').getRecordTypeId(),
@@ -345,64 +321,65 @@ public class NAV_SAPWSTest {
 		);
 		insert nave;
 
-		Capacidad_Nave__c capacidadNave = new Capacidad_Nave__c(
-			Nave__c = nave.Id,          // Nave
-			Categoria__c = 'General',         // Categoría
-			Numero__c = '01',                 // Número
-			Ubicacion__c = 'Salón',           // Ubicación
-			Capacidad__c = 1,             // Capacidad
-			Cupo_Venta_Local__c = false,      // Cupo Venta Local
-			Unidad_de_medida__c = 'Persona',  // Unidad de medida
-			RecordTypeId = Schema.SObjectType.Capacidad_Nave__c.getRecordTypeInfosByName().get('Capacidad Nave Butaca').getRecordTypeId()
-		);
-		insert capacidadNave;
+// Con coma (inicializador de lista) y 1 solo insert
+        List<Capacidad_Nave__c> capacidadNave = new List<Capacidad_Nave__c>{
+            new Capacidad_Nave__c(
+                Nave__c = nave.Id,
+                Categoria__c = 'General',
+                Numero__c = '01',
+                Ubicacion__c = 'Salón',
+                Capacidad__c = 1,
+                Cupo_Venta_Local__c = false,
+                Unidad_de_medida__c = 'Persona',
+                RecordTypeId = Schema.SObjectType.Capacidad_Nave__c
+                .getRecordTypeInfosByName().get('Capacidad Nave Butaca').getRecordTypeId()
+            ),
+                new Capacidad_Nave__c(
+                    Nave__c = nave.Id,
+                    Categoria__c = 'General',
+                    Numero__c = '02',
+                    Ubicacion__c = 'Salón',
+                    Capacidad__c = 1,
+                    Cupo_Venta_Local__c = false,
+                    Unidad_de_medida__c = 'Persona',
+                    RecordTypeId = Schema.SObjectType.Capacidad_Nave__c
+                    .getRecordTypeInfosByName().get('Capacidad Nave Butaca').getRecordTypeId()
+                ),
+                new Capacidad_Nave__c(
+                    Nave__c = nave.Id,
+                    Categoria__c = 'General',
+                    Numero__c = '03',
+                    Ubicacion__c = 'Salón',
+                    Capacidad__c = 1,
+                    Cupo_Venta_Local__c = false,
+                    Unidad_de_medida__c = 'Persona',
+                    RecordTypeId = Schema.SObjectType.Capacidad_Nave__c
+                    .getRecordTypeInfosByName().get('Capacidad Nave Butaca').getRecordTypeId()
+                ),
+                new Capacidad_Nave__c(
+                    Nave__c = nave.Id,
+                    Ubicacion__c = 'Bajo cubierta',
+                    Capacidad__c = 5,
+                    Cupo_Venta_Local__c = false,
+                    Unidad_de_medida__c = 'Pallet',
+                    RecordTypeId = Schema.SObjectType.Capacidad_Nave__c
+                    .getRecordTypeInfosByName().get('Capacidad Nave Carga').getRecordTypeId()
+                ),
+                new Capacidad_Nave__c(
+                    Nave__c = nave.Id,
+                    Ubicacion__c = 'Cubierta',
+                    Numero__c = '1',
+                    Cupo_Venta_Local__c = false,
+                    Unidad_de_medida__c = 'm',
+                    Capacidad__c = 280.0,
+                    Alto__c = 5.1,
+                    Ancho__c = 3.1,
+                    RecordTypeId = Schema.SObjectType.Capacidad_Nave__c
+                    .getRecordTypeInfosByName().get('Capacidad Nave Pista').getRecordTypeId()
+                )
+                };
+                    insert capacidadNave;
 
-		capacidadNave = new Capacidad_Nave__c(
-			Nave__c = nave.Id,          // Nave
-			Categoria__c = 'General',         // Categoría
-			Numero__c = '02',                 // Número
-			Ubicacion__c = 'Salón',           // Ubicación
-			Capacidad__c = 1,             // Capacidad
-			Cupo_Venta_Local__c = false,      // Cupo Venta Local
-			Unidad_de_medida__c = 'Persona',  // Unidad de medida
-			RecordTypeId = Schema.SObjectType.Capacidad_Nave__c.getRecordTypeInfosByName().get('Capacidad Nave Butaca').getRecordTypeId()
-		);
-		insert capacidadNave;
-
-		capacidadNave = new Capacidad_Nave__c(
-			Nave__c = nave.Id,          	  // Nave
-			Categoria__c = 'General',         // Categoría
-			Numero__c = '03',                 // Número
-			Ubicacion__c = 'Salón',           // Ubicación
-			Capacidad__c = 1,             	  // Capacidad
-			Cupo_Venta_Local__c = false,      // Cupo Venta Local
-			Unidad_de_medida__c = 'Persona',  // Unidad de medida
-			RecordTypeId = Schema.SObjectType.Capacidad_Nave__c.getRecordTypeInfosByName().get('Capacidad Nave Butaca').getRecordTypeId()
-		);
-		insert capacidadNave;
-
-		capacidadNave = new Capacidad_Nave__c(
-			Nave__c = nave.Id,         		 // Nave
-			Ubicacion__c = 'Bajo cubierta',  // Ubicación
-			Capacidad__c = 5,            // Capacidad
-			Cupo_Venta_Local__c = false,     // Cupo Venta Local
-			Unidad_de_medida__c = 'Pallet',  // Unidad de medida
-			RecordTypeId = Schema.SObjectType.Capacidad_Nave__c.getRecordTypeInfosByName().get('Capacidad Nave Carga').getRecordTypeId()
-		);
-		insert capacidadNave;
-
-		capacidadNave = new Capacidad_Nave__c(
-			Nave__c = nave.Id,         		 // Nave
-			Ubicacion__c = 'Cubierta',    // Ubicación
-			Numero__c = '1',              // Número
-			Cupo_Venta_Local__c = false,  // Cupo Venta Local
-			Unidad_de_medida__c = 'm',    // Unidad de medida
-			Capacidad__c = 280.0,       // Capacidad
-			Alto__c = 5.1,              // Alto
-			Ancho__c = 3.1,  // Unidad de medida
-			RecordTypeId = Schema.SObjectType.Capacidad_Nave__c.getRecordTypeInfosByName().get('Capacidad Nave Pista').getRecordTypeId()
-		);
-		insert capacidadNave;
 
 		Programacion_de_Itinerario__c itinerario = new Programacion_de_Itinerario__c(
 		  Nombre_Ruta__c = mantenedorRuta.Id,				                       // Nombre Ruta
@@ -436,7 +413,8 @@ public class NAV_SAPWSTest {
 		  Expira_al_Zarpe__c = true,                       // Expira al Zarpe
 		  Puerto_DESTINO__c = puerto2.Id,                    // Puerto DESTINO
 		  Itinerario_asociado__c = itinerario.Id,
-		  UUID__c = 'd5799d8e-f1c8-491f-a333-333f62040ed4'
+		  UUID__c = 'd5799d8e-f1c8-491f-a333-333f62040ed4',
+ 		  Tickets_enviados__c = true
 		);
 		insert reserva;
 
@@ -541,137 +519,128 @@ public class NAV_SAPWSTest {
 		);
 		insert tarifa;
 
-		Parametros_Tarifarios_Pasajeros__c parametroTarifa = new Parametros_Tarifarios_Pasajeros__c(
-		  Valor__c = 12770,									      // Valor
-		  Contrato_Tarifa__c = tarifa.Id,				          // Contrato Tarifa
-		  Tipo_Transporte__c = 'Pasajero',                        // Tipo Transporte
-		  Ruta_Subsidiada__c = true,                              // Ruta Subsidiada
-		  Especificacion__c = 'General',                          // Especificación
-		  Ruta_Comercial__c = false,                              // Ruta Comercial
-		  Nacional__c = true,                                     // Nacional
-		  Puerto_ORIGEN__c = puerto1.Id,	                      // Puerto ORIGEN
-		  Extranjero__c = true,                                   // Extranjero
-		  Puerto_DESTINO__c = puerto2.Id,		                  // Puerto DESTINO
-		  Residente__c = true,                                    // Residente
-		  Discapacidad__c = false,                                // Discapacidad
-		  Estudiante__c = false,                                  // Estudiante
-		  Conductor__c = false,                                   // Conductor
-		  Impuesto__c = 'Valor Exento',                           // Impuesto
-		  Transportista__c = false,                               // Transportista
-		  Porcentaje_Impuesto__c = 0,                             // Porcentaje Impuesto
-		  Edad_desde__c = 0,	                                  // Edad desde
-		  Oferta__c = 10000,		                              // Oferta
-		  Edad_hasta__c = 59,	                                  // Edad hasta
-		  Vigencia_Oferta_desde__c = Date.valueOf('2021-10-10'),  // Vigencia Oferta desde
-		  Vigencia_Oferta_hasta__c = Date.valueOf('2021-10-11')   // Vigencia Oferta hasta
-		);
-		insert parametroTarifa;
-
-		parametroTarifa = new Parametros_Tarifarios_Pasajeros__c(
-		  Valor__c = 17820,		                   // Valor
-		  Contrato_Tarifa__c = tarifa.Id,		   // Contrato Tarifa
-		  Tipo_Transporte__c = 'Pasajero',         // Tipo Transporte
-		  Ruta_Subsidiada__c = true,               // Ruta Subsidiada
-		  Especificacion__c = 'General',           // Especificación
-		  Ruta_Comercial__c = false,               // Ruta Comercial
-		  Nacional__c = true,                      // Nacional
-		  Puerto_ORIGEN__c = puerto1.Id,	       // Puerto ORIGEN
-		  Extranjero__c = true,                    // Extranjero
-		  Puerto_DESTINO__c = puerto2.Id,		   // Puerto DESTINO
-		  Residente__c = false,                    // Residente
-		  Discapacidad__c = false,                 // Discapacidad
-		  Estudiante__c = false,                   // Estudiante
-		  Conductor__c = false,                    // Conductor
-		  Impuesto__c = 'Valor Exento',            // Impuesto
-		  Transportista__c = false,                // Transportista
-		  Porcentaje_Impuesto__c = 0               // Porcentaje Impuesto
-		);
-		insert parametroTarifa;
-
-		parametroTarifa = new Parametros_Tarifarios_Pasajeros__c(
-		  Valor__c = 97950,                        // Valor
-		  Contrato_Tarifa__c = tarifa.Id,		   // Contrato Tarifa
-		  Tipo_Transporte__c = 'Vehículo',         // Tipo Transporte
-		  Ruta_Subsidiada__c = true,               // Ruta Subsidiada
-		  Especificacion__c = 'Vehículo Menor',    // Especificación
-		  Ruta_Comercial__c = false,               // Ruta Comercial
-		  Nacional__c = true,                      // Nacional
-		  Puerto_ORIGEN__c = puerto1.Id,	       // Puerto ORIGEN
-		  Extranjero__c = true,                    // Extranjero
-		  Puerto_DESTINO__c = puerto2.Id,		   // Puerto DESTINO
-		  Residente__c = true,                     // Residente
-		  Discapacidad__c = false,                 // Discapacidad
-		  Estudiante__c = false,                   // Estudiante
-		  Conductor__c = false,                    // Conductor
-		  Impuesto__c = 'Valor Bruto',             // Impuesto
-		  Transportista__c = false,                // Transportista
-		  Porcentaje_Impuesto__c = 19              // Porcentaje Impuesto
-		);
-		insert parametroTarifa;
-
-		parametroTarifa = new Parametros_Tarifarios_Pasajeros__c(
-		  Valor__c = 22050,                        // Valor
-		  Contrato_Tarifa__c = tarifa.Id,		   // Contrato Tarifa
-		  Tipo_Transporte__c = 'Vehículo',         // Tipo Transporte
-		  Ruta_Subsidiada__c = true,               // Ruta Subsidiada
-		  Especificacion__c = 'Metro Lineal',      // Especificación
-		  Ruta_Comercial__c = false,               // Ruta Comercial
-		  Nacional__c = true,                      // Nacional
-		  Puerto_ORIGEN__c = puerto1.Id,	       // Puerto ORIGEN
-		  Extranjero__c = true,                    // Extranjero
-		  Puerto_DESTINO__c = puerto2.Id,		   // Puerto DESTINO
-		  Residente__c = true,                     // Residente
-		  Discapacidad__c = false,                 // Discapacidad
-		  Estudiante__c = false,                   // Estudiante
-		  Conductor__c = false,                    // Conductor
-		  Impuesto__c = 'Valor Bruto',             // Impuesto
-		  Transportista__c = false,                // Transportista
-		  Porcentaje_Impuesto__c = 19              // Porcentaje Impuesto
-		);
-		insert parametroTarifa;
-
-		parametroTarifa = new Parametros_Tarifarios_Pasajeros__c(
-		  Valor__c = 25250,                        // Valor
-		  Contrato_Tarifa__c = tarifa.Id,		   // Contrato Tarifa
-		  Tipo_Transporte__c = 'Carga',            // Tipo Transporte
-		  Ruta_Subsidiada__c = true,               // Ruta Subsidiada
-		  Especificacion__c = 'Pallets',           // Especificación
-		  Ruta_Comercial__c = false,               // Ruta Comercial
-		  Nacional__c = true,                      // Nacional
-		  Puerto_ORIGEN__c = puerto1.Id,	       // Puerto ORIGEN
-		  Extranjero__c = true,                    // Extranjero
-		  Puerto_DESTINO__c = puerto2.Id,		   // Puerto DESTINO
-		  Residente__c = true,                     // Residente
-		  Discapacidad__c = false,                 // Discapacidad
-		  Estudiante__c = false,                   // Estudiante
-		  Conductor__c = false,                    // Conductor
-		  Impuesto__c = 'Valor Bruto',             // Impuesto
-		  Transportista__c = false,                // Transportista
-		  Porcentaje_Impuesto__c = 19             // Porcentaje Impuesto
-		);
-		insert parametroTarifa;
-
-		parametroTarifa = new Parametros_Tarifarios_Pasajeros__c(
-		  Valor__c = 15000,                // Valor
-		  Contrato_Tarifa__c = tarifa.Id,   // Contrato Tarifa
-		  Tipo_Transporte__c = 'Vehículo',    // Tipo Transporte
-		  Ruta_Subsidiada__c = true,         // Ruta Subsidiada
-		  Especificacion__c = 'Bicicletas',   // Especificación
-		  Ruta_Comercial__c = false,          // Ruta Comercial
-		  Nacional__c = true,                // Nacional
-		  Puerto_ORIGEN__c = puerto1.Id,     // Puerto ORIGEN
-		  Extranjero__c = true,              // Extranjero
-		  Puerto_DESTINO__c = puerto2.Id,    // Puerto DESTINO
-		  Discapacidad__c = false,            // Discapacidad
-		  Estudiante__c = false,              // Estudiante
-		  Conductor__c = false,               // Conductor
-		  Tipo_de_Vehiculo__c = 'Bicicleta',  // Tipo de Vehículo
-		  Transportista__c = false,           // Transportista
-		  Impuesto__c = 'Valor Neto',         // Impuesto
-		  Porcentaje_Impuesto__c = 19        // Porcentaje Impuesto
-		);
-		insert parametroTarifa;
-
+        List<Parametros_Tarifarios_Pasajeros__c> parametroTarifa = new List<Parametros_Tarifarios_Pasajeros__c>{
+            new Parametros_Tarifarios_Pasajeros__c(
+                Valor__c = 12770,
+                Contrato_Tarifa__c = tarifa.Id,
+                Tipo_Transporte__c = 'Pasajero',
+                Ruta_Subsidiada__c = true,
+                Especificacion__c = 'General',
+                Ruta_Comercial__c = false,
+                Nacional__c = true,
+                Puerto_ORIGEN__c = puerto1.Id,
+                Extranjero__c = true,
+                Puerto_DESTINO__c = puerto2.Id,
+                Residente__c = true,
+                Discapacidad__c = false,
+                Estudiante__c = false,
+                Conductor__c = false,
+                Impuesto__c = 'Valor Exento',
+                Transportista__c = false,
+                Porcentaje_Impuesto__c = 0,
+                Edad_desde__c = 0,
+                Oferta__c = 10000,
+                Edad_hasta__c = 59,
+                Vigencia_Oferta_desde__c = Date.valueOf('2021-10-10'),
+                Vigencia_Oferta_hasta__c = Date.valueOf('2021-10-11')
+            ),
+                new Parametros_Tarifarios_Pasajeros__c(
+                    Valor__c = 17820,
+                    Contrato_Tarifa__c = tarifa.Id,
+                    Tipo_Transporte__c = 'Pasajero',
+                    Ruta_Subsidiada__c = true,
+                    Especificacion__c = 'General',
+                    Ruta_Comercial__c = false,
+                    Nacional__c = true,
+                    Puerto_ORIGEN__c = puerto1.Id,
+                    Extranjero__c = true,
+                    Puerto_DESTINO__c = puerto2.Id,
+                    Residente__c = false,
+                    Discapacidad__c = false,
+                    Estudiante__c = false,
+                    Conductor__c = false,
+                    Impuesto__c = 'Valor Exento',
+                    Transportista__c = false,
+                    Porcentaje_Impuesto__c = 0
+                ),
+                new Parametros_Tarifarios_Pasajeros__c(
+                    Valor__c = 97950,
+                    Contrato_Tarifa__c = tarifa.Id,
+                    Tipo_Transporte__c = 'Vehículo',
+                    Ruta_Subsidiada__c = true,
+                    Especificacion__c = 'Vehículo Menor',
+                    Ruta_Comercial__c = false,
+                    Nacional__c = true,
+                    Puerto_ORIGEN__c = puerto1.Id,
+                    Extranjero__c = true,
+                    Puerto_DESTINO__c = puerto2.Id,
+                    Residente__c = true,
+                    Discapacidad__c = false,
+                    Estudiante__c = false,
+                    Conductor__c = false,
+                    Impuesto__c = 'Valor Bruto',
+                    Transportista__c = false,
+                    Porcentaje_Impuesto__c = 19
+                ),
+                new Parametros_Tarifarios_Pasajeros__c(
+                    Valor__c = 22050,
+                    Contrato_Tarifa__c = tarifa.Id,
+                    Tipo_Transporte__c = 'Vehículo',
+                    Ruta_Subsidiada__c = true,
+                    Especificacion__c = 'Metro Lineal',
+                    Ruta_Comercial__c = false,
+                    Nacional__c = true,
+                    Puerto_ORIGEN__c = puerto1.Id,
+                    Extranjero__c = true,
+                    Puerto_DESTINO__c = puerto2.Id,
+                    Residente__c = true,
+                    Discapacidad__c = false,
+                    Estudiante__c = false,
+                    Conductor__c = false,
+                    Impuesto__c = 'Valor Bruto',
+                    Transportista__c = false,
+                    Porcentaje_Impuesto__c = 19
+                ),
+                new Parametros_Tarifarios_Pasajeros__c(
+                    Valor__c = 25250,
+                    Contrato_Tarifa__c = tarifa.Id,
+                    Tipo_Transporte__c = 'Carga',
+                    Ruta_Subsidiada__c = true,
+                    Especificacion__c = 'Pallets',
+                    Ruta_Comercial__c = false,
+                    Nacional__c = true,
+                    Puerto_ORIGEN__c = puerto1.Id,
+                    Extranjero__c = true,
+                    Puerto_DESTINO__c = puerto2.Id,
+                    Residente__c = true,
+                    Discapacidad__c = false,
+                    Estudiante__c = false,
+                    Conductor__c = false,
+                    Impuesto__c = 'Valor Bruto',
+                    Transportista__c = false,
+                    Porcentaje_Impuesto__c = 19
+                ),
+                new Parametros_Tarifarios_Pasajeros__c(
+                    Valor__c = 15000,
+                    Contrato_Tarifa__c = tarifa.Id,
+                    Tipo_Transporte__c = 'Vehículo',
+                    Ruta_Subsidiada__c = true,
+                    Especificacion__c = 'Bicicletas',
+                    Ruta_Comercial__c = false,
+                    Nacional__c = true,
+                    Puerto_ORIGEN__c = puerto1.Id,
+                    Extranjero__c = true,
+                    Puerto_DESTINO__c = puerto2.Id,
+                    Discapacidad__c = false,
+                    Estudiante__c = false,
+                    Conductor__c = false,
+                    Tipo_de_Vehiculo__c = 'Bicicleta',
+                    Transportista__c = false,
+                    Impuesto__c = 'Valor Neto',
+                    Porcentaje_Impuesto__c = 19
+                )
+                };
+                    insert parametroTarifa;
 		Escalas_Itinerario__c escalasItinerario = [SELECT Id 
 												   FROM Escalas_Itinerario__c 
 												   WHERE Puerto_Embarque__r.Name = 'DUMMY MONTT' 
@@ -715,37 +684,33 @@ public class NAV_SAPWSTest {
 		);
 		insert capacidadTramo3;
 
-		Capacidad_Tramo_Detalle_Reserva__c ctdr = new Capacidad_Tramo_Detalle_Reserva__c(
-		  Detalle_Reserva__c = detalleReserva1.Id,      // Detalle Reserva
-		  Capacidad_Liberada__c = false,                 // Capacidad Liberada
-		  Capacidad_Comprometida_en_Reserva__c = 0.5,  // Capacidad Comprometida en Reserva
-		  Capacidad_Tramo__c = capacidadTramo1.Id        // Capacidad Tramo
-		);
-		insert ctdr;
-
-		ctdr = new Capacidad_Tramo_Detalle_Reserva__c(
-		  Detalle_Reserva__c = detalleReserva2.Id,      // Detalle Reserva
-		  Capacidad_Liberada__c = false,                 // Capacidad Liberada
-		  Capacidad_Comprometida_en_Reserva__c = 0.5,  // Capacidad Comprometida en Reserva
-		  Capacidad_Tramo__c = capacidadTramo1.Id        // Capacidad Tramo
-		);
-		insert ctdr;
-
-		ctdr = new Capacidad_Tramo_Detalle_Reserva__c(
-			Detalle_Reserva__c = detalleReserva3.Id,      // Detalle Reserva
-		    Capacidad_Liberada__c = false,                 // Capacidad Liberada
-		    Capacidad_Comprometida_en_Reserva__c = 0.5,  // Capacidad Comprometida en Reserva
-		    Capacidad_Tramo__c = capacidadTramo1.Id        // Capacidad Tramo	
-		);
-		insert ctdr;
-		
-		ctdr = new Capacidad_Tramo_Detalle_Reserva__c(
-			Detalle_Reserva__c = detalleReserva4.Id,      // Detalle Reserva
-		    Capacidad_Liberada__c = false,                 // Capacidad Liberada
-		    Capacidad_Comprometida_en_Reserva__c = 0.5,  // Capacidad Comprometida en Reserva
-		    Capacidad_Tramo__c = capacidadTramo1.Id        // Capacidad Tramo	
-		);
-		insert ctdr;
+        List<Capacidad_Tramo_Detalle_Reserva__c> ctdr = new List<Capacidad_Tramo_Detalle_Reserva__c>{
+            new Capacidad_Tramo_Detalle_Reserva__c(
+                Detalle_Reserva__c = detalleReserva1.Id,
+                Capacidad_Liberada__c = false,
+                Capacidad_Comprometida_en_Reserva__c = 0.5,
+                Capacidad_Tramo__c = capacidadTramo1.Id
+            ),
+                new Capacidad_Tramo_Detalle_Reserva__c(
+                    Detalle_Reserva__c = detalleReserva2.Id,
+                    Capacidad_Liberada__c = false,
+                    Capacidad_Comprometida_en_Reserva__c = 0.5,
+                    Capacidad_Tramo__c = capacidadTramo1.Id
+                ),
+                new Capacidad_Tramo_Detalle_Reserva__c(
+                    Detalle_Reserva__c = detalleReserva3.Id,
+                    Capacidad_Liberada__c = false,
+                    Capacidad_Comprometida_en_Reserva__c = 0.5,
+                    Capacidad_Tramo__c = capacidadTramo1.Id
+                ),
+                new Capacidad_Tramo_Detalle_Reserva__c(
+                    Detalle_Reserva__c = detalleReserva4.Id,
+                    Capacidad_Liberada__c = false,
+                    Capacidad_Comprometida_en_Reserva__c = 0.5,
+                    Capacidad_Tramo__c = capacidadTramo1.Id
+                )
+                };
+                    insert ctdr;
 
 		Mantenedor_Matriz_DR__c matriz = new Mantenedor_Matriz_DR__c(
 		  Name = 'DR OCT-NOV 2021',                      // Nombre Matriz DR
@@ -791,31 +756,34 @@ public class NAV_SAPWSTest {
 		// System.debug('TEST Items con Tarifas '+reserva.Itemes_reservas_con_tarifas__c);
 		// System.debug('TEST Total Items '+reserva.Contador_de_Itemes_reservas__c);
 		// System.debug('TEST Tarifa Validada '+reserva.Itemes_de_reserva_con_tarifa_validada__c);
-
-		Acreditacion__c acreditacion = new Acreditacion__c(
-			Reserva__c = reserva.Id,
-            Destinatario_Documentos__c = cuenta1.Id,
-            DatosConfirmados__c = true
-		);
-		insert acreditacion;
-
-		Decimal porAcreditar = [SELECT Por_acreditar__c FROM Acreditacion__c WHERE Id =: acreditacion.Id].Por_acreditar__c;
-
 		Caja__c caja = new Caja__c(
 			Name = 'C-2022-05-02 15:12:41Z-13',// Nombre de la Caja
 			Estado_de_la_Caja__c = 'Abierta',    // Estado de la Caja
 			Numero_de_Caja__c = 13            // Número de Caja
 		);
 		insert caja;
-			 
-		Forma_de_pago__c formaPago = new Forma_de_pago__c();
-		formaPago.Acreditacion__c = acreditacion.Id;
-																   
-		formaPago.Caja__c = caja.Id;
-		formaPago.Monto__c = porAcreditar;
-		formaPago.RecordTypeId = Schema.SObjectType.Forma_de_pago__c.getRecordTypeInfosByName().get('Efectivo').getRecordTypeId();
-		formaPago.Tipo_de_pago__c = 'Efectivo';
-		insert formaPago;
+
+		Acreditacion__c acreditacion = new Acreditacion__c(
+			Reserva__c = reserva.Id,
+            Destinatario_Documentos__c = cuenta1.Id,
+            DatosConfirmados__c = true,
+			Caja__c = caja.Id
+		);
+		insert acreditacion;
+
+		//Decimal porAcreditar = 5000;
+		Decimal porAcreditar = [SELECT Por_acreditar__c FROM Acreditacion__c WHERE Id =: acreditacion.Id].Por_acreditar__c;
+
+        
+			 system.debug('CD CREAR CAJA Line 810 '+ caja.Id);
+		Forma_de_pago__c formaPago = new Forma_de_pago__c(
+            Acreditacion__c = acreditacion.Id,												   
+            Caja__c = caja.Id,
+            Monto__c = porAcreditar,
+            RecordTypeId = Schema.SObjectType.Forma_de_pago__c.getRecordTypeInfosByName().get('Efectivo').getRecordTypeId(),
+            Tipo_de_pago__c = 'Efectivo'
+        );
+		insert formaPago;   
 
 		Documento__c documento = new Documento__c(
 		  Acreditacion__c = acreditacion.Id,                                                                                                                                         // Reserva
@@ -843,100 +811,90 @@ public class NAV_SAPWSTest {
 		);
 		insert documento;
 
-		Detalle_Documentos__c detalleDocumento = new Detalle_Documentos__c(
-		  Documento__c = documento.Id,		 // Documento
-		  Descripcion__c = 'Test',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[1,2]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento;
-        
-        detalleDocumento = new Detalle_Documentos__c(
-		  Documento__c = documento.Id,		 // Documento
-		  Descripcion__c = 'PASAJERO / TASA',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[1,2]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento;
-        detalleDocumento = new Detalle_Documentos__c(
-		  Documento__c = documento.Id,		 // Documento
-		  Descripcion__c = 'PASAJERO',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[1,2]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento;
-        detalleDocumento = new Detalle_Documentos__c(
-		  Documento__c = documento.Id,		 // Documento
-		  Descripcion__c = 'BICICLETA',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[1,2]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento;
-        
-        detalleDocumento = new Detalle_Documentos__c(
-		  Documento__c = documento.Id,		 // Documento
-		  Descripcion__c = 'PALLET',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[1,2]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento;
-        detalleDocumento = new Detalle_Documentos__c(
-		  Documento__c = documento.Id,		 // Documento
-		  Descripcion__c = 'TASA / MTRS',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[1,2]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento;
-        detalleDocumento = new Detalle_Documentos__c(
-		  Documento__c = documento.Id,		 // Documento
-		  Descripcion__c = 'TRANSBORDO',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[9]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento;
-        detalleDocumento = new Detalle_Documentos__c(
-		  Documento__c = documento.Id,		 // Documento
-		  Descripcion__c = 'USO DE ZONA PRE EMBARQUE',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[9]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento;
-        
-        detalleDocumento = new Detalle_Documentos__c(
-		  Documento__c = documento.Id,		 // Documento
-		  Descripcion__c = 'VEHICULOTASA / MTRS',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[9]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento;
-        
-        detalleDocumento = new Detalle_Documentos__c(
-		  Documento__c = documento.Id,		 // Documento
-		  Descripcion__c = 'VEHICULO / ML',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[9]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento;
+        List<Detalle_Documentos__c> detalleDocumento = new List<Detalle_Documentos__c>{
+            new Detalle_Documentos__c(
+                Documento__c = documento.Id,
+                Descripcion__c = 'Test',
+                Cantidad__c = 1,
+                Valor_Unitario_Neto__c = 1.000,
+                Tax_Id__c = '[1,2]',
+                Descuento__c = 0
+            ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento.Id,
+                    Descripcion__c = 'PASAJERO / TASA',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[1,2]',
+                    Descuento__c = 0
+                ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento.Id,
+                    Descripcion__c = 'PASAJERO',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[1,2]',
+                    Descuento__c = 0
+                ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento.Id,
+                    Descripcion__c = 'BICICLETA',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[1,2]',
+                    Descuento__c = 0
+                ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento.Id,
+                    Descripcion__c = 'PALLET',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[1,2]',
+                    Descuento__c = 0
+                ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento.Id,
+                    Descripcion__c = 'TASA / MTRS',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[1,2]',
+                    Descuento__c = 0
+                ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento.Id,
+                    Descripcion__c = 'TRANSBORDO',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[9]',
+                    Descuento__c = 0
+                ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento.Id,
+                    Descripcion__c = 'USO DE ZONA PRE EMBARQUE',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[9]',
+                    Descuento__c = 0
+                ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento.Id,
+                    Descripcion__c = 'VEHICULOTASA / MTRS',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[9]',
+                    Descuento__c = 0
+                ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento.Id,
+                    Descripcion__c = 'VEHICULO / ML',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[9]',
+                    Descuento__c = 0
+                )
+                };
+                    insert detalleDocumento;
+		
 
 		Documento__c documento2 = new Documento__c(
 		  Acreditacion__c = acreditacion.Id,                                                                                                                                         // Reserva
@@ -964,45 +922,42 @@ public class NAV_SAPWSTest {
 		);
 		insert documento2;
 
-		Detalle_Documentos__c detalleDocumento2 = new Detalle_Documentos__c(
-		  Documento__c = documento2.Id,		 // Documento
-		  Descripcion__c = 'Test',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[1,2]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento2;
-        
-        detalleDocumento2 = new Detalle_Documentos__c(
-		  Documento__c = documento2.Id,		 // Documento
-		  Descripcion__c = 'VEHICULO / MTRS / TASA',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[1,2]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento2;
-        
-        detalleDocumento2 = new Detalle_Documentos__c(
-		  Documento__c = documento2.Id,		 // Documento
-		  Descripcion__c = 'VEHICULO / ML / TASA',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[1,2]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento2;
-        
-        detalleDocumento2 = new Detalle_Documentos__c(
-		  Documento__c = documento2.Id,		 // Documento
-		  Descripcion__c = 'VEHICULO / MTRS',           // Descripción
-		  Cantidad__c = 1,                   // Cantidad
-		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
-		  Tax_Id__c = '[1,2]',               // Tax Id
-		  Descuento__c = 0                   // % Descuento
-		);
-		insert detalleDocumento2;
+
+        List<Detalle_Documentos__c> detalleDocumento2 = new List<Detalle_Documentos__c>{
+            new Detalle_Documentos__c(
+                Documento__c = documento2.Id,
+                Descripcion__c = 'Test',
+                Cantidad__c = 1,
+                Valor_Unitario_Neto__c = 1.000,
+                Tax_Id__c = '[1,2]',
+                Descuento__c = 0
+            ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento2.Id,
+                    Descripcion__c = 'VEHICULO / MTRS / TASA',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[1,2]',
+                    Descuento__c = 0
+                ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento2.Id,
+                    Descripcion__c = 'VEHICULO / ML / TASA',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[1,2]',
+                    Descuento__c = 0
+                ),
+                new Detalle_Documentos__c(
+                    Documento__c = documento2.Id,
+                    Descripcion__c = 'VEHICULO / MTRS',
+                    Cantidad__c = 1,
+                    Valor_Unitario_Neto__c = 1.000,
+                    Tax_Id__c = '[1,2]',
+                    Descuento__c = 0
+                )
+                };
+                    insert detalleDocumento2;
 
         ServicioSAP__c soc = new ServicioSAP__c();
         soc.Sociedad__c = '1540';
@@ -1014,23 +969,48 @@ public class NAV_SAPWSTest {
 
     }
     @IsTest
-    private static void testSAP() {
+    private static void testSAPprocessIntegration() {
         List<Id> iAcreditaciones = new List<Id>();
-        List<Acreditacion__c> acreds = [SELECT Id FROM Acreditacion__c];
+        List<Acreditacion__c> acreds = [SELECT Id FROM Acreditacion__c  Limit 1];
         for(Acreditacion__c ac : acreds){
             iAcreditaciones.add(ac.Id);
         }
         Test.startTest();
         NAV_SAPWS.processIntegration(iAcreditaciones);
-        NAV_SAPWS.xmlTestData();
-        NAV_SAPWS.xmlTestOutput();
+		NAV_SAPWS.xmlTestData();
+         NAV_SAPWS.xmlTestOutput();
         Test.stopTest();
-    }
+    } 
+    @IsTest
+    private static void testSAPprocessIntegration2() {
+        List<Id> iAcreditaciones = new List<Id>();
+        List<Acreditacion__c> acreds = [SELECT Id FROM Acreditacion__c  Limit 1];
+        for(Acreditacion__c ac : acreds){
+            iAcreditaciones.add(ac.Id);
+        }
+				Documento__c docPrincipal = [SELECT Id ,Fecha_Envio_SAP__c,Listo_para_SAP__c
+								   FROM Documento__c 
+								   WHERE RecordTypeId =: Schema.SObjectType.Documento__c.getRecordTypeInfosByName().get('Boleta').getRecordTypeId() 
+								   AND Acreditacion__c =:  acreds[0].Id];
+		
+            // 2) Cambias valores
+            //docPrincipal.Fecha_Envio_SAP__c = Datetime.valueOf('2025-09-10 20:45:00');
+            docPrincipal.Listo_para_SAP__c  = 1;
+            
+            // 3) Update
+            update docPrincipal;	
+        Test.startTest();
+        NAV_SAPWS.processIntegration(iAcreditaciones);
+		NAV_SAPWS.xmlTestData();
+         NAV_SAPWS.xmlTestOutput();
+        Test.stopTest();
+    } 
+
     @IsTest
     private static void testSAPAnulacion() {
         List<Id> iAcreditaciones = new List<Id>();
         List<Id> iReservas = new List<Id>();
-        List<Acreditacion__c> acreds = [SELECT Id, Reserva__c FROM Acreditacion__c];
+        List<Acreditacion__c> acreds = [SELECT Id, Reserva__c FROM Acreditacion__c Limit 1];
 		Id ultimaAcreditacion = null;
         for(Acreditacion__c ac : acreds){
             iAcreditaciones.add(ac.Id);
@@ -1043,58 +1023,9 @@ public class NAV_SAPWSTest {
 		}
 		update reservs;
 		
-        Test.startTest();
+       
 		Caja__c caja = [SELECT Id FROM Caja__c LIMIT 1];
-		
-											  
-							 
-																																					 
-					   
-			   
-												  
-																																															
-																																														  
-																																																			 
-																																																		  
-																																																		 
-																																																  
-																																															   
-																																															  
-																																															   
-																																															 
-																																																	
-																																															   
-																																																
-										  
-												
-					 
-									  
-															   
-						   
-					  
-									 
-												   
-									  
-									 
-														  
-								 
-																																																																					 
-	
-				   
-
-																	 
-											   
-													  
-												  
-															 
-												
-													 
-	
-						  
-
-																	  
-						  
-
+        
 		Id idDocumentoPrincipal = [SELECT Id 
 								   FROM Documento__c 
 								   WHERE RecordTypeId =: Schema.SObjectType.Documento__c.getRecordTypeInfosByName().get('Boleta').getRecordTypeId() 
@@ -1140,7 +1071,7 @@ public class NAV_SAPWSTest {
 		  Descuento__c = 0                   // % Descuento
 		);
 		insert detalleDocumento;
-
+ 		Test.startTest();
         NAV_SAPAnulacionWS.processIntegrationAnulada(iAcreditaciones);
         Test.stopTest();
     }
@@ -1148,7 +1079,7 @@ public class NAV_SAPWSTest {
     private static void testSAPAnulacion2() {
         List<Id> iAcreditaciones = new List<Id>();
         List<Id> iReservas = new List<Id>();
-        List<Acreditacion__c> acreds = [SELECT Id, Reserva__c FROM Acreditacion__c];
+        List<Acreditacion__c> acreds = [SELECT Id, Reserva__c FROM Acreditacion__c  Limit 1 ];
 		Id ultimaAcreditacion = null;
         for(Acreditacion__c ac : acreds){
             iAcreditaciones.add(ac.Id);
@@ -1161,7 +1092,7 @@ public class NAV_SAPWSTest {
 		}
 		update reservs;
 		
-        Test.startTest();
+        
 		Caja__c caja = [SELECT Id FROM Caja__c LIMIT 1];
 
 		Id idDocumentoPrincipal2 = [SELECT Id 
@@ -1209,50 +1140,80 @@ public class NAV_SAPWSTest {
 		  Descuento__c = 0                   // % Descuento
 		);
 		insert detalleDocumento2;
-
+		Test.startTest();
         NAV_SAPAnulacionWS.processIntegrationAnulada(iAcreditaciones);
-        NAV_SAPCompletoWS.processIntegration(iAcreditaciones);
-        Test.stopTest();
-	 
-	
-   
-			
-									   
-											 
-																						  
-																
-																									  
-																				 
 
-																						  
-										 
-							
-							  
-										   
-
-													   
-																	 
-												
-													
-															  
-
-															  
-										  
-
-											  
-																										
-
-																   
-																							   
-														 
-
-														
-																										   
-																												  
-																														  
-																					   
-																							  
-																								  
+        Test.stopTest();																						  
     }
+        @IsTest
+    private static void testSAPAnulacion3() {
+        List<Id> iAcreditaciones = new List<Id>();
+        List<Id> iReservas = new List<Id>();
+        List<Acreditacion__c> acreds = [SELECT Id, Reserva__c FROM Acreditacion__c  Limit 1];
+		Id ultimaAcreditacion = null;
+        for(Acreditacion__c ac : acreds){
+            iAcreditaciones.add(ac.Id);
+			ultimaAcreditacion = ac.Id;
+			iReservas.add(ac.Reserva__c);
+        }
+		List<Reserva__c> reservs = [SELECT Id, Estado_de_Reserva__c FROM Reserva__c WHERE Id IN: iReservas];
+		for(Reserva__c rv : reservs){
+			rv.Estado_de_Reserva__c = 'Anulada';
+		}
+		update reservs;
+		
+        
+		Caja__c caja = [SELECT Id FROM Caja__c LIMIT 1];
+
+		Id idDocumentoPrincipal2 = [SELECT Id 
+								   FROM Documento__c 
+								   WHERE RecordTypeId =: Schema.SObjectType.Documento__c.getRecordTypeInfosByName().get('Documento Venta (No Tributario)').getRecordTypeId() 
+								   LIMIT 1].Id;
+
+		Documento__c documento2 = new Documento__c(
+		  Acreditacion__c = ultimaAcreditacion,                                                                                                                                         // Reserva
+		  Office_Id__c = '1',                                                                                                                                                       // Office Id
+		  Fecha_Vencimiento__c = Date.valueOf('2021-10-01'),                                                                                                                                // Fecha de Vencimiento
+		  Fecha_Emision__c = Date.valueOf('2021-10-01'),                                                                                                                                    // Fecha de Emisión
+		  Declarar_Documento_a_SII__c = false,                                                                                                                                      // Declarar Documento a SII
+		  RUT_Cliente__c = '8955620-1',                                                                                                                                                   // RUT Cliente
+		  Ciudad_Cliente__c = 'Desierto',                                                                                                                                           // Ciudad Cliente
+		  Razon_Social__c = 'Acme',                                                                                                                                                 // Razón Social
+		  Comuna_Cliente__c = 'Comuna',                                                                                                                                             // Comuna Cliente
+		  Giro_Cliente__c = 'Venta de instrumentos fallidos para cazar al correcaminos',                                                                                            // Giro Cliente
+		  Direccion_Cliente__c = 'Dirección',                                                                                                                                       // Dirección Cliente
+		  Correo_Cliente__c = 'rlopez@nectia.com',                                                                                                                                  // Correo Cliente
+		  Persona_Natural__c = true,                                                                                                                                                // Persona Natural
+		  Enviar_Documento_a_Cliente__c = false,
+		  Fecha_Zarpe__c = Date.valueOf('2021-10-01'),
+		  Nave__c = 'Nave',
+		  Folio_referencia__c = '123456789',
+		  Fecha_Documento_Referencia__c = Date.valueOf('2021-10-01'),
+		  Referencia__c = 'Test',
+		  Caja__c = caja.Id,
+		  Condicion_de_Venta__c = 'Al_Dia',
+		  Documento_principal__c = idDocumentoPrincipal2,
+		  Motivo_Devolucion__c = 'No viaja',
+		  Tipo_de_Nota_de_Credito__c = '1',
+		  Tipo_de_Devolucion__c = 'Forma de Pago Nueva Venta',
+		  Tipo_de_Documento__c = '17',
+		  RecordTypeId = Schema.SObjectType.Documento__c.getRecordTypeInfosByName().get('Anulación Venta (No Tributario)').getRecordTypeId()                                                                                                                                 // Enviar Documento a Cliente
+		);
+		insert documento2;
+
+		Detalle_Documentos__c detalleDocumento2 = new Detalle_Documentos__c(
+		  Documento__c = documento2.Id,		 // Documento
+		  Descripcion__c = 'Test',           // Descripción
+		  Cantidad__c = 1,                   // Cantidad
+		  Valor_Unitario_Neto__c = 1.000,    // Valor Unitario Neto
+		  Tax_Id__c = '[1,2]',               // Tax Id
+		  Descuento__c = 0                   // % Descuento
+		);
+		insert detalleDocumento2;
+		Test.startTest();
+
+        NAV_SAPCompletoWS.processIntegration(iAcreditaciones);
+        Test.stopTest();																						  
+    } 
 
 }

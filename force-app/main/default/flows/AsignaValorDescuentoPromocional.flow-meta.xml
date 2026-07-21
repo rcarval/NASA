@@ -3,7 +3,29 @@
     <apiVersion>65.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
-        <name>TieneValor</name>
+        <name>Descuento_en</name>
+        <label>Descuento en %?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Pesos_updateValorDescuento</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Resultado predeterminado</defaultConnectorLabel>
+        <rules>
+            <name>tipoDescuento</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Codigo_Promocional__r.Valor_Descuento__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+            </conditions>
+            <connector>
+                <targetReference>updateValorDescuento</targetReference>
+            </connector>
+            <label>tipoDescuento</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>TieneValo</name>
         <label>TieneValor?</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -13,13 +35,41 @@
         <defaultConnectorLabel>Resultado predeterminado</defaultConnectorLabel>
         <rules>
             <name>ConsultaValor</name>
-            <conditionLogic>or</conditionLogic>
+            <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.Codigo_Promocional__c</leftValueReference>
                 <operator>NotEqualTo</operator>
             </conditions>
+            <conditions>
+                <leftValueReference>$Record.Porcentaje_descuento_carga__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Porcentaje_descuento_pasajeros__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Porcentaje_descuento_tasas_e_d__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Porcentaje_descuento_vehiculos_ML__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
             <connector>
-                <targetReference>updateValorDescuento</targetReference>
+                <targetReference>Descuento_en</targetReference>
             </connector>
             <label>ConsultaValor</label>
         </rules>
@@ -47,6 +97,43 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordUpdates>
+        <name>Pesos_updateValorDescuento</name>
+        <label>Pesos updateValorDescuento</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Estado_aprobacion_descuentos__c</field>
+            <value>
+                <stringValue>Aprobado</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Porcentaje_descuento_carga__c</field>
+            <value>
+                <elementReference>$Record.monto_en_pesos_a_porcentaje__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Porcentaje_descuento_pasajeros__c</field>
+            <value>
+                <elementReference>$Record.monto_en_pesos_a_porcentaje__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Porcentaje_descuento_tasas_e_d__c</field>
+            <value>
+                <elementReference>$Record.monto_en_pesos_a_porcentaje__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Porcentaje_descuento_vehiculos_ML__c</field>
+            <value>
+                <elementReference>$Record.monto_en_pesos_a_porcentaje__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
         <name>QuitarDescuento</name>
         <label>QuitarDescuento</label>
         <locationX>0</locationX>
@@ -56,18 +143,27 @@
         </inputAssignments>
         <inputAssignments>
             <field>Porcentaje_descuento_carga__c</field>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Porcentaje_descuento_general__c</field>
+            <value>
+                <numberValue>0.0</numberValue>
+            </value>
         </inputAssignments>
         <inputAssignments>
             <field>Porcentaje_descuento_pasajeros__c</field>
+            <value>
+                <numberValue>0.0</numberValue>
+            </value>
         </inputAssignments>
         <inputAssignments>
             <field>Porcentaje_descuento_tasas_e_d__c</field>
+            <value>
+                <numberValue>0.0</numberValue>
+            </value>
         </inputAssignments>
         <inputAssignments>
             <field>Porcentaje_descuento_vehiculos_ML__c</field>
+            <value>
+                <numberValue>0.0</numberValue>
+            </value>
         </inputAssignments>
         <inputReference>$Record</inputReference>
     </recordUpdates>
@@ -84,12 +180,6 @@
         </inputAssignments>
         <inputAssignments>
             <field>Porcentaje_descuento_carga__c</field>
-            <value>
-                <elementReference>$Record.Codigo_Promocional__r.Valor_Descuento__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Porcentaje_descuento_general__c</field>
             <value>
                 <elementReference>$Record.Codigo_Promocional__r.Valor_Descuento__c</elementReference>
             </value>
@@ -118,7 +208,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>TieneValor</targetReference>
+            <targetReference>TieneValo</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>

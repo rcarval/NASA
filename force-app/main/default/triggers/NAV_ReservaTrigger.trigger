@@ -1,4 +1,4 @@
-trigger ReservaTrigger on Reserva__c (after insert, after update, after delete) {
+trigger NAV_ReservaTrigger on Reserva__c (after insert, after update, after delete) {
 
     // Manejador de lógica central
     if(Trigger.isAfter){
@@ -7,8 +7,9 @@ trigger ReservaTrigger on Reserva__c (after insert, after update, after delete) 
         }
         else if(Trigger.isUpdate){
             NAV_ReservaTriggerHandler.actualizarCantidadCodigos(Trigger.new, Trigger.old);
+             NAV_ReservaTriggerHandler.ajustarUsosPorAnulacion(Trigger.new, Trigger.old);
         }
-        else if(Trigger.isDelete){
+        else if(Trigger.isDelete){ 
             NAV_ReservaTriggerHandler.actualizarCantidadCodigos(null, Trigger.old);
         }
     }

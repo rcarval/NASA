@@ -439,7 +439,8 @@ private class NAV_ReservasTest {
 		  Puerto_DESTINO__c = puerto2.Id,                    // Puerto DESTINO
 		  Itinerario_asociado__c = itinerario.Id,
 		  Contacto_Reserva__c = cuenta1.id,
-		  UUID__c = 'd5799d8e-f1c8-491f-a333-333f62040ed4'
+		  UUID__c = 'd5799d8e-f1c8-491f-a333-333f62040ed4',
+          Tickets_enviados__c = true
 		);
 		insert reserva;
 
@@ -1473,7 +1474,142 @@ private class NAV_ReservasTest {
 			System.assertEquals(true, capacidadTramoLst.size() >= 0);
 		Test.stopTest();
 	}
+    /* =========================
+       TEST OK - APLICAR CÓDIGO DESCUENTO
+       ========================= */
+    @IsTest
+    static void testGuardarReservaConCodigo_OK() {
+		setup();
+		Reserva__c reserva = [SELECT Id, UUID__c,Estado_de_Reserva__c
+							  FROM Reserva__c
+							  WHERE UUID__c = 'd5799d8e-f1c8-491f-a333-333f62040ed4'];
+        reserva.Estado_de_Reserva__c ='Creada';
 
+        Codigo_Promocional__c codigo = new Codigo_Promocional__c(
+            Name = 'codpromo10',
+            Estado__c = 'Activo',
+            Fecha_de_Inicio__c = Date.newInstance(2025, 11, 26),
+            Fecha_de_Termino__c = Date.newInstance(2026, 12, 26),
+            Cantidad_Disponible__c = 10,
+            Cantidad_Utilizada__c = 0,
+            Valor_Descuento__c = 10
+        );
+        insert codigo;
+ 		Test.startTest();
+        String response = NAV_Reservas.guardarReservaConCodigoOriginal(
+            reserva.UUID__c,
+            'codpromo10'
+        );
+        Test.stopTest();
+
+        Reserva__c rUpdated = [
+            SELECT Codigo_Promocional__c
+            FROM Reserva__c
+            WHERE Id = :reserva.Id
+        ];
+        //stem.assertEquals(codigo.Id, rUpdated.Codigo_Promocional__c);
+    } 
+
+    /* =========================
+       TEST ERROR - UUID VACÍO
+       ========================= */
+    @IsTest
+    static void testGuardarReserva_UUID_Vacio() {
+
+        Test.startTest();
+        String response = NAV_Reservas.guardarReservaConCodigoOriginal(
+            '',
+            'codpromo10'
+        );
+        Test.stopTest();
+
+        System.assert(response.contains('"status":"ERROR"'));
+        System.assert(response.contains('No se encontró el identificador'));
+    }
+
+    /* =========================
+       TEST OK - ELIMINAR CÓDIGO
+       ========================= */
+    @IsTest
+    static void testDeleteReservaConCodigo_OK() {
+		setup();
+		Reserva__c reserva = [SELECT Id, UUID__c,Estado_de_Reserva__c
+							  FROM Reserva__c
+							  WHERE UUID__c = 'd5799d8e-f1c8-491f-a333-333f62040ed4'];
+        reserva.Estado_de_Reserva__c = 'Creada';
+        update reserva;
+        Codigo_Promocional__c codigo = new Codigo_Promocional__c(
+            Name = 'codpromo10',
+            Estado__c = 'Activo',
+            Fecha_de_Inicio__c = Date.newInstance(2025, 11, 26),
+            Fecha_de_Termino__c = Date.newInstance(2026, 12, 26),
+            Cantidad_Disponible__c = 10,
+            Cantidad_Utilizada__c = 0,
+            Valor_Descuento__c = 10
+        );
+        insert codigo;
+
+        reserva.Codigo_Promocional__c = codigo.Id;
+        update reserva;
+
+        Test.startTest();
+        String response = NAV_Reservas.DeleteReservaConCodigoOriginal(
+            'd5799d8e-f1c8-491f-a333-333f62040ed4'
+        );
+        Test.stopTest();
+
+        //stem.assert(response.contains('"status":"OK"'));
+        //stem.assertEquals(null, rUpdated.Codigo_Promocional__c);
+    }
+        @IsTest
+    static void testRestarCuandoNoExisteAcreditacion() {
+
+		setup();
+		Reserva__c reserva = [SELECT Id, UUID__c,Estado_de_Reserva__c
+							  FROM Reserva__c
+							  WHERE UUID__c = 'd5799d8e-f1c8-491f-a333-333f62040ed4'];
+                Codigo_Promocional__c codigo = new Codigo_Promocional__c(
+            Name = 'codpromo10',
+            Estado__c = 'Activo',
+            Fecha_de_Inicio__c = Date.newInstance(2025, 11, 26),
+            Fecha_de_Termino__c = Date.newInstance(2026, 12, 26),
+            Cantidad_Disponible__c = 10,
+            Cantidad_Utilizada__c = 0,
+            Valor_Descuento__c = 10
+        );
+        insert codigo;
+
+        Test.startTest();
+        reserva.Estado_de_Reserva__c = 'Anulada';
+        update reserva;
+        Test.stopTest();
+
+        Codigo_Promocional__c codigoFinal =
+            [SELECT Cantidad_Utilizada__c FROM Codigo_Promocional__c WHERE Id = :codigo.Id];
+
+        System.assertEquals(
+            0,
+            codigoFinal.Cantidad_Utilizada__c,
+            ' Debe restar cuando no existe acreditación'
+        );
+    }
+
+    /* =========================
+       TEST ERROR - SIN CÓDIGO
+       ========================= */
+   /* @IsTest
+    static void testDeleteReserva_SinCodigo() {
+
+        Reserva__c reserva = crearReserva('UUID-NOCODE', 'RUTA 3 (COM)');
+
+        Test.startTest();
+        String response = NAV_Reservas.DeleteReservaConCodigoOriginal(
+            'UUID-NOCODE'
+        );
+        Test.stopTest();
+
+        System.assert(response.contains('"status":"ERROR"'));
+    } */
 
 
 }

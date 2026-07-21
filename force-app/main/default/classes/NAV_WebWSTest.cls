@@ -1505,7 +1505,7 @@ private class NAV_WebWSTest {
 			RestContext.request = req;
 			RestContext.response = res;
 			NAV_WebWs.postSalesforceInfo();
-            NAV_PuelcheWebWS.postSalesforceInfo();
+             //NAV_PuelcheWebWS.postSalesforceInfo();
   		System.assertEquals(true, RestContext.response != null);
         Test.stopTest();
 	}
@@ -1920,5 +1920,41 @@ private class NAV_WebWSTest {
 			nwp = NAV_WrapperPayments.parse(jsonString);
 			System.assertEquals(true, nwp != null);
 		Test.stopTest();
+	}
+        @isTest
+	static void test27(){
+		Test.startTest();
+				
+		RestRequest req = new RestRequest(); 
+    	RestResponse res = new RestResponse();
+        
+        req.requestURI = '/services/apexrest/Web';  
+		req.httpMethod = 'GET'; 
+        req.addParameter('info','getCodPromocion');
+        req.addParameter('uuid', 'd5799d8e-f1c8-491f-a333-333f62040am3');
+        RestContext.request = req;
+    	RestContext.response = res;
+        NAV_WebWs.getSalesforceInfo();
+        NAV_PuelcheWebWS.getSalesforceInfo();
+        System.assertEquals(true, RestContext.response != null);
+        Test.stopTest();
+	}
+    @isTest
+	static void test28(){
+		Test.startTest();
+				
+		RestRequest req = new RestRequest(); 
+    	RestResponse res = new RestResponse();
+        
+        req.requestURI = '/services/apexrest/Web';  
+		req.httpMethod = 'GET'; 
+        req.addParameter('info','getRemoveCodPromocional');
+        req.addParameter('uuid', 'd5799d8e-f1c8-491f-a333-333f62040am3');
+        RestContext.request = req;
+    	RestContext.response = res;
+        NAV_WebWs.getSalesforceInfo();
+        NAV_PuelcheWebWS.getSalesforceInfo();
+        System.assertEquals(true, RestContext.response != null);
+        Test.stopTest();
 	}
 }

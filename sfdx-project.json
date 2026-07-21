@@ -5,7 +5,7 @@
       "default": true
     }
   ],
-  "name": "NASA-DEV",
+  "name": "NASA-DEVOPS-DEV2",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "65.0"

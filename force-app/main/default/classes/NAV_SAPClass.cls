@@ -4,7 +4,7 @@ public class NAV_SAPClass {
     public List<acreditacionItem> acreditacion{ get; set; }
 
     public class cabecera{
-        public String sociedad { get; set; } //1540
+        public String sociedad { get; set; } //15400
         public String reserva { get; set; } //123456
         public String fechaReserva { get; set; } //01042022
         public String caja { get; set; } //707
@@ -98,6 +98,7 @@ public class NAV_SAPClass {
         public String montoPago { get; set; } //30000
         public String CLAVE_REF1{ get; set; }
         public String CLAVE_REF2{ get; set; }
+        public String CLAVE_REF3{ get; set; }
         public String tipoFormPago{ get; set; }
         public acreditacionItem(){
             formaPago = '';
@@ -105,6 +106,7 @@ public class NAV_SAPClass {
             montoPago = '';
             CLAVE_REF1 = '';
             CLAVE_REF2 = '';
+            CLAVE_REF3 = '';
             tipoFormPago = '';
         }
     }

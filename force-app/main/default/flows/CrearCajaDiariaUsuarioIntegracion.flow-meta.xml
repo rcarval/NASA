@@ -2,6 +2,29 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>55.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <description>Verifica si ya existe una caja abierta para evitar duplicados en caso de reintentos</description>
+        <name>VerificarSiCajaExiste</name>
+        <label>¿Caja Ya Existe?</label>
+        <locationX>176</locationX>
+        <locationY>396</locationY>
+        <defaultConnector>
+            <targetReference>CrearCajaUsuarioIntegracion</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No existe - Crear caja</defaultConnectorLabel>
+        <rules>
+            <name>CajaYaExiste</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>BuscarCajaExistente</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Ya existe - No crear</label>
+        </rules>
+    </decisions>
     <description>Se crea una caja diariamente a las 00:00 para el usuario integración</description>
     <environments>Default</environments>
     <formulas>
@@ -38,29 +61,6 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <decisions>
-        <description>Verifica si ya existe una caja abierta para evitar duplicados en caso de reintentos</description>
-        <name>VerificarSiCajaExiste</name>
-        <label>¿Caja Ya Existe?</label>
-        <locationX>176</locationX>
-        <locationY>396</locationY>
-        <defaultConnector>
-            <targetReference>CrearCajaUsuarioIntegracion</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No existe - Crear caja</defaultConnectorLabel>
-        <rules>
-            <name>CajaYaExiste</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>BuscarCajaExistente</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <label>Ya existe - No crear</label>
-        </rules>
-    </decisions>
     <recordCreates>
         <description>Se le crea la caja al usuario</description>
         <name>CrearCajaUsuarioIntegracion</name>

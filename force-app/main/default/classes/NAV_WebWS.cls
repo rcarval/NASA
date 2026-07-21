@@ -828,6 +828,148 @@ AND Numero__c =: dResB.Numero__c
                 }
                 res.responseBody = Blob.valueOf(jsonText);
             }
+
+            // =========================================================
+            // 2) Confirmar selección de detalles y pasar a "Creada"
+            // =========================================================
+           /* when 'addSolicitudItemsNC' {
+                Map<String, Object> data;
+                try {
+                    // La forma correcta y robusta de procesar un cuerpo JSON es directamente desde el Blob.
+                    if (req.requestBody == null) {
+                        jsonText = '{"estado":"error","mensaje":"El cuerpo de la solicitud está vacío"}';
+                        res.statusCode = 400;
+                        res.responseBody = Blob.valueOf(jsonText);
+                        return;
+                    }
+                    String body = req.requestBody.toString();
+                    data = (Map<String, Object>) JSON.deserializeUntyped(body);
+                } catch (Exception e) {
+                    jsonText = '{"estado":"error","mensaje":"JSON mal formado en el cuerpo de la solicitud: ' + e.getMessage() + '"}';
+                    res.statusCode = 400;
+                    res.responseBody = Blob.valueOf(jsonText);
+                    return;
+                }
+                
+                String solicitudIdStr = (String)data.get('solicitudId');
+                System.debug('solicitudIdStr '+ solicitudIdStr);
+                String detalleIdsCsv = (String)data.get('detalleIds');
+                System.debug('detalleIdsCsv '+ detalleIdsCsv);
+                String fono = (String)data.get('sol_Fono');
+                System.debug('fono '+ fono);
+                String correo = (String)data.get('sol_correo');
+                System.debug('correo '+ correo);
+                String motivoSolicitud = (String)data.get('sol_motivo');
+                System.debug('motivoSolicitud '+ motivoSolicitud);
+                String banco = (String)data.get('sol_banco');
+                System.debug('banco '+ banco);
+                String tipoCuenta = (String)data.get('sol_tipoBanco');
+                System.debug('tipoCuenta '+ tipoCuenta);
+                String nCuentaBancaria = (String)data.get('sol_nCuenta');
+                System.debug('nCuentaBancaria '+ nCuentaBancaria);
+                String certificadoBancario = (String)data.get('sol_certificado');
+                System.debug('certificadoBancario '+ certificadoBancario);
+                if (String.isBlank(solicitudIdStr) || String.isBlank(detalleIdsCsv)) {
+                    jsonText = '{"estado":"error","mensaje":"Debe informar solicitudId y detalleIds"}';
+                    res.statusCode = 400;
+                    res.responseBody = Blob.valueOf(jsonText);
+                    return;
+                }
+
+                Id solicitudId = (Id)solicitudIdStr;
+
+                // Parse CSV -> Set<Id>
+                Set<Id> detalleIds = new Set<Id>();
+                for (String x : detalleIdsCsv.split(',')) {
+                    String clean = x != null ? x.trim() : null;
+                    if (!String.isBlank(clean)) {
+                        detalleIds.add((Id)clean);
+                    }
+                }
+                System.debug('detalleIds '+ detalleIds);
+                if (detalleIds.isEmpty()) {
+                    jsonText = '{"estado":"error","mensaje":"detalleIds no contiene IDs válidos"}';
+                    res.statusCode = 400;
+                    res.responseBody = Blob.valueOf(jsonText);
+                    return;
+                }
+
+                Solicitud_Nota_de_Credito__c sol = [
+                    SELECT Id, Name, Estado__c, Reserva__c
+                    FROM Solicitud_Nota_de_Credito__c
+                    WHERE Id = :solicitudId
+                    LIMIT 1
+                ];
+                System.debug('Solicitud_Nota_de_Credito__c '+ sol);
+                if (sol.Reserva__c == null) {
+                    jsonText = '{"estado":"error","mensaje":"La solicitud no tiene reserva asociada"}';
+                    res.statusCode = 400;
+                    res.responseBody = Blob.valueOf(jsonText);
+                    return;
+                }
+
+                List<Detalle_Reserva__c> detalles = [
+                    SELECT Id, Reserva__c, Solicitud_Nota_de_Credito__c
+                    FROM Detalle_Reserva__c
+                    WHERE Id IN :detalleIds
+                ];
+                System.debug('Detalle_Reserva__c '+ detalles);
+                if (detalles.isEmpty()) {
+                    jsonText = '{"estado":"error","mensaje":"No se encontraron detalles con los IDs enviados"}';
+                    res.statusCode = 404;
+                    res.responseBody = Blob.valueOf(jsonText);
+                    return;
+                }
+
+                // Validar pertenencia a reserva y disponibilidad
+                for (Detalle_Reserva__c d : detalles) {
+                    if (d.Reserva__c != sol.Reserva__c) {
+                        jsonText = '{"estado":"error","mensaje":"Uno o más detalles no pertenecen a la reserva de la solicitud"}';
+                        res.statusCode = 400;
+                        res.responseBody = Blob.valueOf(jsonText);
+                        return;
+                    }
+                    if (d.Solicitud_Nota_de_Credito__c != null && d.Solicitud_Nota_de_Credito__c != sol.Id) {
+                        jsonText = '{"estado":"error","mensaje":"Uno o más detalles ya están asociados a otra solicitud"}';
+                        res.statusCode = 409;
+                        res.responseBody = Blob.valueOf(jsonText);
+                        return;
+                    }
+                }
+
+                // Asignar detalles
+                for (Detalle_Reserva__c d : detalles) {
+                    d.Solicitud_Nota_de_Credito__c = sol.Id;
+                }
+                update detalles;
+                System.debug('Linea 945 Detalle_Reserva__c Update '+ detalles);
+                // Cambiar estado solicitud a Creada
+                sol.Telefono__c = fono;
+                sol.Correo_electronico__c = correo;
+                sol.Motivo_de_la_Solicitud__c = motivoSolicitud;
+                sol.Banco__c = banco;
+                sol.Tipo_de_Cuenta__c = tipoCuenta;
+                sol.N_de_Cuenta_Bancaria__c = nCuentaBancaria;
+                sol.Certificado_Bancario__c = certificadoBancario;
+                sol.LinkDocumento__c = URL.getSalesforceBaseUrl().toExternalForm()+'/apex/NAV_CertificadoBancoPDFVer?idDT='+sol.Id;
+				//sol.LinkDocumento__c = URL.getSalesforceBaseUrl().toExternalForm()+'/apex/NAV_CertificadoBancoPDFVer?idDT='+dT.Id;
+                // Si no tienes Borrador en picklist, cambia por 'Creada'
+                sol.Estado__c = 'Creada';
+                update sol;
+                System.debug('Linea 959 Solicitud_Nota_de_Credito__c Update '+ sol);
+                
+                Map<String, Object> out = new Map<String, Object>();
+                out.put('estado', 'ok');
+                out.put('mensaje', 'Solicitud confirmada correctamente');
+                out.put('solicitudId', sol.Id);
+                out.put('numeroSolicitud', sol.Name);
+                out.put('estadoSolicitud', sol.Estado__c);
+                out.put('itemsAsignados', detalles.size());
+
+                jsonText = JSON.serialize(out);
+                res.statusCode = 200;
+                res.responseBody = Blob.valueOf(jsonText);
+            }*/
             when else{
                 Blob body = req.requestBody;
                 String requestString = body.toString();
@@ -1628,6 +1770,372 @@ capacidades.add(cP);
                     jsonText = '{ "estado": "error", "id": "", "mensaje": "'+ex.getMessage()+'" }';
                 }
                 res.responseBody = Blob.valueOf(jsonText);
+            }/*when 'getConsultarReservasSNC'{
+                String identificador = req.params.get('rut');
+                List<Reserva__c> reservas = [
+                    SELECT Id,
+                    UUID__c,
+                    Codigo_Reserva__c,
+                    Fecha_Hora_de_Viaje__c,
+                    Contacto_Reserva__r.Identificacion__c
+                    FROM Reserva__c
+                    WHERE Contacto_Reserva__r.Identificacion__c = :identificador
+                    AND Estado_de_Reserva__c = 'Acreditada'
+                    AND Fecha_Hora_de_Viaje__c >= :System.now()
+                    AND Empresa_Puelche__c = false
+                ];
+                
+                try {
+                    
+                    // Objeto principal
+                    Map<String, Object> responseOut = new Map<String, Object>();
+                    responseOut.put('estado', 'ok');
+                    responseOut.put('id', identificador);
+                    
+                    // Lista de reservas
+                    List<Object> reservasOut = new List<Object>();
+                    
+                    for (Reserva__c r : reservas) {
+                        
+                        Map<String, Object> reservaMap = new Map<String, Object>();
+                        reservaMap.put('uuid', r.UUID__c);
+                        reservaMap.put('nReserva', r.Codigo_Reserva__c);
+                        reservaMap.put('clienteRUT', r.Contacto_Reserva__r.Identificacion__c);
+                        reservaMap.put('fechaViaje', r.Fecha_Hora_de_Viaje__c);
+                        reservasOut.add(reservaMap);
+                    }
+                    
+                    responseOut.put('reserva', reservasOut);     
+                    jsonText = JSON.serialize(responseOut);
+                    res.statusCode = 200;
+                    res.responseBody = Blob.valueOf(jsonText);
+                    
+                } catch (Exception ex) {
+                    
+                    System.debug('Error');
+                    System.debug('Tipo de excepción: ' + ex.getTypeName());
+                    System.debug('Mensaje: ' + ex.getMessage());
+                    System.debug('Causa: ' + ex.getCause());
+                    System.debug('Línea: ' + ex.getLineNumber());
+                    System.debug('Traza: ' + ex.getStackTraceString());
+                    
+                    Map<String, Object> errorOut = new Map<String, Object>();
+                    errorOut.put('estado', 'error');
+                    errorOut.put('id', '');
+                    errorOut.put('mensaje', ex.getMessage());
+                    
+                    res.statusCode = 500;
+                    res.responseBody = Blob.valueOf(JSON.serialize(errorOut));
+                }
+            }when 'getSolicituNC' {
+                //String uuid = req.params.get('uuid');
+                String cliente = req.params.get('clienteRUT');
+                String cuentaIdStr = ''; 
+
+                // Validaciones de entrada
+                if (String.isBlank(uuid) || String.isBlank(cliente)) {
+                    jsonText = '{"estado":"error","mensaje":"Debe informar Reserva y RUT Cliente"}';
+                    res.statusCode = 400;
+                    res.responseBody = Blob.valueOf(jsonText);
+                    return;
+                }
+
+                // 1) Validar reserva acreditada
+                List<Reserva__c> reservas = [
+                    SELECT Id, Name, UUID__c,  Ruta__c, Total_reserva__c, Estado_de_Reserva__c,
+                           Contacto_Reserva__c, Contacto_Reserva__r.Identificacion__c
+                    FROM Reserva__c
+                    WHERE UUID__c = :uuid
+                      AND Estado_de_Reserva__c = 'Acreditada'
+                      AND Contacto_Reserva__r.Identificacion__c = :cliente
+                    LIMIT 1
+                ];
+                   cuentaIdStr =reservas[0].Contacto_Reserva__c;
+                if (reservas.isEmpty()) {
+                    jsonText = '{"estado":"error","mensaje":"No existe reserva acreditada para el uuid y cliente indicado"}';
+                    res.statusCode = 404;
+                    res.responseBody = Blob.valueOf(jsonText);
+                    return;
+                }
+
+                Reserva__c r = reservas[0];
+
+                // 2) Validar que NO existan solicitudes previas Creada/Aprobada
+                Integer countPrevias = [
+                    SELECT COUNT()
+                    FROM Solicitud_Nota_de_Credito__c
+                    WHERE Reserva__c = :r.Id
+                      AND Estado__c IN ('Creada','Aprobada')
+                ];
+
+                if (countPrevias > 0) {
+                    jsonText = '{"estado":"error","mensaje":"La reserva ya tiene una solicitud en proceso"}';
+                    res.statusCode = 409;
+                    res.responseBody = Blob.valueOf(jsonText);
+                    return;
+                }
+
+                // 3) Crear solicitud (recomendado Borrador hasta seleccionar ítems)
+                Solicitud_Nota_de_Credito__c sol = new Solicitud_Nota_de_Credito__c();
+                sol.Reserva__c = r.Id;
+                sol.Cuenta__c = cuentaIdStr;
+                sol.Estado__c = 'Nuevo';
+                insert sol;
+                // 4) Traer detalles de la reserva
+                List<Detalle_Reserva__c> dets = [
+                    SELECT Id, Name, Reserva__c, Solicitud_Nota_de_Credito__c
+                    FROM Detalle_Reserva__c
+                    WHERE Reserva__c = :r.Id
+                    ORDER BY CreatedDate ASC
+                ];
+
+                // 5) Respuesta JSON
+                Map<String, Object> out = new Map<String, Object>();
+                out.put('estado', 'ok');
+                out.put('mensaje', 'Solicitud creada. Seleccione los ítems a incluir.');
+                out.put('solicitudId', sol.Id);
+                out.put('solicitudName', sol.Name);
+
+                Map<String, Object> reservaOut = new Map<String, Object>();
+                reservaOut.put('id', r.Id);
+                reservaOut.put('uuid', r.UUID__c);
+                reservaOut.put('estado', r.Estado_de_Reserva__c);
+                reservaOut.put('total', r.Total_reserva__c);
+                out.put('reserva', reservaOut);
+
+                List<Object> detallesOut = new List<Object>();
+                for (Detalle_Reserva__c d : dets) {
+                    Map<String, Object> item = new Map<String, Object>();
+                    item.put('id', d.Id);
+                    item.put('name', d.Name);
+                    item.put('reservaId', d.Reserva__c);
+                    item.put('seleccionado', false);
+                    detallesOut.add(item);
+                }
+                out.put('detalles', detallesOut);
+
+                jsonText = JSON.serialize(out);
+                res.statusCode = 200;
+                res.responseBody = Blob.valueOf(jsonText);
+            }when 'getConsultarSolicitudNC' {
+                try {
+                    
+                    String numeroSolicitud = req.params.get('cons_numeroSolicitud');
+                    String rutCliente = req.params.get('cons_rutCliente');
+                    
+                    if (String.isBlank(numeroSolicitud) || String.isBlank(rutCliente)) {
+                        res.statusCode = 400;
+                        res.responseBody = Blob.valueOf(
+                            '{"estado":"error","mensaje":"Debe informar numeroSolicitud y rut"}'
+                        );
+                        return;
+                    }
+                              
+                    List<Solicitud_Nota_de_Credito__c> solicitudes = [
+                        SELECT Id,
+                        Name,
+                        Estado__c,
+                        CreatedDate, Cuenta__r.Identificacion__c
+                        FROM Solicitud_Nota_de_Credito__c
+                        WHERE Name = :numeroSolicitud
+                        AND Cuenta__r.Identificacion__c = :rutCliente
+                        LIMIT 1
+                    ];
+                    
+                    if (solicitudes.isEmpty()) {
+                        res.statusCode = 404;
+                        res.responseBody = Blob.valueOf(
+                            '{"estado":"error","mensaje":"Solicitud no encontrada o RUT no coincide"}'
+                        );
+                        return;
+                    }
+                    
+                    Solicitud_Nota_de_Credito__c sol = solicitudes[0];
+                    
+                    Map<String, Object> responseMap = new Map<String, Object>();
+                    responseMap.put('estado', 'ok');
+                    responseMap.put('numeroSolicitud', sol.Name);
+                    responseMap.put('estadoSolicitud', sol.Estado__c);
+                    responseMap.put('fechaCreacion', sol.CreatedDate);
+                    
+                    res.statusCode = 200;
+                    res.responseBody = Blob.valueOf(JSON.serialize(responseMap));
+                    
+                } catch (Exception e) {
+                    
+                    res.statusCode = 500;
+                    res.responseBody = Blob.valueOf(
+                        '{"estado":"error","mensaje":"Error interno"}'
+                    );
+                }
+            }*/when 'getCodPromocion'{
+                        String codigo = '';
+                        String mensaje = '';
+                        String estado = '';
+                        Decimal valorTotal = 0;
+                        Decimal porcentajeDescuento = 0;
+
+                        try {
+                            codigo  = req.params.get('codigopromocional');
+                            system.debug('Line 1598 codigopromocional :' +codigo ); 
+                            system.debug('Line 1599 uuid :' + uuid ); 
+                            List<Codigo_Promocional__c> lista = [
+                                SELECT Id, Name, Cantidad_Disponible__c, Cantidad_Utilizada__c, Estado__c,
+                                    Fecha_de_Inicio__c, Fecha_de_Termino__c,Ruta__c,
+                                    Valor_Descuento__c,
+                                    Ruta__r.Name
+                                FROM Codigo_Promocional__c
+                                WHERE Name = :codigo
+                                LIMIT 1
+                            ];
+                                List<Reserva__c> Reserva = [
+                                    SELECT Id, Codigo_Promocional__c, Ruta__c,Total_reserva__c,Estado_de_Reserva__c
+                                    FROM Reserva__c
+                                    WHERE uuid__c = :uuid
+                                    LIMIT 1
+                                ];
+                   
+                            if (lista.isEmpty()) {
+                                estado = 'error';
+                                mensaje = '⚠️ El código no es válido. Por favor, revisa que esté bien escrito o verifica las condiciones de la promoción.';
+                                if (!Reserva.isEmpty()) {
+                                    valorTotal = Reserva[0].Total_reserva__c;
+                                }
+                            } else {
+                                Codigo_Promocional__c cp = lista[0];
+                                Date hoy = Date.today();
+                                // Obtener Reserva
+                                Reserva__c s;
+                                if (!Reserva.isEmpty()) {
+                                    s = Reserva[0];
+
+                                        // VALIDACIONES
+                                    if (cp.Fecha_de_Inicio__c != null && hoy < cp.Fecha_de_Inicio__c) {
+                                        estado = 'error';
+                                        mensaje = '⏳El código todavía no está activo. Intenta nuevamente en la fecha indicada.';
+                                        valorTotal = s.Total_reserva__c;
+                                    }
+                                    else if (cp.Fecha_de_Termino__c != null && hoy > cp.Fecha_de_Termino__c) {
+                                        estado = 'error';
+                                        mensaje = '⏰ El código ha caducado. La promoción ya no se encuentra disponible.';
+                                        valorTotal = s.Total_reserva__c;
+                                    }
+                                    else if (cp.Cantidad_Disponible__c != null &&
+                                            cp.Cantidad_Utilizada__c >= cp.Cantidad_Disponible__c) {
+                                        estado = 'error';
+                                        mensaje = '🚫 Este código ya ha sido utilizado y no puede volver a aplicarse.';
+                                        valorTotal = s.Total_reserva__c;
+                                    }
+                                    else if (cp.Estado__c != 'Activo') {
+                                        estado = 'error';
+                                        mensaje = '🚫 El código ingresado no aplica para tu compra.';
+                                        valorTotal = s.Total_reserva__c;
+                                    }
+                                    else if (cp.Ruta__r != null && cp.Ruta__r.Name != null) {
+                                        if (s == null || s.Ruta__c == null || cp.Ruta__r.Name != s.Ruta__c) {
+                                            estado = 'error';
+                                            mensaje = '🚫 El código ingresado no aplica para tu compra. Revisa las condiciones de la promoción.';
+                                            valorTotal = s.Total_reserva__c;
+                                        }
+                                    }
+                                    else {
+                                        // Código válido
+                                        estado = 'ok';
+                                        mensaje = '🎉¡Descuento aplicado con éxito! Tu código ha sido validado y el precio final ya refleja el beneficio.';
+
+                                        // Actualizar Servicio
+                                        if (s != null) {
+                                            s.Codigo_Promocional__c = cp.Id;
+                                            update s;
+                                        }
+                                        Reserva__c ReservaUpdate = [
+                                        SELECT Id, Codigo_Promocional__c, Ruta__c,Total_reserva__c
+                                        FROM Reserva__c
+                                        WHERE uuid__c = :uuid
+                                        LIMIT 1];
+                                        porcentajeDescuento = cp.Valor_Descuento__c;
+                                        valorTotal = ReservaUpdate.Total_reserva__c;
+                                    }
+                                }else{
+                                    estado = 'error';
+                                    mensaje = '🚫El código ingresado no aplica para tu compra. Revisa las condiciones de la promoción.';
+                                    if (!Reserva.isEmpty()) {
+                                        valorTotal = Reserva[0].Total_reserva__c;
+                                    }
+                                }
+                                
+                            }
+
+                            jsonText ='{ "estado": "'+estado+'",';
+                            jsonText += '"mensaje":"'+mensaje+'",';
+                            jsonText += '"codigopromocional":"'+codigo+'",';
+                            jsonText += '"valortotal":"'+String.valueOf(valorTotal)+'",';
+                            jsonText += '"porcentajeDescuento":"'+String.valueOf(porcentajeDescuento)+'"';
+                            jsonText += '}';
+
+                            res.responseBody = Blob.valueOf(jsonText);
+                        }
+                        catch (Exception ex) {
+                            jsonText = '{ "estado":"error", "mensaje":"❗ Hubo un problema al validar tu código." }';
+                            res.responseBody = Blob.valueOf(jsonText);
+                        }
+            }
+            when 'getRemoveCodPromocional' {
+                    String mensaje = '';
+                    String estado = '';
+                    String codigoEliminado = '';
+                    Decimal valorTotal = 0;
+                    try {
+
+                        String uuidParam = uuid;
+ 
+                        // Buscar reserva por UUID
+                        List<Reserva__c> reservas = [
+                            SELECT Id, Codigo_Promocional__r.Name,Total_reserva__c
+                            FROM Reserva__c
+                            WHERE uuid__c = :uuidParam
+                            LIMIT 1
+                        ];
+
+                        if (reservas.isEmpty()) {
+                            estado = 'error';
+                            mensaje = '⚠️ No se encontró la reserva indicada.';
+                        } else {
+                            Reserva__c s = reservas[0];
+
+                            if (s.Codigo_Promocional__c == null) {
+                                valorTotal   = s.Total_reserva__c;  
+                                estado = 'error';
+                                mensaje = '⚠️ No hay un código promocional aplicado.';
+                            } else {
+                                codigoEliminado = s.Codigo_Promocional__r.Name;
+                                // Quitar código
+                                s.Codigo_Promocional__c = null;
+                                update s;
+                                    Reserva__c reservasUpdate = [
+                                    SELECT Id, Codigo_Promocional__c,Total_reserva__c
+                                    FROM Reserva__c
+                                    WHERE uuid__c = :uuidParam
+                                    LIMIT 1];
+                                valorTotal   = reservasUpdate.Total_reserva__c;  
+                                estado = 'ok';
+                                mensaje = '🗑️ Código promocional eliminado correctamente.';
+                            }
+                        }
+
+                        jsonText ='{ "estado": "'+estado+'",';
+                        jsonText += '"mensaje":"'+mensaje+'",';
+                        jsonText += '"uuid":"'+uuidParam+'",';
+                        jsonText += '"codigopromocional_eliminado":"'+codigoEliminado+'",';
+                        jsonText += '"valortotal":"'+String.valueOf(valorTotal)+'"';
+                        jsonText += '}';
+
+                        res.responseBody = Blob.valueOf(jsonText);
+                    }
+                    catch (Exception ex) {
+                        jsonText = '{ "estado":"error", "mensaje":"❗ Error al eliminar el código." }';
+                        res.responseBody = Blob.valueOf(jsonText);
+                    }
             }when else{
                 res.responseBody = Blob.valueOf('{error:true}');
             }

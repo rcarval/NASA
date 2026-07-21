@@ -1,0 +1,13 @@
+<!--**********************************************************************************
+Desarrollado por: Seidor
+Autor:Christopher Díaz
+Proyecto: NASA Código Promocional
+***********************************************************************************-->
+<apex:page controller="NAV_Reservas" 
+           contentType="application/json; charset=utf-8" 
+           showHeader="false"
+           sidebar="false"
+           standardStylesheets="false"
+           action="{!guardarReservaConCodigoVF}">
+    {!jsonText}
+</apex:page>

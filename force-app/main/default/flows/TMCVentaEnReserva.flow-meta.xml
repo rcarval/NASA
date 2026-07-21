@@ -996,9 +996,9 @@
         <label>Copia 2 de NombreServicioForFolio</label>
         <locationX>1573</locationX>
         <locationY>3494</locationY>
-        <allowBack>false</allowBack>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
+        <allowPause>true</allowPause>
         <connector>
             <targetReference>Copia_1_de_AsignaFolios</targetReference>
         </connector>
@@ -1031,7 +1031,6 @@
                 </width>
             </styleProperties>
         </fields>
-        <nextOrFinishButtonLabel>Siguiente</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
@@ -1218,9 +1217,9 @@
         <label>NombreServicioForFolio</label>
         <locationX>2233</locationX>
         <locationY>3494</locationY>
-        <allowBack>false</allowBack>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
+        <allowPause>true</allowPause>
         <connector>
             <targetReference>Obtener_folios</targetReference>
         </connector>
@@ -1253,7 +1252,6 @@
                 </width>
             </styleProperties>
         </fields>
-        <nextOrFinishButtonLabel>Siguiente</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
@@ -1262,9 +1260,9 @@
         <label>NombreServicioForFolioBus</label>
         <locationX>1837</locationX>
         <locationY>3494</locationY>
-        <allowBack>false</allowBack>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
+        <allowPause>true</allowPause>
         <connector>
             <targetReference>Copia_1_de_Copia_1_de_AsignaFolios</targetReference>
         </connector>
@@ -1297,7 +1295,6 @@
                 </width>
             </styleProperties>
         </fields>
-        <nextOrFinishButtonLabel>Siguiente</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
